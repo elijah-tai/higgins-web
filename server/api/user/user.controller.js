@@ -111,6 +111,7 @@ export function me(req, res, next) {
         return res.status(401).end();
       }
       res.json(user);
+      return user;
     })
     .catch(err => next(err));
 }
