@@ -10,6 +10,7 @@
 'use strict';
 
 import _ from 'lodash';
+import winston from 'winston';
 import Room from './room.model';
 
 function respondWithResult(res, statusCode) {
@@ -74,7 +75,7 @@ export function show(req, res) {
     .catch(handleError(res));
 }
 
-// Creates a new Room in the DB
+// Creates a new Room in the DB, attaching its ObjectId to User who created it
 export function create(req, res) {
   return Room.create(req.body)
     .then(respondWithResult(res, 201))

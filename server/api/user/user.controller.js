@@ -2,6 +2,7 @@
 
 import User from './user.model';
 import passport from 'passport';
+import winston from 'winston';
 import config from '../../config/environment';
 import jwt from 'jsonwebtoken';
 
@@ -112,6 +113,47 @@ export function me(req, res, next) {
       }
       res.json(user);
       return user;
+    })
+    .catch(err => next(err));
+}
+
+/**
+ * Add a room to a user's rooms array.
+ */
+export function addRoom(req, res, next) {
+  var userId = req.user._id;
+  var room = req.params.roomId;
+  return User.findById(userId).exec()
+    .then(user => {
+      if (!user) {
+        winston.info('userController: (addRoom) - User not found');
+        return res.status(404).end();
+      }
+      user.rooms.push(room);
+      return user.save()
+        .then(() => {
+          winston.info('Room ' + room + ' added to user ' + userId );
+          res.status(204).end();
+          return res;
+        })
+        .catch(err => next(err));
+    })
+    .catch(err => next(err));
+}
+
+/**
+ * Get an array of all of user's rooms.
+ */
+export function getRooms(req, res, next) {
+  var userId = req.user._id;
+  return User.findById(userId).exec()
+    .then(user => {
+      if (!user) {
+        winston.info('userController.getRooms - User not found');
+        return res.status(404).end();
+      }
+      winston.info('userController.getRooms: ' + user.rooms + ' returned')
+      res.status(200).json(user.rooms);
     })
     .catch(err => next(err));
 }

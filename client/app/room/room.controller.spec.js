@@ -1,16 +1,16 @@
 'use strict';
 
-describe('Controller: HomeController', function () {
+describe('Controller: RoomController', function () {
 
   // load the controller's module
   beforeEach(module('higginsApp'));
 
-  var HomeController, scope;
+  var RoomController, scope;
 
   // Initialize the controller and a mock scope
   beforeEach(inject(function ($componentController, $rootScope) {
     scope = $rootScope.$new();
-    HomeController = $componentController('HomeComponent', {
+    RoomController = $componentController('RoomController', {
       $scope: scope
     });
   }));

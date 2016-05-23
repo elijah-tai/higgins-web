@@ -34,6 +34,9 @@ var UserSchema = new Schema({
       }
     }
   },
+  rooms: {
+    type: Array
+  },
   provider: String,
   salt: String,
   facebook: {},
