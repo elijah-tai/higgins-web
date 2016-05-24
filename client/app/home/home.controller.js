@@ -11,6 +11,8 @@ class HomeController {
     this.currentUser = null;
     this.roomName = '';
     this.rooms = [];
+    this.room = '';
+    this.$rootScope.currentRoom = null;
   }
 
   init() {
@@ -26,6 +28,13 @@ class HomeController {
       });
   }
 
+  // TODO
+  goToRoom(room) {
+    console.log(room);
+    this.$rootScope.currentRoom = room;
+    this.$state.go('room');
+  }
+
   createRoom() {
     if (!!this.roomName && !!this.currentUser) {
       this.$http.post('/api/rooms', {
@@ -34,6 +43,7 @@ class HomeController {
       })
         .then(response => {
           var roomId = response.data._id;
+          this.$rootScope.currentRoom = response.data;
           this.$rootScope.nav.getCurrentUser(function(user) {
             return user;
           })
@@ -47,12 +57,11 @@ class HomeController {
   }
 
   deleteRoom(room) {
-    // TODO: should show confirmation modal
+    // TODO: should show confirmation modal + add socketio stuff
     this.$http.delete('/api/rooms/' + room._id);
   }
 
   hasRooms() {
-    console.log(this.rooms);
     if (this.rooms === []) {
       return false;
     } else {

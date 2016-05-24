@@ -20,12 +20,19 @@
   </div><!-- /.row -->
 </div>
 
-<div class="container" ng-if="homeCtrl.hasRooms()">
+<div class="container" ng-if="homeCtrl.hasRooms()" style="margin-top: 2%">
   <div class="col-lg-6">
     <ul ng-repeat="room in homeCtrl.rooms">
-      <li><a href="#" >{{ room.name }}<button type="button" class="close" ng-click="homeCtrl.deleteRoom(room)">&times;</button></a></li>
+      <li>
+        <button type="submit" class="btn btn-success" ng-click="homeCtrl.goToRoom(room)">
+          {{ room.name }}
+        </button>
+        <button type="button" class="close" ng-click="homeCtrl.deleteRoom(room)">
+            &times;
+        </button>
+      </li>
     </ul>
   </div>
 </div>
 
-<!--uib-tooltip="{{ room.info }}"-->
+
