@@ -7,7 +7,9 @@ import {Schema} from 'mongoose';
 
 const authTypes = ['github', 'twitter', 'facebook', 'google'];
 
-var UserSchema = new Schema({
+var UserSchema = new Schema();
+
+UserSchema.add({
   name: String,
   email: {
     type: String,
@@ -34,9 +36,10 @@ var UserSchema = new Schema({
       }
     }
   },
-  rooms: {
-    type: Array
-  },
+  rooms: [{
+    type: Schema.ObjectId,
+    ref: 'Room'
+  }],
   provider: String,
   salt: String,
   facebook: {},

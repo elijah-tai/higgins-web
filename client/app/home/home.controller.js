@@ -2,32 +2,34 @@
 
 class HomeController {
 
-  constructor($http, $state, $rootScope) {
+  constructor($http, $state, $rootScope, $scope) {
     this.$http = $http;
     this.$state = $state;
+    this.$state.isCreatingRoom = false;
     this.$rootScope = $rootScope;
-    this.inRoom = false;
+    this.$scope = $scope;
+    this.currentUser = null;
+    this.roomName = '';
     this.rooms = [];
   }
 
-  $onInit() {
+  init() {
     this.$rootScope.nav.getCurrentUser(function(user) {
       return user;
     })
       .then(user => {
-        this.$http.get('/api/users/' + user._id + '/rooms')
+        this.currentUser = user;
+        this.$http.get('/api/rooms/' + user._id + '/rooms')
           .then(rooms => {
-            console.log(rooms);
-            this.rooms = rooms;
-          })
-      })
-
+            this.rooms = rooms.data;
+          });
+      });
   }
 
   createRoom() {
-    console.log( 'Room created: ' + this.roomName );
-    if (!!this.roomName) {
+    if (!!this.roomName && !!this.currentUser) {
       this.$http.post('/api/rooms', {
+        _creator: this.currentUser._id,
         name: this.roomName
       })
         .then(response => {
@@ -37,6 +39,7 @@ class HomeController {
           })
             .then(user => {
               this.$http.post('/api/users/' + user._id + '/add-room/' + roomId);
+              this.$state.isCreatingRoom = false;
               this.$state.go('room');
             });
         });
@@ -44,14 +47,12 @@ class HomeController {
   }
 
   deleteRoom(room) {
-    this.$http.delete('/api/rooms' + room._id);
-  }
-
-  isInRoom() {
-    return this.inRoom;
+    // TODO: should show confirmation modal
+    this.$http.delete('/api/rooms/' + room._id);
   }
 
   hasRooms() {
+    console.log(this.rooms);
     if (this.rooms === []) {
       return false;
     } else {
@@ -60,7 +61,7 @@ class HomeController {
   }
 
   showRoomNameInput() {
-    this.inRoom = true;
+    this.$state.isCreatingRoom = true;
   }
 
 }
