@@ -14,14 +14,13 @@ class RoomController {
     this.roomMates = this.$rootScope.currentRoom.roomMates;
   }
 
-  addRoomMate() {
-    console.log('Add roommate');
+  beginAddingRoomate() {
     this.$state.isAddingRoomMates = true;
-
-
-
   }
-
+  
+  addRoomMate() {
+    
+  }
 
 }
 

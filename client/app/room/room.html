@@ -1,16 +1,23 @@
 <div class="container">
-  <button type="button" class="btn btn-primary" ng-click="roomCtrl.addRoomMate()">
+  <button type="button" class="btn btn-primary" ng-click="roomCtrl.beginAddingRoomate()">
     Add roommate
   </button>
 </div>
 
-<div class="container" ng-if="roomCtrl.$state.isAddingRoomMates">
+<div class="container" ng-if="roomCtrl.$state.isAddingRoomMates" style="margin-top: 2em">
   <div class="col-lg-6">
     <div class="input-group">
-      <input type="text" class="form-control" placeholder="Name" ng-model="homeCtrl.roomName">
-      <button class="btn btn-default" type="button" ng-click="homeCtrl.createRoom()">Add</button>
+      <span class="input-group-addon" id="basic-addon1">Name</span>
+      <input type="text" class="form-control" placeholder="Name" aria-describedby="basic-addon1" ng-model="roomCtrl.roomMateName">
+      <span class="input-group-addon">Phone</span>
+      <input type="text" class="form-control" placeholder="123-456-7890" ng-model="roomCtrl.roomMatePhone">
+      <span class="input-group-btn">
+        <button type="button" class="btn btn-primary" ng-click="roomCtrl.addRoomMate()">
+          Add
+        </button>
+      </span>
     </div><!-- /input-group -->
-  </div><!-- /.col-lg-6 -->
+  </div><!-- /col-lg-6 -->
 </div><!-- /.row -->
 
 <div class="container" ng-init="roomCtrl.init()">
