@@ -20,8 +20,7 @@ class SignupController {
           password: this.user.password
         })
         .then(() => {
-          // Account created, redirect to home
-          this.$state.go('home');
+          this.$state.go('onboarding.room');
         })
         .catch(err => {
           err = err.data;

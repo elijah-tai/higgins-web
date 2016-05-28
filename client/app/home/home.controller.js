@@ -6,7 +6,7 @@ class HomeController {
     this.$http = $http;
     this.$state = $state;
     this.$state.isCreatingRoom = false;
-    this.$rootScope = $rootScope;
+    this.$rootScope = $rootScope; // TODO: Need to break this out into a home service
     this.$scope = $scope;
     this.currentUser = null;
     this.roomName = '';

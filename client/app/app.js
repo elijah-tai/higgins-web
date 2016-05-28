@@ -1,10 +1,8 @@
 'use strict';
 
 angular.module('higginsApp', ['higginsApp.auth', 'higginsApp.admin', 'higginsApp.constants',
-    'ngAnimate', 'ngCookies', 'ngResource', 'ngSanitize', 'btford.socket-io', 'ui.router', 'validation.match'
-  ])
+    'ngAnimate', 'ngCookies', 'ngResource', 'ngSanitize', 'btford.socket-io', 'ui.router', 'validation.match', 'ui.bootstrap', 'ui.bootstrap.alert', 'ui.bootstrap.dropdown', 'ui.bootstrap.datepicker', 'ui.bootstrap.timepicker', 'ui.bootstrap.datetimepicker' ])
   .config(function($urlRouterProvider, $locationProvider) {
     $urlRouterProvider.otherwise('/');
-
     $locationProvider.html5Mode(true);
   });

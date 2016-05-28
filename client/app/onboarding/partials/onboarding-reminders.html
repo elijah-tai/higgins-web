@@ -1,0 +1,76 @@
+<form class="onboarding-form" id="add-reminders-form">
+
+  <div class="form-group onboarding-input" id="add-reminder-name">
+    <label class="onboarding-label add-reminder-label">Reminder Name</label>
+    <input type="text" class="form-control" placeholder="e.g. Take out the garbage" ng-model="onboardCtrl.onboardingData.reminderName">
+  </div>
+
+  <div class="form-group onboarding-input" id="add-reminder-assignees">
+    <label class="onboarding-label add-reminder-label">Assignees</label>
+    <div class="row">
+      <ul class="onboarding-label" ng-repeat="roomMate in onboardCtrl.onboardingData.roomMates">
+          <input class="onboarding-label"
+                 type="checkbox"
+                 ng-model="onboardCtrl.onboardingData.selectedRoomMates[roomMate.phone]">
+          {{ roomMate.name }}
+      </ul>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="onboarding-label">Date & Time</label>
+    <form class="form-horizontal">
+      <div class="form-group">
+          <p class="input-group">
+            <input type="text" class="form-control" datetime-picker="MM/dd/yyyy HH:mm" ng-model="onboardCtrl.onboardingData.reminderDateTime" is-open="onboardCtrl.reminderDateTimePickerOpen" />
+              <span class="input-group-btn">
+                  <button type="button" class="btn btn-default" ng-click="onboardCtrl.openReminderDateTimePicker($event)"><i class="fa fa-calendar"></i></button>
+              </span>
+          </p>
+      </div>
+    </form>
+
+  </div>
+
+  <div class="form-group">
+    <label class="onboarding-label">Recurring Reminder?</label>
+    <input type="checkbox" ng-model="onboardCtrl.onboardingData.reminderDoesRecur">
+  </div>
+
+  <div class="form-group" ng-if="!!onboardCtrl.onboardingData.reminderDoesRecur">
+    <div class="btn-group" uib-dropdown is-open="status.isopen">
+      <button id="single-button" type="button" class="btn btn-default" uib-dropdown-toggle ng-disabled="disabled">
+        {{ onboardCtrl.onboardingData.recurrenceType }} <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
+        <li role="menuitem" ng-click="onboardCtrl.onboardingData.recurrenceType = 'Daily'"><a href="#">Daily</a></li>
+        <li role="menuitem" ng-click="onboardCtrl.onboardingData.recurrenceType = 'Weekly'"><a href="#">Weekly</a></li>
+        <li role="menuitem" ng-click="onboardCtrl.onboardingData.recurrenceType = 'Monthly'"><a href="#">Monthly</a></li>
+        <li role="menuitem" ng-click="onboardCtrl.onboardingData.recurrenceType = 'Yearly'"><a href="#">Yearly</a></li>
+
+        <!-- TODO: Implement custom reminders -->
+        <!--<li class="divider"></li>-->
+        <!--<li role="menuitem" ng-click="onboardCtrl.onboardingData.recurrenceType = 'Custom'"><a href="#">Custom</a></li>-->
+      </ul>
+    </div>
+  </div>
+
+  <button id="add-reminder-button" type="button" class="btn btn-primary" ng-click="onboardCtrl.addReminder()">
+    Add
+  </button>
+
+</>
+
+
+<div class="form-group row">
+  <div class="col-xs-6 col-xs-offset-3">
+    <span>
+      <a ui-sref="onboarding.roommates" class="btn btn-block btn-info input-add-roommates">
+        Previous <span class="glyphicon glyphicon-circle-arrow-left"></span>
+      </a>
+      <a ui-sref="home" class="btn btn-block btn-info input-add-roommates" ng-click="onboardCtrl.finishOnboarding()">
+        Finish <span class="glyphicon glyphicon-ok"></span>
+      </a>
+    </span>
+  </div>
+</div>

@@ -6,6 +6,7 @@ import jwt from 'jsonwebtoken';
 import expressJwt from 'express-jwt';
 import compose from 'composable-middleware';
 import User from '../api/user/user.model';
+import winston from 'winston';
 
 var validateJwt = expressJwt({
   secret: config.secrets.session
@@ -70,13 +71,23 @@ export function signToken(id, role) {
 }
 
 /**
- * Set token cookie directly for oAuth strategies
+ * Set token cookie directly for oAuth strategies,
+ * checking if user exists already --> no onboarding
+ * if user doesn't exist --> onboarding
  */
 export function setTokenCookie(req, res) {
   if (!req.user) {
     return res.status(404).send('It looks like you aren\'t logged in, please try again.');
   }
-  var token = signToken(req.user._id, req.user.role);
-  res.cookie('token', token);
-  res.redirect('/home');
+  User.findById(req.user._id).exec()
+    .then(user => {
+      var token = signToken(req.user._id, req.user.role);
+      res.cookie('token', token);
+      winston.info('Is user onboarded: ', user.onboarded);
+      if (user.onboarded === false) {
+        return res.redirect('/onboarding/room');
+      } else {
+        return res.redirect('/home');
+      }
+    });
 }
