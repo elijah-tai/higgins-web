@@ -5,7 +5,7 @@ import mongoose from 'mongoose';
 mongoose.Promise = require('bluebird');
 import {Schema} from 'mongoose';
 
-const authTypes = ['github', 'twitter', 'facebook', 'google'];
+const authTypes = ['github', 'facebook', 'google']; // 'twitter'
 
 var UserSchema = new Schema();
 
@@ -45,7 +45,8 @@ UserSchema.add({
   facebook: {},
   twitter: {},
   google: {},
-  github: {}
+  github: {},
+  onboarded: Boolean
 });
 
 /**

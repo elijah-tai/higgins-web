@@ -7,6 +7,7 @@
 import Room from '../api/room/room.model';
 import User from '../api/user/user.model';
 import RoomMate from '../api/roomMate/roomMate.model';
+import Reminder from '../api/reminder/reminder.model';
 import winston from 'winston';
 
 User.find({}).remove()
@@ -57,16 +58,27 @@ Room.find({}).remove()
     });
   });
 
-RoomMate.find({}).remove()
+// RoomMate.find({}).remove()
+//   .then(() => {
+//     RoomMate.create({
+//       name: 'Test roomMate 1',
+//       phone: 1234567890
+//     },{
+//       name: 'Test2',
+//       phone: 234567819
+//     })
+//       .then(() => {
+//         winston.info('finished populating roomMates');
+//       });
+//   });
+
+
+Reminder.find({}).remove()
   .then(() => {
-    RoomMate.create({
-      name: 'Test roomMate 1',
-      phone: 1234567890
-    },{
-      name: 'Test2',
-      phone: 234567819
+    Reminder.create({
+       name: 'Test reminder'
     })
-      .then(() => {
-        winston.info('finished populating roomMates');
-      });
+  .then(() => {
+      winston.info('finished populating reminders');
+    });
   });

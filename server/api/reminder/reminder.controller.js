@@ -1,24 +1,22 @@
 /**
  * Using Rails-like standard naming convention for endpoints.
- * GET     /api/rooms              ->  index
- * POST    /api/rooms              ->  create
- * GET     /api/rooms/:id          ->  show
- * PUT     /api/rooms/:id          ->  update
- * DELETE  /api/rooms/:id          ->  destroy
+ * GET     /api/reminders              ->  index
+ * POST    /api/reminders              ->  create
+ * GET     /api/reminders/:id          ->  show
+ * PUT     /api/reminders/:id          ->  update
+ * DELETE  /api/reminders/:id          ->  destroy
  */
 
 'use strict';
 
 import _ from 'lodash';
-import winston from 'winston';
-import Room from './room.model';
+import Reminder from './reminder.model';
 
 function respondWithResult(res, statusCode) {
   statusCode = statusCode || 200;
   return function(entity) {
     if (entity) {
       res.status(statusCode).json(entity);
-      return res;
     }
   };
 }
@@ -57,68 +55,47 @@ function handleEntityNotFound(res) {
 function handleError(res, statusCode) {
   statusCode = statusCode || 500;
   return function(err) {
-    winston.info('Error: ');
     res.status(statusCode).send(err);
   };
 }
 
-// Gets a list of Rooms
+// Gets a list of Reminders
 export function index(req, res) {
-  return Room.find().exec()
+  return Reminder.find().exec()
     .then(respondWithResult(res))
     .catch(handleError(res));
 }
 
-// Gets a single Room from the DB
+// Gets a single Reminder from the DB
 export function show(req, res) {
-  return Room.findById(req.params.id).exec()
+  return Reminder.findById(req.params.id).exec()
     .then(handleEntityNotFound(res))
     .then(respondWithResult(res))
     .catch(handleError(res));
 }
 
-// Creates a new Room in the DB, attaching its ObjectId to User who created it
+// Creates a new Reminder in the DB
 export function create(req, res) {
-  var newRoom = new Room(req.body);
-  winston.info(req.body);
-  return newRoom.save()
+  return Reminder.create(req.body)
     .then(respondWithResult(res, 201))
     .catch(handleError(res));
 }
 
-// Updates an existing Room in the DB
+// Updates an existing Reminder in the DB
 export function update(req, res) {
   if (req.body._id) {
     delete req.body._id;
   }
-  return Room.findById(req.params.id).exec()
+  return Reminder.findById(req.params.id).exec()
     .then(handleEntityNotFound(res))
     .then(saveUpdates(req.body))
     .then(respondWithResult(res))
     .catch(handleError(res));
 }
 
-/**
- * Get an array of all of user's rooms.
- */
-export function getRooms(req, res, next) {
-  var userId = req.params.id;
-  return Room.find({ _creator: userId }).exec()
-    .then(rooms => {
-      if (!rooms) {
-        winston.info('roomController.getRooms - rooms not found');
-        return res.status(404).end();
-      }
-      winston.info('roomController.getRooms: ' + rooms + ' returned')
-      res.status(200).json(rooms).end();
-      return res;
-    })
-    .catch(err => next(err));
-}
-
-// Deletes a Room from the DB
+// Deletes a Reminder from the DB
 export function destroy(req, res) {
-  return Room.findById(req.params.id).exec()
+  return Reminder.findById(req.params.id).exec()
     .then(handleEntityNotFound(res))
     .then(removeEntity(res))
     .catch(handleError(res));
