@@ -7,6 +7,7 @@
 import Room from '../api/room/room.model';
 import User from '../api/user/user.model';
 import RoomMate from '../api/roomMate/roomMate.model';
+import Reminder from '../api/reminder/reminder.model';
 import winston from 'winston';
 
 User.find({}).remove()
@@ -69,4 +70,15 @@ RoomMate.find({}).remove()
       .then(() => {
         winston.info('finished populating roomMates');
       });
+  });
+
+
+Reminder.find({}).remove()
+  .then(() => {
+    Reminder.create({
+       name: 'Test reminder'
+    })
+  .then(() => {
+      winston.info('finished populating reminders');
+    });
   });

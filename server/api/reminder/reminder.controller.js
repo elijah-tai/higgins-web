@@ -1,17 +1,16 @@
 /**
  * Using Rails-like standard naming convention for endpoints.
- * GET     /api/roomMates              ->  index
- * POST    /api/roomMates              ->  create
- * GET     /api/roomMates/:id          ->  show
- * PUT     /api/roomMates/:id          ->  update
- * DELETE  /api/roomMates/:id          ->  destroy
+ * GET     /api/reminders              ->  index
+ * POST    /api/reminders              ->  create
+ * GET     /api/reminders/:id          ->  show
+ * PUT     /api/reminders/:id          ->  update
+ * DELETE  /api/reminders/:id          ->  destroy
  */
 
 'use strict';
 
 import _ from 'lodash';
-import RoomMate from './roomMate.model';
-import logger from 'winston';
+import Reminder from './reminder.model';
 
 function respondWithResult(res, statusCode) {
   statusCode = statusCode || 200;
@@ -60,43 +59,43 @@ function handleError(res, statusCode) {
   };
 }
 
-// Gets a list of RoomMates
+// Gets a list of Reminders
 export function index(req, res) {
-  return RoomMate.find().exec()
+  return Reminder.find().exec()
     .then(respondWithResult(res))
     .catch(handleError(res));
 }
 
-// Gets a single RoomMate from the DB
+// Gets a single Reminder from the DB
 export function show(req, res) {
-  return RoomMate.findById(req.params.id).exec()
+  return Reminder.findById(req.params.id).exec()
     .then(handleEntityNotFound(res))
     .then(respondWithResult(res))
     .catch(handleError(res));
 }
 
-// Creates a new RoomMate in the DB
+// Creates a new Reminder in the DB
 export function create(req, res) {
-  return RoomMate.create(req.body)
+  return Reminder.create(req.body)
     .then(respondWithResult(res, 201))
     .catch(handleError(res));
 }
 
-// Updates an existing RoomMate in the DB
+// Updates an existing Reminder in the DB
 export function update(req, res) {
   if (req.body._id) {
     delete req.body._id;
   }
-  return RoomMate.findById(req.params.id).exec()
+  return Reminder.findById(req.params.id).exec()
     .then(handleEntityNotFound(res))
     .then(saveUpdates(req.body))
     .then(respondWithResult(res))
     .catch(handleError(res));
 }
 
-// Deletes a RoomMate from the DB
+// Deletes a Reminder from the DB
 export function destroy(req, res) {
-  return RoomMate.findById(req.params.id).exec()
+  return Reminder.findById(req.params.id).exec()
     .then(handleEntityNotFound(res))
     .then(removeEntity(res))
     .catch(handleError(res));

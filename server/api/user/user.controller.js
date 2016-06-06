@@ -39,6 +39,7 @@ export function create(req, res, next) {
   var newUser = new User(req.body);
   newUser.provider = 'local';
   newUser.role = 'user';
+  newUser.onboarded = false; // new user hasn't gone through onboarding
   newUser.save()
     .then(function(user) {
       var token = jwt.sign({ _id: user._id }, config.secrets.session, {
