@@ -10,10 +10,8 @@ var ReminderSchema = new mongoose.Schema({
     ref: 'RoomMate'
   }],
   datetime: Date, // date and time of reminder
-  recurs: {
-    type: String, // daily/weekly/monthly/custom
-    doesRecur: { type: Boolean, default: false }
-  },
+  doesRecur: { type: Boolean, default: false },
+  recurType: String, // Daily/Weekly/Monthly/Yearly/Custom
   active: { type: Boolean, default: false } // reminderIsActive
 });
 

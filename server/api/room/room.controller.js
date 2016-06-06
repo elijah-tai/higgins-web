@@ -10,7 +10,7 @@
 'use strict';
 
 import _ from 'lodash';
-import winston from 'winston';
+import logger from 'winston';
 import Room from './room.model';
 
 function respondWithResult(res, statusCode) {
@@ -18,6 +18,7 @@ function respondWithResult(res, statusCode) {
   return function(entity) {
     if (entity) {
       res.status(statusCode).json(entity);
+      logger.info('roomController.respondWithResult - entity: ' + entity);
       return res;
     }
   };
@@ -25,9 +26,10 @@ function respondWithResult(res, statusCode) {
 
 function saveUpdates(updates) {
   return function(entity) {
-    var updated = _.merge(entity, updates);
+    var updated = _.extend(entity, updates);
     return updated.save()
       .then(updated => {
+        logger.info('roomController.saveUpdates - updated: ' + updated);
         return updated;
       });
   };
@@ -57,7 +59,6 @@ function handleEntityNotFound(res) {
 function handleError(res, statusCode) {
   statusCode = statusCode || 500;
   return function(err) {
-    winston.info('Error: ');
     res.status(statusCode).send(err);
   };
 }
@@ -80,7 +81,7 @@ export function show(req, res) {
 // Creates a new Room in the DB, attaching its ObjectId to User who created it
 export function create(req, res) {
   var newRoom = new Room(req.body);
-  winston.info(req.body);
+  logger.info('roomController.create - req.body: ' + req.body);
   return newRoom.save()
     .then(respondWithResult(res, 201))
     .catch(handleError(res));
@@ -106,10 +107,10 @@ export function getRooms(req, res, next) {
   return Room.find({ _creator: userId }).exec()
     .then(rooms => {
       if (!rooms) {
-        winston.info('roomController.getRooms - rooms not found');
+        logger.info('roomController.getRooms - rooms not found');
         return res.status(404).end();
       }
-      winston.info('roomController.getRooms: ' + rooms + ' returned')
+      logger.info('roomController.getRooms: ' + rooms + ' returned')
       res.status(200).json(rooms).end();
       return res;
     })

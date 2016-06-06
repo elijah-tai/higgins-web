@@ -11,6 +11,7 @@
 
 import _ from 'lodash';
 import RoomMate from './roomMate.model';
+import logger from 'winston';
 
 function respondWithResult(res, statusCode) {
   statusCode = statusCode || 200;
@@ -23,7 +24,7 @@ function respondWithResult(res, statusCode) {
 
 function saveUpdates(updates) {
   return function(entity) {
-    var updated = _.merge(entity, updates);
+    var updated = _.extend(entity, updates);
     return updated.save()
       .then(updated => {
         return updated;

@@ -82,3 +82,14 @@ Reminder.find({}).remove()
       winston.info('finished populating reminders');
     });
   });
+
+
+Reminder.find({}).remove()
+  .then(() => {
+    Reminder.create({
+       name: 'Test reminder'
+    })
+  .then(() => {
+      winston.info('finished populating reminders');
+    });
+  });
