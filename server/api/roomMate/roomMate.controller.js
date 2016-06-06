@@ -1,16 +1,16 @@
 /**
  * Using Rails-like standard naming convention for endpoints.
- * GET     /api/roomMates              ->  index
- * POST    /api/roomMates              ->  create
- * GET     /api/roomMates/:id          ->  show
- * PUT     /api/roomMates/:id          ->  update
- * DELETE  /api/roomMates/:id          ->  destroy
+ * GET     /api/roommates              ->  index
+ * POST    /api/roommates              ->  create
+ * GET     /api/roommates/:id          ->  show
+ * PUT     /api/roommates/:id          ->  update
+ * DELETE  /api/roommates/:id          ->  destroy
  */
 
 'use strict';
 
 import _ from 'lodash';
-import RoomMate from './roomMate.model';
+import Roommate from './roommate.model';
 import logger from 'winston';
 
 function respondWithResult(res, statusCode) {
@@ -18,6 +18,7 @@ function respondWithResult(res, statusCode) {
   return function(entity) {
     if (entity) {
       res.status(statusCode).json(entity);
+      return res;
     }
   };
 }
@@ -60,43 +61,43 @@ function handleError(res, statusCode) {
   };
 }
 
-// Gets a list of RoomMates
+// Gets a list of Roommates
 export function index(req, res) {
-  return RoomMate.find().exec()
+  return Roommate.find().exec()
     .then(respondWithResult(res))
     .catch(handleError(res));
 }
 
-// Gets a single RoomMate from the DB
+// Gets a single Roommate from the DB
 export function show(req, res) {
-  return RoomMate.findById(req.params.id).exec()
+  return Roommate.findById(req.params.id).exec()
     .then(handleEntityNotFound(res))
     .then(respondWithResult(res))
     .catch(handleError(res));
 }
 
-// Creates a new RoomMate in the DB
+// Creates a new Roommate in the DB
 export function create(req, res) {
-  return RoomMate.create(req.body)
+  return Roommate.create(req.body)
     .then(respondWithResult(res, 201))
     .catch(handleError(res));
 }
 
-// Updates an existing RoomMate in the DB
+// Updates an existing Roommate in the DB
 export function update(req, res) {
   if (req.body._id) {
     delete req.body._id;
   }
-  return RoomMate.findById(req.params.id).exec()
+  return Roommate.findById(req.params.id).exec()
     .then(handleEntityNotFound(res))
     .then(saveUpdates(req.body))
     .then(respondWithResult(res))
     .catch(handleError(res));
 }
 
-// Deletes a RoomMate from the DB
+// Deletes a Roommate from the DB
 export function destroy(req, res) {
-  return RoomMate.findById(req.params.id).exec()
+  return Roommate.findById(req.params.id).exec()
     .then(handleEntityNotFound(res))
     .then(removeEntity(res))
     .catch(handleError(res));

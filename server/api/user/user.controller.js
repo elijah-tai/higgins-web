@@ -46,6 +46,7 @@ export function create(req, res, next) {
         expiresIn: 60 * 60 * 5
       });
       res.json({ token });
+      return res;
     })
     .catch(validationError(res));
 }

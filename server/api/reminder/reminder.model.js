@@ -7,7 +7,7 @@ var ReminderSchema = new mongoose.Schema({
   name: String, // name of the reminder
   assignees: [{  // people to which the reminder is assigned
     type: Schema.ObjectId,
-    ref: 'RoomMate'
+    ref: 'Roommate'
   }],
   datetime: Date, // date and time of reminder
   doesRecur: { type: Boolean, default: false },

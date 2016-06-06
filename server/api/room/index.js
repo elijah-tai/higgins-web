@@ -12,6 +12,7 @@ router.put('/:id', controller.update);
 router.patch('/:id', controller.update);
 router.delete('/:id', controller.destroy);
 
-router.get('/:id/rooms', controller.getRooms);
+router.get('/:userId/rooms', controller.getRooms);
+router.put('/:id/add-roommate/:roommateId', controller.addRoommate);
 
 module.exports = router;

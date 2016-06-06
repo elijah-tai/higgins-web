@@ -8,11 +8,11 @@
   <div class="form-group onboarding-input" id="add-reminder-assignees">
     <label class="onboarding-label add-reminder-label">Assignees</label>
     <div class="row">
-      <ul class="onboarding-label" ng-repeat="roomMate in onboardCtrl.onboardingData.roomMates">
+      <ul class="onboarding-label" ng-repeat="roommate in onboardCtrl.onboardingData.roommates">
           <input class="onboarding-label"
                  type="checkbox"
-                 ng-model="onboardCtrl.onboardingData.selectedRoomMates[roomMate.phone]">
-          {{ roomMate.name }}
+                 ng-model="onboardCtrl.onboardingData.selectedRoommates[roommate.phone]">
+          {{ roommate.name }}
       </ul>
     </div>
   </div>
@@ -68,7 +68,7 @@
       <a ui-sref="onboarding.roommates" class="btn btn-block btn-info input-add-roommates">
         Previous <span class="glyphicon glyphicon-circle-arrow-left"></span>
       </a>
-      <a ui-sref="home" class="btn btn-block btn-info input-add-roommates" ng-click="onboardCtrl.finishOnboarding()">
+      <a ui-sref="room" class="btn btn-block btn-info input-add-roommates" ng-click="onboardCtrl.finishOnboarding()">
         Finish <span class="glyphicon glyphicon-ok"></span>
       </a>
     </span>

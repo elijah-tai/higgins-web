@@ -10,6 +10,7 @@
 'use strict';
 
 import _ from 'lodash';
+import mongoose from 'mongoose';
 import logger from 'winston';
 import Room from './room.model';
 
@@ -99,11 +100,20 @@ export function update(req, res) {
     .catch(handleError(res));
 }
 
+// Deletes a Room from the DB
+export function destroy(req, res) {
+  return Room.findById(req.params.id).exec()
+    .then(handleEntityNotFound(res))
+    .then(removeEntity(res))
+    .catch(handleError(res));
+}
+
+// TODO: Clean up the functions below to use chained functions!
 /**
  * Get an array of all of user's rooms.
  */
 export function getRooms(req, res, next) {
-  var userId = req.params.id;
+  var userId = req.params.userId;
   return Room.find({ _creator: userId }).exec()
     .then(rooms => {
       if (!rooms) {
@@ -117,10 +127,27 @@ export function getRooms(req, res, next) {
     .catch(err => next(err));
 }
 
-// Deletes a Room from the DB
-export function destroy(req, res) {
-  return Room.findById(req.params.id).exec()
-    .then(handleEntityNotFound(res))
-    .then(removeEntity(res))
-    .catch(handleError(res));
+/*
+  Add a roommate to a room
+ */
+export function addRoommate(req, res, next) {
+  var roomId = req.params.id;
+  var roommateId = req.params.roommateId;
+  // TODO: Change this to use chains
+  return Room.findOne({ _id: roomId }, function(err, room) {
+    if (err) {
+      logger.info('roomController.addRoommate - room not found');
+      return res.status(404).end();
+    }
+
+    room.roommates.addToSet(new mongoose.Types.ObjectId(roommateId));
+    room.save(function(err) {
+      if (err) {
+        logger.error('roomController.addRoommate - error saving room')
+      }
+      logger.info('roomController.addRoommate - room saved: ' + room);
+      res.status(200).json(room).end();
+      return res;
+    });
+  });
 }

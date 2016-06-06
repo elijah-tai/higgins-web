@@ -11,9 +11,9 @@ var RoomSchema = new mongoose.Schema({
   name: String,     // name of room
   address: String,  // address of room
   active: { type: Boolean, default: true }, // for checking that room is used
-  roomMates: [{     // array of roommates that share the room
+  roommates: [{     // array of roommates that share the room
     type: Schema.ObjectId,
-    ref: 'RoomMate'
+    ref: 'Roommate'
   }],
   reminders: [{     // array of reminders attached to room
     type: Schema.ObjectId,

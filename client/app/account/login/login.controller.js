@@ -19,7 +19,7 @@ class LoginController {
           password: this.user.password
         })
         .then(() => {
-          this.$state.go('home');
+          this.$state.go('room');
         })
         .catch(err => {
           this.errors.other = err.message;

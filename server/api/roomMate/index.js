@@ -1,7 +1,7 @@
 'use strict';
 
 var express = require('express');
-var controller = require('./roomMate.controller');
+var controller = require('./roommate.controller.js');
 
 var router = express.Router();
 

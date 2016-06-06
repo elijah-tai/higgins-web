@@ -3,40 +3,40 @@
 var app = require('../..');
 import request from 'supertest';
 
-var newRoomMate;
+var newRoommate;
 
-describe('RoomMate API:', function() {
+describe('Roommate API:', function() {
 
-  describe('GET /api/roomMates', function() {
-    var roomMates;
+  describe('GET /api/roommates', function() {
+    var roommates;
 
     beforeEach(function(done) {
       request(app)
-        .get('/api/roomMates')
+        .get('/api/roommates')
         .expect(200)
         .expect('Content-Type', /json/)
         .end((err, res) => {
           if (err) {
             return done(err);
           }
-          roomMates = res.body;
+          roommates = res.body;
           done();
         });
     });
 
     it('should respond with JSON array', function() {
-      roomMates.should.be.instanceOf(Array);
+      roommates.should.be.instanceOf(Array);
     });
 
   });
 
-  describe('POST /api/roomMates', function() {
+  describe('POST /api/roommates', function() {
     beforeEach(function(done) {
       request(app)
-        .post('/api/roomMates')
+        .post('/api/roommates')
         .send({
-          name: 'New RoomMate',
-          info: 'This is the brand new roomMate!!!'
+          name: 'New Roommate',
+          info: 'This is the brand new roommateModal!!!'
         })
         .expect(201)
         .expect('Content-Type', /json/)
@@ -44,55 +44,55 @@ describe('RoomMate API:', function() {
           if (err) {
             return done(err);
           }
-          newRoomMate = res.body;
+          newRoommate = res.body;
           done();
         });
     });
 
-    it('should respond with the newly created roomMate', function() {
-      newRoomMate.name.should.equal('New RoomMate');
-      newRoomMate.info.should.equal('This is the brand new roomMate!!!');
+    it('should respond with the newly created roommateModal', function() {
+      newRoommate.name.should.equal('New Roommate');
+      newRoommate.info.should.equal('This is the brand new roommateModal!!!');
     });
 
   });
 
-  describe('GET /api/roomMates/:id', function() {
-    var roomMate;
+  describe('GET /api/roommates/:id', function() {
+    var roommate;
 
     beforeEach(function(done) {
       request(app)
-        .get('/api/roomMates/' + newRoomMate._id)
+        .get('/api/roommates/' + newRoommate._id)
         .expect(200)
         .expect('Content-Type', /json/)
         .end((err, res) => {
           if (err) {
             return done(err);
           }
-          roomMate = res.body;
+          roommate = res.body;
           done();
         });
     });
 
     afterEach(function() {
-      roomMate = {};
+      roommate = {};
     });
 
-    it('should respond with the requested roomMate', function() {
-      roomMate.name.should.equal('New RoomMate');
-      roomMate.info.should.equal('This is the brand new roomMate!!!');
+    it('should respond with the requested roommateModal', function() {
+      roommate.name.should.equal('New Roommate');
+      roommate.info.should.equal('This is the brand new roommateModal!!!');
     });
 
   });
 
-  describe('PUT /api/roomMates/:id', function() {
-    var updatedRoomMate;
+  describe('PUT /api/roommates/:id', function() {
+    var updatedRoommate;
 
     beforeEach(function(done) {
       request(app)
-        .put('/api/roomMates/' + newRoomMate._id)
+        .put('/api/roommates/' + newRoommate._id)
         .send({
-          name: 'Updated RoomMate',
-          info: 'This is the updated roomMate!!!'
+          name: 'Updated Roommate',
+          info: 'This is the updated roommateModal!!!'
         })
         .expect(200)
         .expect('Content-Type', /json/)
@@ -100,27 +100,27 @@ describe('RoomMate API:', function() {
           if (err) {
             return done(err);
           }
-          updatedRoomMate = res.body;
+          updatedRoommate = res.body;
           done();
         });
     });
 
     afterEach(function() {
-      updatedRoomMate = {};
+      updatedRoommate = {};
     });
 
-    it('should respond with the updated roomMate', function() {
-      updatedRoomMate.name.should.equal('Updated RoomMate');
-      updatedRoomMate.info.should.equal('This is the updated roomMate!!!');
+    it('should respond with the updated roommateModal', function() {
+      updatedRoommate.name.should.equal('Updated Roommate');
+      updatedRoommate.info.should.equal('This is the updated roommateModal!!!');
     });
 
   });
 
-  describe('DELETE /api/roomMates/:id', function() {
+  describe('DELETE /api/roommates/:id', function() {
 
     it('should respond with 204 on successful removal', function(done) {
       request(app)
-        .delete('/api/roomMates/' + newRoomMate._id)
+        .delete('/api/roommates/' + newRoommate._id)
         .expect(204)
         .end((err, res) => {
           if (err) {
@@ -130,9 +130,9 @@ describe('RoomMate API:', function() {
         });
     });
 
-    it('should respond with 404 when roomMate does not exist', function(done) {
+    it('should respond with 404 when roommateModal does not exist', function(done) {
       request(app)
-        .delete('/api/roomMates/' + newRoomMate._id)
+        .delete('/api/roommates/' + newRoommate._id)
         .expect(404)
         .end((err, res) => {
           if (err) {
