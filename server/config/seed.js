@@ -58,18 +58,29 @@ Room.find({}).remove()
     });
   });
 
-RoomMate.find({}).remove()
+// RoomMate.find({}).remove()
+//   .then(() => {
+//     RoomMate.create({
+//       name: 'Test roomMate 1',
+//       phone: 1234567890
+//     },{
+//       name: 'Test2',
+//       phone: 234567819
+//     })
+//       .then(() => {
+//         winston.info('finished populating roomMates');
+//       });
+//   });
+
+
+Reminder.find({}).remove()
   .then(() => {
-    RoomMate.create({
-      name: 'Test roomMate 1',
-      phone: 1234567890
-    },{
-      name: 'Test2',
-      phone: 234567819
+    Reminder.create({
+       name: 'Test reminder'
     })
-      .then(() => {
-        winston.info('finished populating roomMates');
-      });
+  .then(() => {
+      winston.info('finished populating reminders');
+    });
   });
 
 
