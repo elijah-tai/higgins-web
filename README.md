@@ -1,5 +1,7 @@
 # higgins
 
+higgins is a personal butler for roommates - keep track of recurring bills, chores, and events
+
 ### Prerequisites
 
 - [Git](https://git-scm.com/)
