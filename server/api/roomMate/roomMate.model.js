@@ -3,14 +3,14 @@
 import mongoose from 'mongoose';
 import {Schema} from 'mongoose';
 
-var RoomMateSchema = new mongoose.Schema({
-  _roomId: {        // id of room that roommate is attached to
+var RoommateSchema = new mongoose.Schema({
+  _roomId: {        // id of room that roommateModal is attached to
     type: Schema.ObjectId,
     ref: 'Room'
   },
-  name: String,     // name of roommate
-  phone: Number,    // roommate phone number
+  name: String,     // name of roommateModal
+  phone: Number,    // roommateModal phone number
   active: { type: Boolean, default: true }
 });
 
-export default mongoose.model('RoomMate', RoomMateSchema);
+export default mongoose.model('Roommate', RoommateSchema);

@@ -21,7 +21,7 @@ class OnboardingController {
     this.reminderDateTimePickerOpen = false;
 
     this.onboardingData = {
-      roomMates: [],
+      roommates: [],
       reminders: [],
       reminderDateTime: new Date(),
       reminderRecursType: 'Select One',
@@ -39,16 +39,16 @@ class OnboardingController {
       });
   }
 
-  addRoomMate() {
-    // TODO: validate roommate
-    this.onboardingData.roomMates.push({
-      name: this.onboardingData.roomMateName,
-      phone: this.onboardingData.roomMatePhone,
-      roomMateId: '' // mongoose.Types.ObjectId
+  addRoommate() {
+    // TODO: validate roommateModal
+    this.onboardingData.roommates.push({
+      name: this.onboardingData.roommateName,
+      phone: this.onboardingData.roommatePhone,
+      roommateId: '' // mongoose.Types.ObjectId
     });
 
-    this.onboardingData.roomMateName = '';
-    this.onboardingData.roomMatePhone = '';
+    this.onboardingData.roommateName = '';
+    this.onboardingData.roommatePhone = '';
   }
 
   openReminderDateTimePicker(e) {
@@ -59,11 +59,10 @@ class OnboardingController {
   }
 
   addReminder() {
-
     // TODO: validate reminder
     this.onboardingData.reminders.push({
       name: this.onboardingData.reminderName,
-      assignees: this.onboardingData.selectedRoomMates, // ng-model = {}
+      assignees: this.onboardingData.selectedRoommates, // ng-model = {}
       datetime: this.onboardingData.reminderDateTime,
       recurType: this.onboardingData.reminderRecursType,
       doesRecur: this.onboardingData.reminderDoesRecur,
@@ -75,17 +74,17 @@ class OnboardingController {
   /* jshint loopfunc:true */
   // r.assignees is an object
   getRoommateIds(o) {
-    var roomMateIdArray = [];
+    var roommateIdArray = [];
     for (var phoneNum in o) {
       if (o[phoneNum] === true) {
-        this.onboardingData.roomMates.forEach(function(p) {
+        this.onboardingData.roommates.forEach(function(p) {
           if (p.phone === phoneNum) {
-            roomMateIdArray.push(p._id);
+            roommateIdArray.push(p._id);
           }
         });
       }
     }
-    return roomMateIdArray;
+    return roommateIdArray;
   }
 
   // after clicking finish
@@ -101,16 +100,16 @@ class OnboardingController {
       var roomId = response.data._id;
 
       /* jshint loopfunc:true */
-      function addRoomMates(self) {
+      function addRoommates(self) {
         return self.$q(function(resolve) {
-          for (var rm in self.onboardingData.roomMates) {
-            var roomMate = self.onboardingData.roomMates[rm];
-            self.$http.post('/api/roomMates', {
+          for (var rm in self.onboardingData.roommates) {
+            var roommate = self.onboardingData.roommates[rm];
+            self.$http.post('/api/roommates', {
               _roomId: roomId,
-              name: roomMate.name,
-              phone: parseInt(roomMate.phone)
+              name: roommate.name,
+              phone: parseInt(roommate.phone)
             }).then(response => {
-              self.onboardingData.roomMates[rm]._id = response.data._id;
+              self.onboardingData.roommates[rm]._id = response.data._id;
               resolve(self);
             });
           }
@@ -124,7 +123,7 @@ class OnboardingController {
             self.$http.post('/api/reminders', {
               name: reminder.name,
               assignees: self.getRoommateIds(reminder.assignees), // array of object ids of
-              // // roommate
+              // // roommateModal
               datetime: reminder.datetime,
               recurType: reminder.recurType,
               doesRecur: reminder.doesRecur,
@@ -138,14 +137,14 @@ class OnboardingController {
       }
 
       /* jshint loopfunc:true */
-      addRoomMates(this).then(function(self) { // add reminders
+      addRoommates(this).then(function(self) { // add reminders
         return addReminders(self);
       }).then(function(self) {
-        var roomMateIdArray = [],
+        var roommateIdArray = [],
             reminderIdArray = [];
 
-        self.onboardingData.roomMates.forEach(function(p) {
-          roomMateIdArray.push(p._id);
+        self.onboardingData.roommates.forEach(function(p) {
+          roommateIdArray.push(p._id);
         });
         self.onboardingData.reminders.forEach(function(r) {
           reminderIdArray.push(r._id);
@@ -153,7 +152,7 @@ class OnboardingController {
 
         // update rooms with roommates, reminders
         self.$http.put('/api/rooms/' + roomId, {
-          roomMates: roomMateIdArray,
+          roommates: roommateIdArray,
           reminders: reminderIdArray
         });
       });
@@ -172,10 +171,10 @@ class OnboardingController {
         this.showAlert = true;
         break;
 
-      case 'atLeastOneRoomMate':
+      case 'atLeastOneRoommate':
         this.formAlerts.push({
           type: 'danger',
-          msg: 'Make sure you add at least one roommate.'
+          msg: 'Make sure you add at least one roommateModal.'
         });
         this.showAlert = true;
         break;

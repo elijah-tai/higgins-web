@@ -18,7 +18,7 @@ function onConnect(socket) {
 
   // Insert sockets below
   require('../api/reminder/reminder.socket').register(socket);
-  require('../api/roomMate/roomMate.socket').register(socket);
+  require('./roommate.socket').register(socket);
   require('../api/room/room.socket').register(socket);
 
 }

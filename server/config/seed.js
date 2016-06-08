@@ -6,7 +6,7 @@
 'use strict';
 import Room from '../api/room/room.model';
 import User from '../api/user/user.model';
-import RoomMate from '../api/roomMate/roomMate.model';
+import Roommate from '../api/roommate/roommate.model';
 import Reminder from '../api/reminder/reminder.model';
 import winston from 'winston';
 
@@ -51,24 +51,24 @@ Room.find({}).remove()
       name: 'Test Room',
       info: '123 Alphabet Street',
       active: true,
-      roomMates: []
+      roommates: []
     })
     .then(() => {
       winston.info('finished populating rooms');
     });
   });
 
-// RoomMate.find({}).remove()
+// Roommate.find({}).remove()
 //   .then(() => {
-//     RoomMate.create({
-//       name: 'Test roomMate 1',
+//     Roommate.create({
+//       name: 'Test roommateModal 1',
 //       phone: 1234567890
 //     },{
 //       name: 'Test2',
 //       phone: 234567819
 //     })
 //       .then(() => {
-//         winston.info('finished populating roomMates');
+//         winston.info('finished populating roommates');
 //       });
 //   });
 
