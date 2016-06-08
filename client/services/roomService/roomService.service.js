@@ -3,7 +3,7 @@
 angular.module('higginsApp.roomService', [])
   .factory('roomService', function ($http) {
 
-    var getRooms = function( opts ) {
+    var getRoomByUserId = function( opts ) {
       var userId = opts.userId;
       return $http.get('/api/rooms/' + userId + '/rooms');
     };
@@ -23,12 +23,18 @@ angular.module('higginsApp.roomService', [])
       return $http.put('/api/rooms/' + roomId + '/add-roommate/' + roommateId);
     };
 
+    var populateRoommates = function( opts ) {
+      var roomId = opts.roomId;
+      return $http.get('/api/rooms/' + roomId + '/populate-roommates');
+    };
+
     // Public API here
     return {
       createRoom: createRoom,
       updateRoom: updateRoom,
-      getRooms: getRooms,
-      addRoommate: addRoommate
+      getRoomByUserId: getRoomByUserId,
+      addRoommate: addRoommate,
+      populateRoommates: populateRoommates
 
     };
   });

@@ -13,7 +13,7 @@ export function register(socket) {
   // Bind model events to socket events
   for (var i = 0, eventsLength = events.length; i < eventsLength; i++) {
     var event = events[i];
-    var listener = createListener('roommateModal:' + event, socket);
+    var listener = createListener('roommate:' + event, socket);
 
     RoommateEvents.on(event, listener);
     socket.on('disconnect', removeListener(event, listener));
