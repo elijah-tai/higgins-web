@@ -13,6 +13,6 @@ router.put('/:id/password', auth.isAuthenticated(), controller.changePassword);
 router.get('/:id', auth.isAuthenticated(), controller.show);
 router.post('/', controller.create);
 
-router.post('/:id/add-room/:roomId', auth.isAuthenticated(), controller.addRoom);
+router.post('/:id/add-room', auth.isAuthenticated(), controller.addRoom);
 
 module.exports = router;
