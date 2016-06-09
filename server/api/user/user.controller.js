@@ -124,7 +124,7 @@ export function me(req, res, next) {
  */
 export function addRoom(req, res, next) {
   var userId = req.user._id;
-  var room = req.params.roomId;
+  var room = req.body.roomId;
   winston.info( 'userController.addRoom -> Room to be added to user\'s array: ' + room );
   return User.findById(userId).exec()
     .then(user => {
