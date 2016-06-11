@@ -9,17 +9,18 @@ class RoomController {
     this.$uibModal = $uibModal;
     this.$log = $log;
     this.socket = socket;
+
     this.roomService = roomService;
     this.roommateService = roommateService;
 
     this.roomId = null;
     this.roomName = '';
+    this.roommateIds = [];
     this.roommates = [];
 
     this.$state.isAddingRoommates = false;
     this.$state.isAddingReminders = false;
 
-    // TODO: Add sockets for syncing roommates
     $scope.$on('$destroy', function() {
       socket.unsyncUpdates('roommate');
     });
@@ -34,20 +35,24 @@ class RoomController {
         var opts = {
           userId: this.currentUser._id
         };
-        this.roomService.getRooms( opts )
-          .then(rooms => {
+        this.roomService.getRoomByUserId( opts )
+          .then(response => {
             // get first room in rooms array
-            this.roomId = rooms.data[0]._id;
-            this.roomName = rooms.data[0].name;
-            this.roommates = rooms.data[0].roommates;
-            this.socket.syncUpdates('roommate', this.roommates);
+            this.roomId = response.data[0]._id;
+            this.roomName = response.data[0].name;
+            return this.roomId;
+          })
+          .then(roomId => {
+            var opts = {
+              roomId: roomId
+            };
+            this.roomService.populateRoommates( opts )
+              .then(response => {
+                this.roommates = response.data.roommates;
+                console.log(this.roommates);
+                this.socket.syncUpdates('roommate', this.roommates);
+              });
           });
-          // .then(roommates => {
-          //   for (var rm in roommates) {
-          //     this.$log.log(roommates[rm]);
-          //     this.$http.get('/api/roommates/')
-          //   }
-          // });
       });
   }
 
@@ -92,6 +97,7 @@ class RoomController {
       .then(function(addedRoommate) {
         // modal should have validated in front end
         self.addRoommate(addedRoommate);
+        self.$state.isAddingRoommates = false;
       }, function() {
         self.$log.info('modal dismissed');
       });
@@ -104,8 +110,11 @@ class RoomController {
 
     this.$uibModal.open({
       animation: true,
+      backdrop: false,
       templateUrl: 'components/modals/reminderModal/addReminderModal.html',
       controller: 'ReminderModalController',
+      controllerAs: 'reminderModalCtrl',
+      keyboard: true,
       size: 'sm'
     });
 
