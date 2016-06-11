@@ -7,11 +7,14 @@
 
 class OnboardingController {
 
-  constructor($scope, $rootScope, $http, $q) {
+  constructor($scope, $rootScope, $q, roomService, userService, roommateService, reminderService) {
     this.$rootScope = $rootScope;
     this.$scope = $scope;
-    this.$http = $http;
     this.$q = $q;
+    this.roomService = roomService;
+    this.userService = userService;
+    this.roommateService = roommateService;
+    this.reminderService = reminderService;
 
     this.currentUser = null;
 
@@ -77,9 +80,9 @@ class OnboardingController {
   getRoommateIds(assignees) {
     var roommateIdArray = [];
     for (var phoneNum in assignees) {
-      if (assignees[phoneNum] == true) {
+      if (assignees[phoneNum] === true) {
         for (var rm in this.onboardingData.roommates) {
-          if (this.onboardingData.roommates[rm].phone == phoneNum) {
+          if (this.onboardingData.roommates[rm].phone === phoneNum) {
             roommateIdArray.push(this.onboardingData.roommates[rm]._id);
           }
         }
@@ -92,55 +95,59 @@ class OnboardingController {
   finishOnboarding() {
 
     // Create the room
-    this.$http.post('/api/rooms', {
+    this.roomService.createRoom({
       _creator: this.currentUser._id,
       name: this.onboardingData.roomName,
       address: this.onboardingData.roomAddress
-    }).then(response => {
-      var roomId = response.data._id;
+    })
+      .then(response => {
 
-      // update user's rooms
-      this.$http.post('/api/users/' + this.currentUser._id + '/add-room/', {
-        roomId: roomId
-      });
+        var roomId = response.data._id;
+        var userOpts = {
+          userId: this.currentUser._id
+        };
+        this.userService.updateUserRooms(
+          userOpts,
+          { roomId: roomId }
+        );
 
-      function addRoommates(self, rm, roomId) {
-        var roommate = self.onboardingData.roommates[rm];
-        return self.$q(function(resolve) {
-          self.$http.post('/api/roommates', {
-            _roomId: roomId,
-            name: roommate.name,
-            phone: parseInt(roommate.phone)
-          }).then(response => {
-            self.onboardingData.roommates[rm]._id = response.data._id;
-            resolve(self);
+        function addRoommates(self, rm, roomId) {
+          var roommate = self.onboardingData.roommates[rm];
+          return self.$q(function(resolve) {
+            self.roommateService.createRoommate({
+              _roomId: roomId,
+              name: roommate.name,
+              phone: parseInt(roommate.phone)
+            }).then(response => {
+              self.onboardingData.roommates[rm]._id = response.data._id;
+              resolve(self);
+            });
           });
-        });
-      }
+        }
 
-      function addReminders(self, rd) {
-        return self.$q(function(resolve) {
-          var reminder = self.onboardingData.reminders[rd];
+        function addReminders(self, rd) {
+          return self.$q(function(resolve) {
+            var reminder = self.onboardingData.reminders[rd];
 
-          self.$http.post('/api/reminders', {
-            name: reminder.name,
-            assignees: self.getRoommateIds(reminder.assignees),
-            datetime: reminder.datetime,
-            recurType: reminder.recurType,
-            doesRecur: reminder.doesRecur,
-            active: reminder.active
-          }).then(response => {
-            self.onboardingData.reminders[rd]._id = response.data._id;
-            resolve(self);
+            self.reminderService.createReminder({
+              name: reminder.name,
+              assignees: self.getRoommateIds(reminder.assignees),
+              datetime: reminder.datetime,
+              recurType: reminder.recurType,
+              doesRecur: reminder.doesRecur,
+              active: reminder.active
+            }).then(response => {
+              self.onboardingData.reminders[rd]._id = response.data._id;
+              resolve(self);
+            });
           });
-        });
-      }
-      
-      // Populate all roommate promises
-      var roommatePromises = [];
-      for (var rm in this.onboardingData.roommates) {
-        roommatePromises.push(addRoommates(this, rm, roomId));
-      }
+        }
+
+        // Populate all roommate promises
+        var roommatePromises = [];
+        for (var rm in this.onboardingData.roommates) {
+          roommatePromises.push(addRoommates(this, rm, roomId));
+        }
 
       // Add all roommates
       this.$q.all(roommatePromises).then((values) => {
@@ -166,8 +173,12 @@ class OnboardingController {
             reminderIdArray.push(r._id);
           });
 
+          var opts = {
+            roomId: roomId
+          };
+
           // update rooms with roommates, reminders
-          self.$http.put('/api/rooms/' + roomId, {
+          self.roomService.updateRoom( opts, {
             roommates: roommateIdArray,
             reminders: reminderIdArray
           });

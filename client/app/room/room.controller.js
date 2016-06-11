@@ -2,14 +2,15 @@
 
 class RoomController {
 
-  constructor($http, $state, $scope, $rootScope, $uibModal, $log) {
-    this.$http = $http;
+  constructor($state, $scope, $rootScope, $uibModal, $log, roomService, roommateService, socket) {
     this.$state = $state;
     this.$scope = $scope;
     this.$rootScope = $rootScope;
     this.$uibModal = $uibModal;
     this.$log = $log;
-    // this.socket = socket;
+    this.socket = socket;
+    this.roomService = roomService;
+    this.roommateService = roommateService;
 
     this.roomId = null;
     this.roomName = '';
@@ -19,9 +20,9 @@ class RoomController {
     this.$state.isAddingReminders = false;
 
     // TODO: Add sockets for syncing roommates
-    // $scope.$on('$destroy', function() {
-    //   socket.unsyncUpdates('roommate');
-    // });
+    $scope.$on('$destroy', function() {
+      socket.unsyncUpdates('roommate');
+    });
   }
 
   init() {
@@ -30,15 +31,16 @@ class RoomController {
     })
       .then(user => {
         this.currentUser = user;
-        this.$http.get('/api/rooms/' + user._id + '/rooms')
+        var opts = {
+          userId: this.currentUser._id
+        };
+        this.roomService.getRooms( opts )
           .then(rooms => {
             // get first room in rooms array
             this.roomId = rooms.data[0]._id;
             this.roomName = rooms.data[0].name;
             this.roommates = rooms.data[0].roommates;
-
-            // TODO: Add socket for syncing roommates
-            // this.socket.syncUpdates('roommate', this.roommates);
+            this.socket.syncUpdates('roommate', this.roommates);
           });
           // .then(roommates => {
           //   for (var rm in roommates) {
@@ -52,14 +54,19 @@ class RoomController {
   addRoommate(addedRoommate) {
     // create roommate and add to room
     var roommate = addedRoommate;
-    this.$http.post('/api/roommates', {
+    this.roommateService.createRoommate({
       _roomId: this.roomId,
       name: roommate.name,
       phone: parseInt(roommate.phone)
     })
       .then(response => {
         var roommateId = response.data._id;
-        this.$http.put('/api/rooms/' + this.roomId + '/add-roommate/' + roommateId);
+
+        var opts = {
+          roomId: this.roomId,
+          roommateId: roommateId
+        };
+        this.roomService.addRoommate( opts );
       });
   }
 
