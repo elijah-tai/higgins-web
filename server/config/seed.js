@@ -61,7 +61,7 @@ Room.find({}).remove()
 Roommate.find({}).remove()
   .then(() => {
     Roommate.create({
-      name: 'Test roommateModal 1',
+      name: 'Test roommate 1',
       phone: 1234567890
     },{
       name: 'Test2',

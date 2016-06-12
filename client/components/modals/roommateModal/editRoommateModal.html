@@ -1,0 +1,19 @@
+<div class="modal-header">
+  <h5 class="modal-title">Edit Roommate</h5>
+</div>
+<div class="modal-body">
+  <div class="form-group">
+    <label>Name</label>
+    <input type="text" class="form-control" placeholder="Bruce Wayne" ng-model="roommateModalCtrl.name">
+  </div>
+
+  <div class="form-group">
+    <label>Phone Number</label>
+    <input type="text" class="form-control" placeholder="123-456-7890" ng-model="roommateModalCtrl.phone">
+  </div>
+</div>
+
+<div class="modal-footer">
+  <button class="btn btn-primary" type="button" ng-click="roommateModalCtrl.edit()">Edit</button>
+  <button class="btn btn-warning" type="button" ng-click="roommateModalCtrl.cancel()">Cancel</button>
+</div>

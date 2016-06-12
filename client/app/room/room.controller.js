@@ -15,7 +15,6 @@ class RoomController {
 
     this.roomId = null;
     this.roomName = '';
-    this.roommateIds = [];
     this.roommates = [];
 
     this.$state.isAddingRoommates = false;
@@ -26,6 +25,7 @@ class RoomController {
     });
   }
 
+  // NOTE: would it be possible to put this init into the constructor?
   init() {
     this.$rootScope.nav.getCurrentUser(function(user) {
       return user;
@@ -52,7 +52,7 @@ class RoomController {
                 console.log(this.roommates);
                 this.socket.syncUpdates('roommate', this.roommates);
               });
-          });
+          })
       });
   }
 
@@ -73,6 +73,52 @@ class RoomController {
         };
         this.roomService.addRoommate( opts );
       });
+  }
+
+  deleteRoommate(roommate) {
+    var opts = {
+      roommateId: roommate._id
+    };
+    this.roommateService.deleteRoommate( opts );
+
+    // TODO: Also need to delete them from all reminders
+    // this.roomService.deleteRoommate( opts );
+  }
+
+  editRoommate(roommate) {
+    this.$state.isEditingRoommates = true;
+
+    var self = this;
+    this.$uibModal
+      .open({
+        animation: true,
+        backdrop: false,
+        templateUrl: 'components/modals/roommateModal/editRoommateModal.html',
+        controller: 'RoommateModalController',
+        controllerAs: 'roommateModalCtrl',
+        keyboard: true,
+        size: 'sm',
+        resolve: {
+          roommate: function() {
+            return roommate;
+          }
+        }
+      })
+      .result
+      .then(function(editedRoommate) {
+        var opts = {
+          roommateId: editedRoommate._id
+        };
+        var form = {
+          name: editedRoommate.name,
+          phone: editedRoommate.phone
+        };
+        self.roommateService.editRoommate(opts, form);
+        self.$state.isEditingRoommates = false;
+      }, function() {
+        self.$log.info('edit roommate modal dismissed');
+      });
+
   }
 
   addReminder() {

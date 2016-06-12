@@ -7,10 +7,13 @@
 
 class OnboardingController {
 
-  constructor($scope, $rootScope, $q, roomService, userService, roommateService, reminderService) {
+  constructor($scope, $rootScope, $q, $state, $window, roomService, userService, roommateService, reminderService) {
     this.$rootScope = $rootScope;
     this.$scope = $scope;
     this.$q = $q;
+    this.$state = $state;
+    this.$window = $window;
+
     this.roomService = roomService;
     this.userService = userService;
     this.roommateService = roommateService;
@@ -181,7 +184,10 @@ class OnboardingController {
           self.roomService.updateRoom( opts, {
             roommates: roommateIdArray,
             reminders: reminderIdArray
-          });
+          })
+            .then(() => {
+              self.$state.go('room');
+            });
         });
 
       });
@@ -203,7 +209,7 @@ class OnboardingController {
       case 'atLeastOneRoommate':
         this.formAlerts.push({
           type: 'danger',
-          msg: 'Make sure you add at least one roommateModal.'
+          msg: 'Make sure you add at least one roommate.'
         });
         this.showAlert = true;
         break;

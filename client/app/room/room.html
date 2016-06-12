@@ -16,12 +16,12 @@
       </ul>
       <ul ng-repeat="reminder in roomCtrl.reminders">
         <li>
-          <a href="#">{{ reminder.name }} </a>
+          {{ reminder.name }}
         </li>
       </ul>
     </div>
 
-    <div class="col-md-4">
+    <div class="col-md-4" ng-cloak="roomCtrl.roommates">
       <ul class="list-inline">
         <li>
           <h5>Roommates</h5>
@@ -33,7 +33,7 @@
 
       <ul ng-repeat="roommate in roomCtrl.roommates">
         <li>
-          <a href="#">{{ roommate.name }}</a>
+          {{ roommate.name }} | <button class="fa fa-pencil" aria-hidden="true" ng-click="roomCtrl.editRoommate(roommate)"></button> | <button class="fa fa-ban" aria-hidden="true" ng-click="roomCtrl.deleteRoommate(roommate)"></button>
         </li>
       </ul>
     </div>
