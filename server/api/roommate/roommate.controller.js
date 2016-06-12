@@ -11,7 +11,6 @@
 
 import _ from 'lodash';
 import Roommate from './roommate.model';
-import logger from 'winston';
 
 function respondWithResult(res, statusCode) {
   statusCode = statusCode || 200;
