@@ -58,19 +58,19 @@ Room.find({}).remove()
     });
   });
 
-// Roommate.find({}).remove()
-//   .then(() => {
-//     Roommate.create({
-//       name: 'Test roommateModal 1',
-//       phone: 1234567890
-//     },{
-//       name: 'Test2',
-//       phone: 234567819
-//     })
-//       .then(() => {
-//         winston.info('finished populating roommates');
-//       });
-//   });
+Roommate.find({}).remove()
+  .then(() => {
+    Roommate.create({
+      name: 'Test roommateModal 1',
+      phone: 1234567890
+    },{
+      name: 'Test2',
+      phone: 234567819
+    })
+      .then(() => {
+        winston.info('finished populating roommates');
+      });
+  });
 
 
 Reminder.find({}).remove()

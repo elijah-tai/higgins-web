@@ -24,7 +24,7 @@
           <p class="input-group">
             <input type="text" class="form-control" datetime-picker="MM/dd/yyyy HH:mm" ng-model="onboardCtrl.onboardingData.reminderDateTime" is-open="onboardCtrl.reminderDateTimePickerOpen" />
               <span class="input-group-btn">
-                  <button type="button" class="btn btn-default" ng-click="onboardCtrl.openReminderDateTimePicker($event)"><i class="fa fa-calendar"></i></button>
+                  <button type="button" class="btn btn-default" ng-click="onboardCtrl.openReminderDateTimePicker($event)"><i class="fa fa-calendar-plus-o"></i></button>
               </span>
           </p>
       </div>
@@ -66,10 +66,10 @@
   <div class="col-xs-6 col-xs-offset-3">
     <span>
       <a ui-sref="onboarding.roommates" class="btn btn-block btn-info input-add-roommates">
-        Previous <span class="glyphicon glyphicon-circle-arrow-left"></span>
+        Previous <span class="fa fa-arrow-left"></span>
       </a>
       <a ui-sref="room" class="btn btn-block btn-info input-add-roommates" ng-click="onboardCtrl.finishOnboarding()">
-        Finish <span class="glyphicon glyphicon-ok"></span>
+        Finish <span class="fa fa-check"></span>
       </a>
     </span>
   </div>
