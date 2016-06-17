@@ -35,6 +35,23 @@
           </p>
         </div>
 
+        <div class="form-group" ng-class="{ 'has-success': form.phone.$valid && vm.submitted,
+                                            'has-error': form.phone.$invalid && vm.submitted }">
+          <label>Phone Number</label>
+
+          <input type="number" name="phone" class="form-control" ng-model="vm.user.phone"
+                 ng-minlength="10"
+                 ng-maxlength="10"
+                 required
+                 mongoose-error/>
+          <p class="help-block" ng-show="(form.phone.$error.minlength || form.phone.$error.maxlength || form.phone.$error.required) && vm.submitted">
+            Please enter your 10 digit phone number, without spaces or extra characters.
+          </p>
+          <p class="help-block" ng-show="form.phone.$error.mongoose">
+            {{ vm.errors.phone }}
+          </p>
+        </div>
+
         <div class="form-group" ng-class="{ 'has-success': form.password.$valid && vm.submitted,
                                             'has-error': form.password.$invalid && vm.submitted }">
           <label>Password</label>
@@ -51,7 +68,7 @@
             {{ vm.errors.password }}
           </p>
         </div>
-
+        
         <div class="form-group" ng-class="{ 'has-success': form.confirmPassword.$valid && vm.submitted,
                                             'has-error': form.confirmPassword.$invalid && vm.submitted }">
           <label>Confirm Password</label>

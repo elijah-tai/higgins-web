@@ -17,6 +17,7 @@ class SignupController {
       this.Auth.createUser({
           name: this.user.name,
           email: this.user.email,
+          phone: this.user.phone,
           password: this.user.password
         })
         .then(() => {
