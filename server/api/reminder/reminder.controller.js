@@ -9,6 +9,8 @@
 
 'use strict';
 
+var scheduler = require('../../components/scheduler/scheduler.js');
+
 import _ from 'lodash';
 import Reminder from './reminder.model';
 
@@ -79,6 +81,7 @@ export function show(req, res) {
 export function create(req, res) {
   return Reminder.create(req.body)
     .then(respondWithResult(res, 201))
+    .then(scheduler.createSchedule(req.body))
     .catch(handleError(res));
 }
 
