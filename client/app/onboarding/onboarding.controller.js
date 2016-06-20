@@ -85,7 +85,7 @@ class OnboardingController {
     for (var phoneNum in assignees) {
       if (assignees[phoneNum] === true) {
         for (var rm in this.onboardingData.roommates) {
-          if (this.onboardingData.roommates[rm].phone === phoneNum) {
+          if (this.onboardingData.roommates[rm].phone == phoneNum) {
             roommateIdArray.push(this.onboardingData.roommates[rm]._id);
           }
         }

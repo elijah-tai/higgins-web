@@ -28,12 +28,18 @@ angular.module('higginsApp.roomService', [])
       return $http.get('/api/rooms/' + roomId + '/populate-roommates');
     };
 
+    var populateReminders = function( opts ) {
+      var roomId = opts.roomId;
+      return $http.get('/api/rooms/' + roomId + '/populate-reminders');
+    };
+
     // Public API here
     return {
       createRoom: createRoom,
       updateRoom: updateRoom,
       getRoomByUserId: getRoomByUserId,
       addRoommate: addRoommate,
-      populateRoommates: populateRoommates
+      populateRoommates: populateRoommates,
+      populateReminders: populateReminders
     };
   });

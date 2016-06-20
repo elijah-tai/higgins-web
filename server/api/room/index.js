@@ -14,6 +14,7 @@ router.delete('/:id', controller.destroy);
 
 router.get('/:userId/rooms', controller.getRooms);
 router.get('/:id/populate-roommates', controller.populateRoommates);
+router.get('/:id/populate-reminders', controller.populateReminders);
 router.put('/:id/add-roommate/:roommateId', controller.addRoommate);
 
 module.exports = router;

@@ -122,6 +122,7 @@ export function getRooms(req, res, next) {
 export function addRoommate(req, res, next) {
   var roomId = req.params.id;
   var roommateId = req.params.roommateId;
+  
   // TODO: Change this to use chains
   return Room.findById(roomId, function(err, room) {
     if (err) {
@@ -141,11 +142,22 @@ export function addRoommate(req, res, next) {
   });
 }
 
-// Populates an array of roommate ids with appropriate roommate data
+// Populates an array of roommate ids with roommate data
 export function populateRoommates(req, res) {
   var roomId = req.params.id;
   return Room.findById(roomId)
     .populate('roommates').exec()
+    .then(handleEntityNotFound(res))
+    .then(respondWithResult(res))
+    .catch(handleError(res))
+}
+
+
+// Populates an array of reminder ids with reminder data
+export function populateReminders(req, res) {
+  var roomId = req.params.id;
+  return Room.findById(roomId)
+    .populate('reminders').exec()
     .then(handleEntityNotFound(res))
     .then(respondWithResult(res))
     .catch(handleError(res))

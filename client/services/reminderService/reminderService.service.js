@@ -7,8 +7,18 @@ angular.module('higginsApp.reminderService', [])
       return $http.post( '/api/reminders', form );
     };
 
+    var deleteReminder = function( opts ) {
+      return $http.delete('/api/reminders/' + opts.reminderId);
+    };
+
+    var editReminder = function( opts, form ) {
+      return $http.put('/api/reminder/' + opts.reminderId, form);
+    };
+
     // Public API here
     return {
-      createReminder: createReminder
+      createReminder: createReminder,
+      deleteReminder: deleteReminder,
+      editReminder: editReminder
     };
   });
