@@ -36,7 +36,7 @@ describe('Roommate API:', function() {
         .post('/api/roommates')
         .send({
           name: 'New Roommate',
-          info: 'This is the brand new roommateModal!!!'
+          info: 'This is the brand new roommate!!!'
         })
         .expect(201)
         .expect('Content-Type', /json/)
@@ -49,9 +49,9 @@ describe('Roommate API:', function() {
         });
     });
 
-    it('should respond with the newly created roommateModal', function() {
+    it('should respond with the newly created roommate', function() {
       newRoommate.name.should.equal('New Roommate');
-      newRoommate.info.should.equal('This is the brand new roommateModal!!!');
+      newRoommate.info.should.equal('This is the brand new roommate!!!');
     });
 
   });
@@ -77,9 +77,9 @@ describe('Roommate API:', function() {
       roommate = {};
     });
 
-    it('should respond with the requested roommateModal', function() {
+    it('should respond with the requested roommate', function() {
       roommate.name.should.equal('New Roommate');
-      roommate.info.should.equal('This is the brand new roommateModal!!!');
+      roommate.info.should.equal('This is the brand new roommate!!!');
     });
 
   });
@@ -92,7 +92,7 @@ describe('Roommate API:', function() {
         .put('/api/roommates/' + newRoommate._id)
         .send({
           name: 'Updated Roommate',
-          info: 'This is the updated roommateModal!!!'
+          info: 'This is the updated roommate!!!'
         })
         .expect(200)
         .expect('Content-Type', /json/)
@@ -109,9 +109,9 @@ describe('Roommate API:', function() {
       updatedRoommate = {};
     });
 
-    it('should respond with the updated roommateModal', function() {
+    it('should respond with the updated roommate', function() {
       updatedRoommate.name.should.equal('Updated Roommate');
-      updatedRoommate.info.should.equal('This is the updated roommateModal!!!');
+      updatedRoommate.info.should.equal('This is the updated roommate!!!');
     });
 
   });
@@ -130,7 +130,7 @@ describe('Roommate API:', function() {
         });
     });
 
-    it('should respond with 404 when roommateModal does not exist', function(done) {
+    it('should respond with 404 when roommate does not exist', function(done) {
       request(app)
         .delete('/api/roommates/' + newRoommate._id)
         .expect(404)

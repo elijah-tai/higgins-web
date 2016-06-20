@@ -36,7 +36,7 @@ describe('Roommate API Router:', function() {
 
   describe('GET /api/roommates', function() {
 
-    it('should route to roommateModal.controller.index', function() {
+    it('should route to roommate.controller.index', function() {
       routerStub.get
         .withArgs('/', 'roommateCtrl.index')
         .should.have.been.calledOnce;
@@ -46,7 +46,7 @@ describe('Roommate API Router:', function() {
 
   describe('GET /api/roommates/:id', function() {
 
-    it('should route to roommateModal.controller.show', function() {
+    it('should route to roommate.controller.show', function() {
       routerStub.get
         .withArgs('/:id', 'roommateCtrl.show')
         .should.have.been.calledOnce;
@@ -56,7 +56,7 @@ describe('Roommate API Router:', function() {
 
   describe('POST /api/roommates', function() {
 
-    it('should route to roommateModal.controller.create', function() {
+    it('should route to roommate.controller.create', function() {
       routerStub.post
         .withArgs('/', 'roommateCtrl.create')
         .should.have.been.calledOnce;
@@ -66,7 +66,7 @@ describe('Roommate API Router:', function() {
 
   describe('PUT /api/roommates/:id', function() {
 
-    it('should route to roommateModal.controller.update', function() {
+    it('should route to roommate.controller.update', function() {
       routerStub.put
         .withArgs('/:id', 'roommateCtrl.update')
         .should.have.been.calledOnce;
@@ -76,7 +76,7 @@ describe('Roommate API Router:', function() {
 
   describe('PATCH /api/roommates/:id', function() {
 
-    it('should route to roommateModal.controller.update', function() {
+    it('should route to roommate.controller.update', function() {
       routerStub.patch
         .withArgs('/:id', 'roommateCtrl.update')
         .should.have.been.calledOnce;
@@ -86,7 +86,7 @@ describe('Roommate API Router:', function() {
 
   describe('DELETE /api/roommates/:id', function() {
 
-    it('should route to roommateModal.controller.destroy', function() {
+    it('should route to roommate.controller.destroy', function() {
       routerStub.delete
         .withArgs('/:id', 'roommateCtrl.destroy')
         .should.have.been.calledOnce;

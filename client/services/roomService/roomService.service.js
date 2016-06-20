@@ -35,6 +35,5 @@ angular.module('higginsApp.roomService', [])
       getRoomByUserId: getRoomByUserId,
       addRoommate: addRoommate,
       populateRoommates: populateRoommates
-
     };
   });
