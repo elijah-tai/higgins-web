@@ -4,6 +4,7 @@ sudo su
 cd /home/ec2-user/higgins-staging
 
 sudo npm install
+sudo npm install --save node-sass
 sudo gulp build
 
 # TODO: Should integrate PM2
@@ -18,4 +19,3 @@ fi
 # for security
 sudo rm ./appspec.yml
 sudo rm -r ./_deploy
-sudo rm -r ./package.json
