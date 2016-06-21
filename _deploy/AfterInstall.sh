@@ -3,6 +3,9 @@
 sudo su
 cd /home/ec2-user/higgins-staging
 
+sudo npm install
+sudo gulp build
+
 # TODO: Should integrate PM2
 pm2 reload higgins-staging
 

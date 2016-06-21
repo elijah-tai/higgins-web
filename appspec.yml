@@ -4,7 +4,11 @@ files:
   - source: /
     destination: /home/ec2-user/higgins-staging
 hooks:
+  BeforeInstall:
+    - location: /_deploy/BeforeInstall.sh
+      timeout: 300
+      runas: ec2-user
   AfterInstall:
     - location: /_deploy/AfterInstall.sh
-      timeout: 900
+      timeout: 1500
       runas: ec2-user
