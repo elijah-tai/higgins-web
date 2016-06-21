@@ -56,7 +56,7 @@ class RoomController {
               .then(response => {
                 this.reminders = response.data.reminders;
                 this.socket.syncUpdates('reminder', this.reminders);
-              })
+              });
           });
       });
   }
@@ -162,7 +162,7 @@ class RoomController {
     this.reminderService.createReminder({
       name: reminder.name,
       assignees: this.getRoommateIds(reminder.assignees),
-      datetime: reminder.dateTime,
+      datetime: reminder.datetime,
       doesRecur: reminder.doesRecur,
       recurType: reminder.recurType,
       active: true

@@ -3,6 +3,8 @@
 sudo su
 cd /home/ec2-user/higgins-staging
 
+sudo rm -rf node_modules/node-sass/
+
 sudo npm install
 sudo npm install --save node-sass
 sudo gulp build
@@ -13,7 +15,7 @@ pm2 reload higgins-staging
 restartReturnCode=$?;
 if [[ $restartReturnCode != 0 ]]; then
   sudo mongod &
-  PM2_HOME='/home/ec2-user/.pm2' PORT=8080 NODE_ENV=production pm2 -u ec2-user -i 0 start dist/server/index.js --name "higgins-staging"
+  PM2_HOME='/home/ec2-user/.pm2' PORT=8080 NODE_ENV=production pm2 -u ec2-user start dist/server/index.js --name "higgins-staging"
 fi
 
 # for security

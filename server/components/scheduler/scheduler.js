@@ -38,7 +38,6 @@ export function createSchedule(reminder) {
         rule.month = date.getMonth();
         break;
     }
-
   } else {
     rule = new Date(reminder.datetime);
   }
@@ -46,7 +45,7 @@ export function createSchedule(reminder) {
   schedule.scheduleJob(rule, function() {
     Roommate.find({_id:  { $in: reminder.assignees }}).exec()
       .then(roommates => {
-
+        logger.info(roommates);
         roommates.forEach(function(roommate) {
           client.messages.create({
             body: 'Salutations, ' + roommate.name + '! Higgins here, just reminding you about ' + reminder.name,
@@ -60,7 +59,6 @@ export function createSchedule(reminder) {
             }
           });
         });
-
       });
   });
 }
