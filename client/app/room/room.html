@@ -11,12 +11,12 @@
       <ul class="list-inline">
         <li><h5>Reminders</h5></li>
         <li>
-          <button type="button" class="fa fa-plus" ng-click="roomCtrl.openReminderModal()"></button>
+          <button type="button" class="fa fa-plus" ng-click="roomCtrl.openAddReminderModal()"></button>
         </li>
       </ul>
       <ul ng-repeat="reminder in roomCtrl.reminders">
         <li>
-          {{ reminder.name }}
+          {{ reminder.name }} | <button class="fa fa-ban" aria-hidden="true" ng-click="roomCtrl.deleteReminder(reminder)"></button>
         </li>
       </ul>
     </div>
@@ -27,7 +27,7 @@
           <h5>Roommates</h5>
         </li>
         <li>
-          <button type="button" class="fa fa-plus" ng-click="roomCtrl.openRoommateModal()"></button>
+          <button type="button" class="fa fa-plus" ng-click="roomCtrl.openAddRoommateModal()"></button>
         </li>
       </ul>
 

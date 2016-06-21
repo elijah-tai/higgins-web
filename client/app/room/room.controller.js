@@ -2,7 +2,7 @@
 
 class RoomController {
 
-  constructor($state, $scope, $rootScope, $uibModal, $log, roomService, roommateService, socket) {
+  constructor($state, $scope, $rootScope, $uibModal, $log, roomService, roommateService, reminderService, socket) {
     this.$state = $state;
     this.$scope = $scope;
     this.$rootScope = $rootScope;
@@ -12,16 +12,19 @@ class RoomController {
 
     this.roomService = roomService;
     this.roommateService = roommateService;
+    this.reminderService = reminderService;
 
     this.roomId = null;
     this.roomName = '';
     this.roommates = [];
-
-    this.$state.isAddingRoommates = false;
-    this.$state.isAddingReminders = false;
+    this.reminders = [];
 
     $scope.$on('$destroy', function() {
       socket.unsyncUpdates('roommate');
+    });
+
+    $scope.$on('$destroy', function() {
+      socket.unsyncUpdates('reminder');
     });
   }
 
@@ -43,16 +46,18 @@ class RoomController {
             return this.roomId;
           })
           .then(roomId => {
-            var opts = {
-              roomId: roomId
-            };
-            this.roomService.populateRoommates( opts )
+            this.roomService.populateRoommates({ roomId: roomId })
               .then(response => {
                 this.roommates = response.data.roommates;
-                console.log(this.roommates);
                 this.socket.syncUpdates('roommate', this.roommates);
               });
-          })
+
+            this.roomService.populateReminders({ roomId: roomId })
+              .then(response => {
+                this.reminders = response.data.reminders;
+                this.socket.syncUpdates('reminder', this.reminders);
+              })
+          });
       });
   }
 
@@ -82,12 +87,10 @@ class RoomController {
     this.roommateService.deleteRoommate( opts );
 
     // TODO: Also need to delete them from all reminders
-    // this.roomService.deleteRoommate( opts );
+    // this.roomService.deleteRoommate( opts ); --> query reminders for roommates, then delete
   }
 
   editRoommate(roommate) {
-    this.$state.isEditingRoommates = true;
-
     var self = this;
     this.$uibModal
       .open({
@@ -114,20 +117,12 @@ class RoomController {
           phone: editedRoommate.phone
         };
         self.roommateService.editRoommate(opts, form);
-        self.$state.isEditingRoommates = false;
       }, function() {
         self.$log.info('edit roommate modal dismissed');
       });
-
   }
 
-  addReminder() {
-
-  }
-
-  openRoommateModal() {
-    this.$state.isAddingRoommates = true;
-
+  openAddRoommateModal() {
     var self = this;
     this.$uibModal
       .open({
@@ -143,17 +138,49 @@ class RoomController {
       .then(function(addedRoommate) {
         // modal should have validated in front end
         self.addRoommate(addedRoommate);
-        self.$state.isAddingRoommates = false;
       }, function() {
         self.$log.info('modal dismissed');
       });
-
   }
 
-  openReminderModal() {
+  /* jshint loopfunc:true */
+  getRoommateIds(assignees) {
+    var roommateIdArray = [];
+    for (var phone in assignees) {
+      if (assignees[phone] === true) {
+        for (var rm in this.roommates) {
+          if (this.roommates[rm].phone == phone) {
+            roommateIdArray.push(this.roommates[rm]._id);
+          }
+        }
+      }
+    }
+    return roommateIdArray;
+  }
 
-    this.$state.isAddingReminders = true;
+  addReminder(reminder) {
+    this.reminderService.createReminder({
+      name: reminder.name,
+      assignees: this.getRoommateIds(reminder.assignees),
+      datetime: reminder.dateTime,
+      doesRecur: reminder.doesRecur,
+      recurType: reminder.recurType,
+      active: true
+    }).then(response => {
+      this.roomService.updateRoom({roomId: this.roomId}, {
+        reminders: [response.data._id]
+      });
+    });
+  }
 
+  deleteReminder(reminder) {
+    this.reminderService.deleteReminder({reminderId: reminder._id});
+
+    // TODO: Also need to delete reminder from all rooms
+  }
+
+  openAddReminderModal() {
+    var self = this;
     this.$uibModal.open({
       animation: true,
       backdrop: false,
@@ -161,10 +188,19 @@ class RoomController {
       controller: 'ReminderModalController',
       controllerAs: 'reminderModalCtrl',
       keyboard: true,
-      size: 'sm'
-    });
-
-
+      size: 'md',
+      resolve: {
+        roommates: function() {
+          return self.roommates;
+        }
+      }
+    })
+      .result
+      .then(function(addedReminder) {
+        self.addReminder(addedReminder);
+      }, function() {
+        self.$log.info('add reminder modal dismissed');
+      });
   }
 
 }
