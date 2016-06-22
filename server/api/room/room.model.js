@@ -8,9 +8,18 @@ var RoomSchema = new mongoose.Schema({
     type: Schema.ObjectId,
     ref: 'User'
   },
-  name: String,     // name of room
-  address: String,  // address of room
-  active: { type: Boolean, default: true }, // for checking that room is used
+  name: {
+    type: String,
+    trim: true
+  },     // name of room
+  address: {
+    type: String,
+    trim: true
+  },  // address of room
+  active: {
+    type: Boolean,
+    default: true
+  }, // for checking that room is used
   roommates: [{     // array of roommates that share the room
     type: Schema.ObjectId,
     ref: 'Roommate'

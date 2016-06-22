@@ -8,8 +8,13 @@ var RoommateSchema = new mongoose.Schema({
     type: Schema.ObjectId,
     ref: 'Room'
   },
-  name: String,     // name of roommate
-  phone: Number,    // roommate phone number
+  name: {
+    type: String,
+    trim: true
+  },     // name of roommate
+  phone: {
+    type: Number
+  },    // roommate phone number
   active: { type: Boolean, default: true }
 });
 

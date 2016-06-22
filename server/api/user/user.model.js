@@ -10,7 +10,10 @@ const authTypes = ['github', 'facebook', 'google']; // 'twitter'
 var UserSchema = new Schema();
 
 UserSchema.add({
-  name: String,
+  name: {
+    type: String,
+    trim: true
+  },
   email: {
     type: String,
     lowercase: true,
@@ -48,7 +51,6 @@ UserSchema.add({
   facebook: {},
   twitter: {},
   google: {},
-  github: {},
   onboarded: Boolean
 });
 
