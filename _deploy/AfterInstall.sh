@@ -5,7 +5,7 @@ cd /home/ec2-user/higgins-staging
 
 sudo rm -rf node_modules/node-sass/
 
-sudo npm install
+sudo npm install --development
 sudo npm install --save node-sass
 sudo gulp build
 
