@@ -4,7 +4,10 @@ import mongoose from 'mongoose';
 import {Schema} from 'mongoose';
 
 var ReminderSchema = new mongoose.Schema({
-  name: String, // name of the reminder
+  name: {
+    type: String,
+    trim: true
+  }, // name of the reminder
   assignees: [{  // people to which the reminder is assigned
     type: Schema.ObjectId,
     ref: 'Roommate'
