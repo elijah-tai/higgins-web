@@ -23,6 +23,12 @@ angular.module('higginsApp.roomService', [])
       return $http.put('/api/rooms/' + roomId + '/add-roommate/' + roommateId);
     };
 
+    var addReminder = function( opts ) {
+      var roomId = opts.roomId;
+      var reminderId = opts.reminderId;
+      return $http.put('/api/rooms/' + roomId + '/add-reminder/' + reminderId);
+    };
+
     var populateRoommates = function( opts ) {
       var roomId = opts.roomId;
       return $http.get('/api/rooms/' + roomId + '/populate-roommates');
@@ -38,6 +44,7 @@ angular.module('higginsApp.roomService', [])
       createRoom: createRoom,
       updateRoom: updateRoom,
       getRoomByUserId: getRoomByUserId,
+      addReminder: addReminder,
       addRoommate: addRoommate,
       populateRoommates: populateRoommates,
       populateReminders: populateReminders

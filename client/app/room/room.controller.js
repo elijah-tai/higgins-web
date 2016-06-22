@@ -167,8 +167,9 @@ class RoomController {
       recurType: reminder.recurType,
       active: true
     }).then(response => {
-      this.roomService.updateRoom({roomId: this.roomId}, {
-        reminders: [response.data._id]
+      this.roomService.addReminder({
+        roomId: this.roomId,
+        reminderId: response.data._id
       });
     });
   }

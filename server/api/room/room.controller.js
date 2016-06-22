@@ -119,10 +119,10 @@ export function getRooms(req, res, next) {
 }
 
 // Add a roommate to a room
-export function addRoommate(req, res, next) {
+export function addRoommate(req, res) {
   var roomId = req.params.id;
   var roommateId = req.params.roommateId;
-  
+
   // TODO: Change this to use chains
   return Room.findById(roomId, function(err, room) {
     if (err) {
@@ -140,6 +140,20 @@ export function addRoommate(req, res, next) {
       return res;
     });
   });
+}
+
+export function addReminder(req, res) {
+  var roomId = req.params.id;
+  var reminderId = req.params.reminderId;
+
+  return Room.findById(roomId).exec()
+    .then(handleEntityNotFound(res))
+    .then(room => {
+      room.reminders.addToSet(new mongoose.Types.ObjectId(reminderId));
+      room.save()
+        .then(respondWithResult(res, 201))
+        .catch(handleError(res));
+    })
 }
 
 // Populates an array of roommate ids with roommate data
