@@ -48,7 +48,7 @@ export function createSchedule(reminder) {
         logger.info(roommates);
         roommates.forEach(function(roommate) {
           client.messages.create({
-            body: 'Salutations, ' + roommate.name + '! Higgins here, just reminding you about ' + reminder.name,
+            body: 'Salutations, ' + roommate.name + '! Higgins here, just reminding you to ' + reminder.name,
             to: '+1' + roommate.phone,
             from: '+16476943681'
           }, function(err, message) {
