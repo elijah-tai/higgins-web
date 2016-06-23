@@ -9,6 +9,9 @@ class NavbarController {
     this.isCollapsed = true;
   }
 
+  toggleCollapse() {
+    this.isCollapsed = !this.isCollapsed;
+  }
 }
 
 angular.module('higginsApp')
