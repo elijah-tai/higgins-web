@@ -1,4 +1,5 @@
-$icon-font-path: "../bower_components/bootstrap-sass-official/vendor/assets/fonts/bootstrap/";
+$icon-font-path: "../bower_components/bootstrap/fonts/";
+//$icon-font-path: "../bower_components/bootstrap-sass-official/vendor/assets/fonts/bootstrap/";
 @import '../bower_components/bootstrap-sass-official/vendor/assets/stylesheets/bootstrap';
 @import '../bower_components/bootstrap-social/bootstrap-social.scss';
 $fa-font-path: "../bower_components/font-awesome/fonts";
@@ -8,6 +9,18 @@ $fa-font-path: "../bower_components/font-awesome/fonts";
 /**
  * App-wide Styles
  */
+
+@media (min-width: 979px) {
+  body {
+    padding-top: 50px;
+  }
+}
+
+@media (max-width: 978px) {
+  body {
+    padding-top: 50px;
+  }
+}
 
 .browserupgrade {
   margin: 0.2em 0;

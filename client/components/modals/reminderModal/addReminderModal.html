@@ -23,20 +23,34 @@
   <div class="form-group">
     <label>Date & Time</label>
     <form class="form-horizontal">
-      <!--<div class="form-group">-->
-        <p class="input-group">
-          <input type="text" class="form-control" datetime-picker="MM/dd/yyyy HH:mm" ng-model="reminderModalCtrl.reminder.datetime" is-open="reminderModalCtrl.dateTimePickerOpen" />
-              <span class="input-group-btn">
-                  <button type="button" class="btn btn-default" ng-click="reminderModalCtrl.openReminderDateTimePicker($event)"><i class="fa fa-calendar-plus-o"></i></button>
-              </span>
-        </p>
-      <!--</div>-->
+      <div class="input-group">
+        <input
+          type="text"
+          class="input-sm"
+          pick-a-date="reminderModalCtrl.date"
+          pick-a-date-options="reminderModalCtrl.dateOptions"
+          placeholder="Select Date"/> {{ date }}
+        <input
+          type="text"
+          class="input-sm"
+          pick-a-time="reminderModalCtrl.time"
+          placeholder="Select Time"
+          pick-a-time-options="reminderModalCtrl.timeOptions"/> {{ time }}
+      </div>
     </form>
   </div>
 
   <div class="form-group">
     <label>Recurring Reminder?</label>
-    <input type="checkbox" ng-model="reminderModalCtrl.reminder.doesRecur">
+    <div class="recur-button">
+      <input
+        bs-switch
+        switch-size="small"
+        switch-on-text="Yes"
+        switch-off-text="No"
+        type="checkbox"
+        ng-model="reminderModalCtrl.reminder.doesRecur">
+    </div>
   </div>
 
   <div class="form-group" ng-if="!!reminderModalCtrl.reminder.doesRecur">

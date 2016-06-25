@@ -24,16 +24,40 @@ class OnboardingController {
     this.formAlerts = [];
     this.showAlert = false;
 
-    this.reminderDateTimePickerOpen = false;
-
     this.onboardingData = {
       roommates: [],
       reminders: [],
-      reminderDateTime: new Date(),
+      reminderDateTime: null,
       reminderRecursType: 'Select One',
       reminderDoesRecur: false
     };
 
+    var self = this;
+
+    // TODO: extract this out to time service
+    // date picker
+    this.dateOptions = {
+      min: new Date(),
+      format: 'mmmm d, yyyy',
+      onSet: function(e) {
+        // e.select is number of milliseconds since Unix Epoch
+        self.date = new Date(e.select);
+      }
+    };
+
+    // time picker
+    this.timeOptions = {
+      interval: 15,
+      closeOnSelect: true,
+      onSet: function(e) {
+        if (!!self.date) {
+          // e.select is number of minutes after midnight
+          var date = self.date;
+          var secondsSinceEpoch = date.setMinutes(e.select);
+          self.onboardingData.reminderDateTime = new Date(secondsSinceEpoch);
+        }
+      }
+    };
   }
 
   init() {
@@ -55,13 +79,6 @@ class OnboardingController {
 
     this.onboardingData.roommateName = '';
     this.onboardingData.roommatePhone = '';
-  }
-
-  openReminderDateTimePicker(e) {
-    e.preventDefault();
-    e.stopPropagation();
-
-    this.reminderDateTimePickerOpen = true;
   }
 
   addReminder() {
