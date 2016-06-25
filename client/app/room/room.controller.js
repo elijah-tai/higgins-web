@@ -149,7 +149,7 @@ class RoomController {
     for (var phone in assignees) {
       if (assignees[phone] === true) {
         for (var rm in this.roommates) {
-          if (this.roommates[rm].phone == phone) {
+          if (this.roommates[rm].phone === phone) {
             roommateIdArray.push(this.roommates[rm]._id);
           }
         }

@@ -72,16 +72,28 @@
     Add
   </button>
 
-</>
+</form>
 
+  <!--TODO: Need to add ability to remove reminders-->
+  <div class="add-roommates-list">
+    <div class="row">
+      <div class="col-lg-12">
+        <ul class="onboarding-label" ng-repeat="reminder in onboardCtrl.onboardingData.reminders">
+          <li>
+            {{ reminder.name }} | {{ reminder.assignees }} | {{ reminder.datetime }} | {{ reminder.doesRecur ? reminder.recurType : 'One-Time Reminder' }}
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
 
 <div class="form-group row">
   <div class="col-xs-6 col-xs-offset-3">
     <span>
-      <a ui-sref="onboarding.roommates" class="btn btn-block btn-info input-add-roommates">
+      <a ng-click="onboardCtrl.validate('onboarding.roommates')"class="btn btn-block btn-info input-add-roommates">
         Previous <span class="fa fa-arrow-left"></span>
       </a>
-      <a class="btn btn-block btn-info input-add-roommates" ng-click="onboardCtrl.finishOnboarding()">
+      <a class="btn btn-block btn-info input-add-roommates" ng-click="onboardCtrl.validate('finish')">
         Finish <span class="fa fa-check"></span>
       </a>
     </span>

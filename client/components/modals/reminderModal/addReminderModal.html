@@ -67,6 +67,11 @@
     </div>
   </div>
 
+<div id="alert-box">
+  <uib-alert ng-repeat="alert in reminderModalCtrl.alertService.formAlerts" type="{{ alert.type }}" dismiss-on-timeout="3000" close="reminderModalCtrl.alertService.closeFormAlert($index)">{{ alert.msg }}</uib-alert>
+</div>
+
+
 </div>
 <div class="modal-footer">
   <button class="btn btn-primary" type="button" ng-click="reminderModalCtrl.add()">Add</button>

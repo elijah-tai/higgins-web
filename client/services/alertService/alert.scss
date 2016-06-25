@@ -1,0 +1,27 @@
+#alert-box {
+  // Maybe fixed alerts?
+  // position: fixed; 
+  // bottom:0%;
+  // left: 0;
+  // right: 0;
+  // width: 90%;
+  // margin: 0 auto;
+  margin-top:5%;
+}
+
+.alert.ng-enter {
+  transition:0.25s linear all;
+  opacity:0;
+}
+
+.alert.ng-enter.ng-enter-active {
+  opacity:1;
+}
+
+.alert.ng-leave {
+  transition:0.5s linear all;
+  opacity:1;
+}
+.alert.ng-leave.ng-leave-active {
+  opacity:0;
+}

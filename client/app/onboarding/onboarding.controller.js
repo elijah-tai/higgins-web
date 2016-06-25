@@ -7,7 +7,7 @@
 
 class OnboardingController {
 
-  constructor($scope, $rootScope, $q, $state, $window, roomService, userService, roommateService, reminderService) {
+  constructor($scope, $rootScope, $q, $state, $window, roomService, userService, roommateService, reminderService, alertService) {
     this.$rootScope = $rootScope;
     this.$scope = $scope;
     this.$q = $q;
@@ -18,16 +18,19 @@ class OnboardingController {
     this.userService = userService;
     this.roommateService = roommateService;
     this.reminderService = reminderService;
+    this.alertService = alertService;
 
     this.currentUser = null;
 
-    this.formAlerts = [];
-    this.showAlert = false;
+    // this.formAlerts = [];
+    this.$scope.currentview = this.$state.current.name;
+
+    this.reminderDateTimePickerOpen = false;
 
     this.onboardingData = {
       roommates: [],
       reminders: [],
-      reminderDateTime: null,
+      reminderDateTime: new Date(),
       reminderRecursType: 'Select One',
       reminderDoesRecur: false
     };
@@ -64,7 +67,9 @@ class OnboardingController {
         }
       }
     };
+
   }
+
 
   init() {
     this.$rootScope.nav.getCurrentUser((user) => {
@@ -76,50 +81,124 @@ class OnboardingController {
   }
 
   addRoommate() {
-    // TODO: validate roommate
-    this.onboardingData.roommates.push({
-      name: this.onboardingData.roommateName,
-      phone: this.onboardingData.roommatePhone,
-      _id: '' // mongoose.Types.ObjectId
-    });
+    var nameExists = true;
+    if (!this.onboardingData.roommateName) {
+      this.alertService.showFormAlert('roommateName');
+      nameExists = false;
+    }
 
-    this.onboardingData.roommateName = '';
-    this.onboardingData.roommatePhone = '';
+    var phoneValid = true;
+    if ( !this.onboardingData.roommatePhone || (this.onboardingData.roommatePhone.length !== 10) ) {
+      this.alertService.showFormAlert('roommatePhoneNumber');
+      phoneValid = false;
+    }
+
+    if (nameExists && phoneValid) {
+      this.onboardingData.roommates.push({
+        name: this.onboardingData.roommateName,
+        phone: this.onboardingData.roommatePhone,
+        _id: '' // mongoose.Types.ObjectId
+      });
+
+      this.onboardingData.roommateName = '';
+      this.onboardingData.roommatePhone = '';
+    }
+  }
+
+  openReminderDateTimePicker(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    this.reminderDateTimePickerOpen = true;
   }
 
   addReminder() {
-    // TODO: validate reminder
-    var assignees = angular.copy(this.onboardingData.selectedRoommates);
-    this.onboardingData.reminders.push({
-      name: this.onboardingData.reminderName,
-      assignees: assignees, // ng-model = {}
-      datetime: this.onboardingData.reminderDateTime,
-      recurType: this.onboardingData.reminderRecursType,
-      doesRecur: this.onboardingData.reminderDoesRecur,
-      active: true,
-      _id: ''
-    });
+    var reminderNameExists = true;
+    if (!this.onboardingData.reminderName) {
+      reminderNameExists = false;
+      this.alertService.showFormAlert('reminderName');
+    }
+
+    var assignees = [];
+    for (var phoneNum in this.onboardingData.selectedRoommates) {
+      if (this.onboardingData.selectedRoommates[phoneNum] === true) {
+        assignees.push(phoneNum);
+      }
+    }
+
+    var AssigneeAdded = true;
+    if (assignees.length === 0) {
+      AssigneeAdded = false;
+      this.alertService.showFormAlert('atLeastOneAssignee');
+    }
+
+    var dateTimePicked = true;
+    if (!this.time || !this.date) {
+      dateTimePicked = false;
+      this.alertService.showFormAlert('reminderDateTime');
+    }
+
+    if (reminderNameExists && dateTimePicked && AssigneeAdded) {
+      this.onboardingData.reminders.push({
+        name: this.onboardingData.reminderName,
+        assignees: assignees, // ng-model = {}
+        datetime: this.onboardingData.reminderDateTime,
+        recurType: this.onboardingData.reminderRecursType,
+        doesRecur: this.onboardingData.reminderDoesRecur,
+        active: true,
+        _id: ''
+      });      
+    }
   }
 
   /* jshint loopfunc:true */
   // r.assignees is an object w format: { phonenum: true, phonenum: false, ... }
-  getRoommateIds(assignees) {
+  getRoommateIds(self, assignees) {
     var roommateIdArray = [];
-    for (var phoneNum in assignees) {
-      if (assignees[phoneNum] === true) {
-        for (var rm in this.onboardingData.roommates) {
-          if (this.onboardingData.roommates[rm].phone == phoneNum) {
-            roommateIdArray.push(this.onboardingData.roommates[rm]._id);
+      assignees.forEach(function(phoneNum) {
+        for (var roommate in self.onboardingData.roommates) {
+          if (self.onboardingData.roommates[roommate].phone === phoneNum) {
+            roommateIdArray.push(self.onboardingData.roommates[roommate]._id);
           }
         }
-      }
-    }
+      });
     return roommateIdArray;
+  }
+
+  addRoommates(self, rm, roomId) {
+    var roommate = self.onboardingData.roommates[rm];
+    return self.$q(function(resolve) {
+      self.roommateService.createRoommate({
+        _roomId: roomId,
+        name: roommate.name,
+        phone: parseInt(roommate.phone)
+      }).then(response => {
+        self.onboardingData.roommates[rm]._id = response.data._id;
+        resolve(self);
+      });
+    });
+  }
+
+  addReminders(self, rd) {
+    return self.$q(function(resolve) {
+      var reminder = self.onboardingData.reminders[rd];
+
+      self.reminderService.createReminder({
+        name: reminder.name,
+        assignees: self.getRoommateIds(self, reminder.assignees),
+        datetime: reminder.datetime,
+        recurType: reminder.recurType,
+        doesRecur: reminder.doesRecur,
+        active: reminder.active
+      }).then(response => {
+        self.onboardingData.reminders[rd]._id = response.data._id;
+        resolve(self);
+      });
+    });
   }
 
   // After clicking finish
   finishOnboarding() {
-
     // Create the room
     this.roomService.createRoom({
       _creator: this.currentUser._id,
@@ -137,42 +216,10 @@ class OnboardingController {
           { roomId: roomId }
         );
 
-        function addRoommates(self, rm, roomId) {
-          var roommate = self.onboardingData.roommates[rm];
-          return self.$q(function(resolve) {
-            self.roommateService.createRoommate({
-              _roomId: roomId,
-              name: roommate.name,
-              phone: parseInt(roommate.phone)
-            }).then(response => {
-              self.onboardingData.roommates[rm]._id = response.data._id;
-              resolve(self);
-            });
-          });
-        }
-
-        function addReminders(self, rd) {
-          return self.$q(function(resolve) {
-            var reminder = self.onboardingData.reminders[rd];
-
-            self.reminderService.createReminder({
-              name: reminder.name,
-              assignees: self.getRoommateIds(reminder.assignees),
-              datetime: reminder.datetime,
-              recurType: reminder.recurType,
-              doesRecur: reminder.doesRecur,
-              active: reminder.active
-            }).then(response => {
-              self.onboardingData.reminders[rd]._id = response.data._id;
-              resolve(self);
-            });
-          });
-        }
-
         // Populate all roommate promises
         var roommatePromises = [];
         for (var rm in this.onboardingData.roommates) {
-          roommatePromises.push(addRoommates(this, rm, roomId));
+          roommatePromises.push(this.addRoommates(this, rm, roomId));
         }
 
       // Add all roommates
@@ -182,7 +229,7 @@ class OnboardingController {
         // Populate all reminder promises
         var reminderPromises = [];
         for (var rd in self.onboardingData.reminders) {
-          reminderPromises.push(addReminders(self, rd));
+          reminderPromises.push(this.addReminders(self, rd));
         }
 
         // Add all reminders
@@ -219,32 +266,38 @@ class OnboardingController {
     // TODO: Need to make sure that we update user's onboarding bool to true
   }
 
-  showFormAlert(input) {
-    switch(input) {
-      case 'roomName':
-        this.formAlerts.push({
-          type: 'danger',
-          msg: 'Don\'t forget to add your room name!'
-        });
-        this.showAlert = true;
-        break;
-
-      case 'atLeastOneRoommate':
-        this.formAlerts.push({
-          type: 'danger',
-          msg: 'Make sure you add at least one roommate.'
-        });
-        this.showAlert = true;
-        break;
-
-      default:
-        break;
-    }
+  switchStates(state) {
+    this.$state.go(state);
+    this.$scope.currentview = state;
   }
 
-  closeFormAlert(index) {
-    this.formAlerts.splice(index, 1);
-    console.log(this.onboardingData.reminderDate);
+  validate(next) {
+    switch(this.$state.current.name) {
+      case 'onboarding.room':
+        if (!this.onboardingData.roomName) { this.alertService.showFormAlert('roomName'); }
+        else if (next) {
+          this.switchStates(next);
+        }
+      break;
+      case 'onboarding.roommates':
+        if (next === 'onboarding.room') {
+          this.switchStates(next);
+        }
+        else if (this.onboardingData.roommates.length === 0) { this.alertService.showFormAlert('atLeastOneRoommate'); }
+        else if (next) {
+          this.switchStates(next);
+        }
+      break;
+      case 'onboarding.reminders':
+        if (next === 'onboarding.roommates' || next === 'onboarding.room') {
+          this.switchStates(next);
+        }
+        else if (this.onboardingData.reminders.length === 0) { this.alertService.showFormAlert('atLeastOneReminder'); }
+        else {
+          this.finishOnboarding();
+        }
+      break;
+    }
   }
 
 }
