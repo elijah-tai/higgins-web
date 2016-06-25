@@ -18,23 +18,36 @@
   </div>
 
   <div class="form-group">
-    <label class="onboarding-label">Date & Time</label>
+    <label class="onboarding-label">Date and Time</label>
     <form class="form-horizontal">
-      <div class="form-group">
-          <p class="input-group">
-            <input type="text" class="form-control" datetime-picker="MM/dd/yyyy HH:mm" ng-model="onboardCtrl.onboardingData.reminderDateTime" is-open="onboardCtrl.reminderDateTimePickerOpen" />
-              <span class="input-group-btn">
-                  <button type="button" class="btn btn-default" ng-click="onboardCtrl.openReminderDateTimePicker($event)"><i class="fa fa-calendar-plus-o"></i></button>
-              </span>
-          </p>
+      <div class="input-group">
+        <input
+          type="text"
+          class="input-sm"
+          pick-a-date="onboardCtrl.date"
+          pick-a-date-options="onboardCtrl.dateOptions"
+          placeholder="Select Date"/> {{ date }}
+        <input
+          type="text"
+          class="input-sm"
+          pick-a-time="onboardCtrl.time"
+          placeholder="Select Time"
+          pick-a-time-options="onboardCtrl.timeOptions"/> {{ time }}
       </div>
     </form>
-
   </div>
 
   <div class="form-group">
     <label class="onboarding-label">Recurring Reminder?</label>
-    <input type="checkbox" ng-model="onboardCtrl.onboardingData.reminderDoesRecur">
+    <div class="recur-button">
+      <input
+        bs-switch
+        switch-size="small"
+        switch-on-text="Yes"
+        switch-off-text="No"
+        type="checkbox"
+        ng-model="onboardCtrl.onboardingData.reminderDoesRecur">
+    </div>
   </div>
 
   <div class="form-group" ng-if="!!onboardCtrl.onboardingData.reminderDoesRecur">
