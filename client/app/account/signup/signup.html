@@ -68,7 +68,7 @@
             {{ vm.errors.password }}
           </p>
         </div>
-        
+
         <div class="form-group" ng-class="{ 'has-success': form.confirmPassword.$valid && vm.submitted,
                                             'has-error': form.confirmPassword.$invalid && vm.submitted }">
           <label>Confirm Password</label>
@@ -82,12 +82,9 @@
         </div>
 
         <div>
-          <button class="btn btn-inverse btn-register" type="submit">
+          <button class="btn btn-primary btn-register" type="submit">
             Sign up
           </button>
-          <a class="btn btn-default btn-login" ui-sref="login">
-            Login
-          </a>
         </div>
 
         <hr/>
