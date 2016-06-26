@@ -11,14 +11,24 @@
       <ul class="list-inline">
         <li><h5>Reminders</h5></li>
         <li>
-          <button type="button" class="fa fa-plus" ng-click="roomCtrl.openAddReminderModal()"></button>
+          <button type="button" class="btn btn-xs btn-primary" ng-click="roomCtrl.openAddReminderModal()">Add Reminder</button>
         </li>
       </ul>
-      <ul ng-repeat="reminder in roomCtrl.reminders">
-        <li>
-          {{ reminder.name }} | <button class="fa fa-ban" aria-hidden="true" ng-click="roomCtrl.deleteReminder(reminder)"></button>
-        </li>
-      </ul>
+
+      <md-content class="md-padding">
+        <div layout="row" layout-xs="column">
+          <md-card flex flex-gt-xs="40" ng-repeat="reminder in roomCtrl.reminders">
+            <md-card-actions layout="row" layout-align="end center">
+              <md-button ng-click="roomCtrl.deleteReminder(reminder)" class="close">x</md-button>
+            </md-card-actions>
+            <h5>{{ reminder.name }}</h5>
+            <md-card-content>
+              <b>At:</b> {{ reminder.datetime | date : 'EEE, MMM d yyyy, h:mm a' }} <br>
+              <b>Recurrence:</b> {{ reminder.doesRecur ? reminder.recurType : 'One-Time' }} <br>
+            </md-card-content>
+          </md-card>
+        </div>
+      </md-content>
     </div>
 
     <div class="col-md-4" ng-cloak="roomCtrl.roommates">
@@ -27,13 +37,16 @@
           <h5>Roommates</h5>
         </li>
         <li>
-          <button type="button" class="fa fa-plus" ng-click="roomCtrl.openAddRoommateModal()"></button>
+          <button type="button" class="btn btn-xs btn-primary" ng-click="roomCtrl.openAddRoommateModal()">Add Roommate</button>
         </li>
       </ul>
 
       <ul ng-repeat="roommate in roomCtrl.roommates">
         <li>
-          {{ roommate.name }} | <button class="fa fa-pencil" aria-hidden="true" ng-click="roomCtrl.editRoommate(roommate)"></button> | <button class="fa fa-ban" aria-hidden="true" ng-click="roomCtrl.deleteRoommate(roommate)"></button>
+          {{ roommate.name }} |
+          <span class="btn-group">
+            <button class="fa fa-edit" aria-hidden="true" ng-click="roomCtrl.editRoommate(roommate)"></button> | <button class="fa fa-ban" aria-hidden="true" ng-click="roomCtrl.deleteRoommate(roommate)"></button>
+          </span>
         </li>
       </ul>
     </div>
