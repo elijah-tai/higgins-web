@@ -27,14 +27,20 @@ class ReminderModalController {
       onSet: function(e) {
         // e.select is number of milliseconds since Unix Epoch
         self.date = new Date(e.select);
+        if (!!self.time) {
+          var secondsSinceEpoch = self.date.setMinutes(self.time);
+          self.reminder.datetime = new Date(secondsSinceEpoch);
+        }
       }
     };
 
     // time picker
     this.timeOptions = {
+      min: new Date(),
       interval: 1,
       closeOnSelect: true,
       onSet: function(e) {
+        self.time = e.select;
         if (!!self.date) {
           // e.select is number of minutes after midnight
           var date = self.date;
