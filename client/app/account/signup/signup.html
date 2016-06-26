@@ -39,13 +39,14 @@
                                             'has-error': form.phone.$invalid && vm.submitted }">
           <label>Phone Number</label>
 
-          <input type="number" name="phone" class="form-control" ng-model="vm.user.phone"
-                 ng-minlength="10"
-                 ng-maxlength="10"
+          <input type="text" name="phone" class="form-control" ng-model="vm.user.phone"
+                 ng-minlength="14"
+                 phone-input
+                 placeholder="(123) 456-7890"
                  required
                  mongoose-error/>
-          <p class="help-block" ng-show="(form.phone.$error.minlength || form.phone.$error.maxlength || form.phone.$error.required) && vm.submitted">
-            Please enter your 10 digit phone number, without spaces or extra characters.
+          <p class="help-block" ng-show="(form.phone.$error.minlength || form.phone.$error.required) && vm.submitted">
+            Please enter your 10 digit phone number.
           </p>
           <p class="help-block" ng-show="form.phone.$error.mongoose">
             {{ vm.errors.phone }}

@@ -9,8 +9,12 @@
 
   <div class="form-group">
     <label>Phone Number</label>
-    <input type="text" class="form-control" placeholder="123-456-7890" ng-model="roommateModalCtrl.phone">
+    <input phone-input type="text" class="form-control" placeholder="(123) 456-7890" ng-model="roommateModalCtrl.phone">
   </div>
+</div>
+
+<div id="alert-box">
+  <uib-alert ng-repeat="alert in roommateModalCtrl.alertService.formAlerts" type="{{ alert.type }}" dismiss-on-timeout="3000" close="roommateModalCtrl.alertService.closeFormAlert($index)">{{ alert.msg }}</uib-alert>
 </div>
 
 <div class="modal-footer">

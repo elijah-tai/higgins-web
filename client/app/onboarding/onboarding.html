@@ -9,9 +9,9 @@
         <!-- the links to our nested states using relative paths -->
         <!-- add the active class if the state matches our ui-sref -->
         <div id="status-buttons" class="text-center">
-          <a ui-sref-active="active" ui-sref=".room"><span>1</span> Add Room </a>
-          <a ui-sref-active="active" ui-sref=".roommates"><span>2</span> Add Roommates </a>
-          <a ui-sref-active="active" ui-sref=".reminders"><span>3</span> Add Reminders </a>
+          <a ng-class="{active : currentview == 'onboarding.room'}" ng-click="onboardCtrl.validate('onboarding.room')"><span>1</span> Add Room </a>
+          <a ng-class="{active : currentview == 'onboarding.roommates'}" ng-click="onboardCtrl.validate('onboarding.roommates')"><span>2</span> Add Roommates </a>
+          <a ng-class="{active : currentview == 'onboarding.reminders'}" ng-click="onboardCtrl.validate('onboarding.reminders')"><span>3</span> Add Reminders </a>
         </div>
       </div>
 
@@ -20,6 +20,11 @@
 
         <!-- our nested state views will be injected here -->
         <div id="form-views" ui-view></div>
+
+        <div id="alert-box">
+          <uib-alert ng-repeat="alert in onboardCtrl.alertService.formAlerts" type="{{ alert.type }}" dismiss-on-timeout="3000" close="onboardCtrl.alertService.closeFormAlert($index)">{{ alert.msg }}</uib-alert>
+        </div>
+
       </form>
 
     </div>

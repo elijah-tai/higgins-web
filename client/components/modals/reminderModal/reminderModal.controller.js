@@ -2,9 +2,10 @@
 
 class ReminderModalController {
 
-  constructor($scope, $uibModalInstance) {
+  constructor($scope, $uibModalInstance, alertService) {
     this.$scope = $scope;
     this.$uibModalInstance = $uibModalInstance;
+    this.alertService = alertService;
 
     this.dateTimePickerOpen = false;
 
@@ -59,7 +60,27 @@ class ReminderModalController {
   }
 
   add() {
-    this.$uibModalInstance.close(this.reminder);
+    var reminderNameExists = true;
+    if (!this.reminder.name) {
+      reminderNameExists = false;
+      this.alertService.showFormAlert('reminderName');
+    }
+
+    var AssigneeAdded = true;
+    if (this.reminder.assignees.length === 0) {
+      AssigneeAdded = false;
+      this.alertService.showFormAlert('atLeastOneAssignee');
+    }
+
+    var dateTimePicked = true;
+    if (!this.time || !this.date) {
+      dateTimePicked = false;
+      this.alertService.showFormAlert('reminderDateTime');
+    }
+
+    if (reminderNameExists && dateTimePicked && AssigneeAdded) {
+      this.$uibModalInstance.close(this.reminder);
+    }
   }
 
   edit() {

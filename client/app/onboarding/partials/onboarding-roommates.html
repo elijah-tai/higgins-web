@@ -10,7 +10,7 @@
 
   <div class="form-group" id="add-roommates-number">
     <label class="onboarding-label add-roommates-label">Phone Number</label>
-    <input type="text" class="form-control" placeholder="123-456-7890" ng-model="onboardCtrl.onboardingData.roommatePhone">
+    <input phone-input type="text" class="form-control" placeholder="(123) 456-7890" ng-model="onboardCtrl.onboardingData.roommatePhone">
   </div>
 
   <button id="add-roommates-button" type="button" class="btn btn-primary" ng-click="onboardCtrl.addRoommate()">
@@ -25,7 +25,7 @@
     <div class="col-lg-12">
       <ul class="onboarding-label" ng-repeat="roommate in onboardCtrl.onboardingData.roommates">
         <li>
-          {{ roommate.name }} | {{ roommate.phone }}
+          {{ roommate.name }} | {{ roommate.phone | tel }}
         </li>
       </ul>
     </div>
@@ -36,18 +36,13 @@
 <div class="form-group row onboarding-navigation">
   <div class="col-xs-6 col-xs-offset-3">
     <span>
-      <a ui-sref="onboarding.room" class="btn btn-block btn-info input-add-roommates">
+      <a ng-click="onboardCtrl.validate('onboarding.room')" class="btn btn-block btn-info input-add-roommates">
         Previous <span class="fa fa-arrow-left"></span>
       </a>
-      <a class="btn btn-block btn-info input-add-roommates" ng-if="onboardCtrl.onboardingData.roommates.length == 0">
+      <a ng-click="onboardCtrl.validate('onboarding.reminders')" class="btn btn-block btn-info input-add-roommates">
         Next <span class="fa fa-arrow-right"></span>
       </a>
 
-      <a ui-sref="onboarding.reminders" class="btn btn-block btn-info input-add-roommates" ng-if="onboardCtrl.onboardingData.roommates.length != 0">
-        Next <span class="fa fa-arrow-right"></span>
-      </a>
     </span>
   </div>
 </div>
-
-<uib-alert ng-repeat="alert in onboardCtrl.formAlerts" type="{{ alert.type }}" ng-if="onboardCtrl.showAlert" close="onboardCtrl.closeFormAlert($index)">{{ alert.msg }}</uib-alert>
