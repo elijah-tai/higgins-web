@@ -5,7 +5,7 @@ $icon-font-path: "../bower_components/bootstrap/fonts/";
 $fa-font-path: "../bower_components/font-awesome/fonts";
 @import '../bower_components/font-awesome/scss/font-awesome';
 @import 'colors.scss';
-
+@import '../services/alertService/alert';
 /**
  * App-wide Styles
  */

@@ -72,9 +72,9 @@ angular.module('higginsApp.alertService', [])
     };
 
     // do not need to use if dismiss-on-timeout is used
-    var clearAlerts = function () {
-      formAlerts = [];
-    }
+    // var clearAlerts = function () {
+    //   formAlerts = [];
+    // };
 
     // Public API here
     return {

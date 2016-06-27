@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container" on-enter="vm.register(form)" tabindex="0">
   <div class="row">
     <div class="col-sm-12">
       <h3>Sign up</h3>
@@ -11,6 +11,7 @@
           <label>Name</label>
 
           <input type="text" name="name" class="form-control" ng-model="vm.user.name"
+                 focus-input="vm.focusInput"
                  required/>
           <p class="help-block" ng-show="form.name.$error.required && vm.submitted">
             A name is required
