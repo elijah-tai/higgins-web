@@ -1,10 +1,13 @@
 <div class="modal-header">
   <h5 class="modal-title">Edit Roommate</h5>
 </div>
-<div class="modal-body">
+<div class="modal-body" on-enter="roommateModalCtrl.edit()" tabindex="0">
   <div class="form-group">
     <label>Name</label>
-    <input type="text" class="form-control" placeholder="Bruce Wayne" ng-model="roommateModalCtrl.name">
+    <input type="text" class="form-control"
+           placeholder="Bruce Wayne"
+           ng-model="roommateModalCtrl.name"
+           focus-input="roommateModalCtrl.focusInput">
   </div>
 
   <div class="form-group">

@@ -5,12 +5,17 @@
 
   <div class="form-group" id="add-roommates-name">
     <label class="onboarding-label add-roommates-label">Name</label>
-    <input type="text" class="form-control" placeholder="Bruce Wayne" ng-model="onboardCtrl.onboardingData.roommateName">
+    <input type="text" class="form-control"
+           placeholder="Bruce Wayne"
+           ng-model="onboardCtrl.onboardingData.roommateName"
+           focus-input="onboardCtrl.focusInput['roommates']">
   </div>
 
   <div class="form-group" id="add-roommates-number">
     <label class="onboarding-label add-roommates-label">Phone Number</label>
-    <input phone-input type="text" class="form-control" placeholder="(123) 456-7890" ng-model="onboardCtrl.onboardingData.roommatePhone">
+    <input phone-input type="text" class="form-control"
+           placeholder="(123) 456-7890"
+           ng-model="onboardCtrl.onboardingData.roommatePhone">
   </div>
 
   <button id="add-roommates-button" type="button" class="btn btn-primary" ng-click="onboardCtrl.addRoommate()">

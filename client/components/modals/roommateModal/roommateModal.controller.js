@@ -10,6 +10,7 @@ class RoommateModalController {
     this.phone = '';
     this.formAlerts = [];
     this.alertService = alertService;
+    this.focusInput = true;
 
     if (!!this.$scope.$resolve.roommate) {
       this.roommateId = this.$scope.$resolve.roommate._id;
@@ -36,10 +37,11 @@ class RoommateModalController {
         name: this.name,
         phone: this.phone
       });
+      this.focusInput = false;
     }
   }
 
-  edit() {
+  edit() {    
     var nameExists = true;
     if (!this.name) {
       this.alertService.showFormAlert('roommateName');
@@ -58,11 +60,13 @@ class RoommateModalController {
         name: this.name,
         phone: this.phone
       });
+      this.focusInput = false;
     }
   }
 
   cancel() {
     this.$uibModalInstance.dismiss('cancel');
+    this.focusInput = false;
   }
 
   validate() {

@@ -6,9 +6,9 @@ class SignupController {
   constructor(Auth, $state) {
       this.Auth = Auth;
       this.$state = $state;
+      this.focusInput = true;
     }
     //start-non-standard
-
 
   register(form) {
     this.submitted = true;
