@@ -35,7 +35,7 @@ class RoommateModalController {
     if (nameExists && phoneValid) {
       this.$uibModalInstance.close({
         name: this.name,
-        phone: this.phone
+        phone: parseInt(this.phone, 10)
       });
       this.focusInput = false;
     }
@@ -58,7 +58,7 @@ class RoommateModalController {
       this.$uibModalInstance.close({
         _id: this.roommateId,
         name: this.name,
-        phone: this.phone
+        phone: parseInt(this.phone, 10)
       });
       this.focusInput = false;
     }

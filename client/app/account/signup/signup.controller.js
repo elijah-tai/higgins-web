@@ -3,9 +3,14 @@
 class SignupController {
   //end-non-standard
 
-  constructor(Auth, $state) {
+  constructor(Auth, $rootScope, $state, roomService, userService) {
       this.Auth = Auth;
+      this.$rootScope = $rootScope;
       this.$state = $state;
+
+      this.roomService = roomService;
+      this.userService = userService;
+
       this.focusInput = true;
     }
     //start-non-standard
@@ -17,11 +22,35 @@ class SignupController {
       this.Auth.createUser({
           name: this.user.name,
           email: this.user.email,
-          phone: this.user.phone,
+          phone: parseInt(this.user.phone, 10),
           password: this.user.password
         })
         .then(() => {
-          this.$state.go('onboarding.room');
+
+          this.$rootScope.nav.getCurrentUser((user) => {
+            return user;
+          })
+            .then(user => {
+              //TODO: somehow add user as roommate?
+              //      How are we going to do this?
+              var roomname = user.name + '\'s room';
+              this.roomService.createRoom({
+                _creator: user._id,
+                name: roomname
+              })
+                .then(response => {
+                  var roomId = response.data._id;
+                  var userOpts = { userId: user._id };
+                  this.userService.updateUserRooms(
+                    userOpts,
+                    { roomId: roomId }
+                  );
+                });
+
+            });
+
+          this.$state.go('room');
+        
         })
         .catch(err => {
           err = err.data;
