@@ -3,8 +3,16 @@
 }
 
 .lead {
+  color: #FFF;
+  text-shadow: 2px 2px 3px rgba(0,0,0,0.6);
   font-size: 18px;
   font-weight: 400;
+}
+
+.lead-b {
+  color: #000;
+  font-size: 18px;
+  font-weight: 600;
 }
 
 .intro-header {
@@ -75,22 +83,30 @@
 .signup-container-bottom {
   display: flex;
   padding-left: 70px;
-  padding-top: 60px;
+  padding-top: 20px;
 }
 
 .content-section-a {
   padding: 50px 0;
-  background-color: #f8f8f8;
+  background: url(../assets/images/dirtydishes.png) no-repeat center center;
 }
 
 .content-section-b {
   padding: 50px 0;
+  background: url(../assets/images/toiletpaper.png) no-repeat center center;
   border-top: 1px solid #e7e7e7;
   border-bottom: 1px solid #e7e7e7;
 }
 
 .section-heading {
-  color: black;
+  color: #fff;
+  text-shadow: 2px 2px 3px rgba(0,0,0,0.6);
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+.section-b-heading {
+  color: #000;
   margin-top: 30px;
   margin-bottom: 30px;
 }
