@@ -31,7 +31,7 @@ class OnboardingController {
       roommates: [],
       reminders: [],
       reminderDateTime: new Date(),
-      reminderRecursType: 'Select One',
+      reminderRecursType: null,
       reminderDoesRecur: false
     };
 
@@ -147,7 +147,7 @@ class OnboardingController {
         doesRecur: this.onboardingData.reminderDoesRecur,
         active: true,
         _id: ''
-      });      
+      });
     }
   }
 

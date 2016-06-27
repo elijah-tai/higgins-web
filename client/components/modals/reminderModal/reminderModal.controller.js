@@ -16,7 +16,7 @@ class ReminderModalController {
       assignees: [],
       datetime: new Date(),
       doesRecur: false,
-      recurType: 'Select One'
+      recurType: null
     };
 
     var self = this;
