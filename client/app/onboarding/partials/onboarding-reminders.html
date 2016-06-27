@@ -2,7 +2,10 @@
 
   <div class="form-group onboarding-input" id="add-reminder-name">
     <label class="onboarding-label add-reminder-label">Reminder Name</label>
-    <input type="text" class="form-control" placeholder="e.g. Take out the garbage" ng-model="onboardCtrl.onboardingData.reminderName">
+    <input type="text" class="form-control"
+           placeholder="e.g. Take out the garbage"
+           ng-model="onboardCtrl.onboardingData.reminderName"
+           focus-input="onboardCtrl.focusInput['reminders']">
   </div>
 
   <div class="form-group onboarding-input" id="add-reminder-assignees">

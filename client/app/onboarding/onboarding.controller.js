@@ -19,6 +19,11 @@ class OnboardingController {
     this.roommateService = roommateService;
     this.reminderService = reminderService;
     this.alertService = alertService;
+    this.focusInput = {
+      'room': true,
+      'roommates': false,
+      'reminders': false
+    };
 
     this.currentUser = null;
 
@@ -102,6 +107,8 @@ class OnboardingController {
 
       this.onboardingData.roommateName = '';
       this.onboardingData.roommatePhone = '';
+
+      this.focusInput = { 'room': false, 'roommates': true, 'reminders': false };
     }
   }
 
@@ -148,7 +155,20 @@ class OnboardingController {
         active: true,
         _id: ''
       });
+
+      this.resetReminder();
+      this.focusInput = { 'room': false, 'roommates': false, 'reminders': true };
     }
+  }
+
+  resetReminder() {
+    // reset reminder
+    this.onboardingData.reminderName = '';
+    this.onboardingData.selectedRoommates = null;
+    this.time = null; this.date = null;
+    this.onboardingData.reminderDateTime = null;
+    this.onboardingData.reminderDoesRecur = false;
+    this.onboardingData.reminderRecursType = 'Select One';
   }
 
   /* jshint loopfunc:true */
@@ -269,6 +289,17 @@ class OnboardingController {
   switchStates(state) {
     this.$state.go(state);
     this.$scope.currentview = state;
+    switch(state) {
+      case 'onboarding.room':
+        this.focusInput = { 'room': true, 'roommates': false, 'reminders': false };
+        break;
+      case 'onboarding.roommates':
+        this.focusInput = { 'room': false, 'roommates': true, 'reminders': false };
+        break;
+      case 'onboarding.reminders':
+        this.focusInput = { 'room': false, 'roommates': false, 'reminders': true };
+        break;
+    }
   }
 
   validate(next) {
@@ -278,7 +309,7 @@ class OnboardingController {
         else if (next) {
           this.switchStates(next);
         }
-      break;
+        break;
       case 'onboarding.roommates':
         if (next === 'onboarding.room') {
           this.switchStates(next);
@@ -287,16 +318,38 @@ class OnboardingController {
         else if (next) {
           this.switchStates(next);
         }
-      break;
+        break;
       case 'onboarding.reminders':
         if (next === 'onboarding.roommates' || next === 'onboarding.room') {
           this.switchStates(next);
         }
         else if (this.onboardingData.reminders.length === 0) { this.alertService.showFormAlert('atLeastOneReminder'); }
-        else {
+        else if (next === 'finish') {
           this.finishOnboarding();
         }
-      break;
+        break;
+    }
+  }
+
+  progress() {
+    switch(this.$state.current.name) {
+      case 'onboarding.room':
+        this.validate('onboarding.roommates');
+        break;
+      case 'onboarding.roommates':
+        if (!!this.onboardingData.roommateName || !!this.onboardingData.roommatePhone) {
+          this.addRoommate();
+        } else {
+          this.validate('onboarding.reminders');
+        }
+        break;
+      case 'onboarding.reminders':
+        if (!!this.onboardingData.reminderName || !!this.onboardingData.selectedRoommates || !!this.time || !!this.date) {
+          this.addReminder();
+        } else {
+          this.validate('finish');
+        }
+        break;
     }
   }
 

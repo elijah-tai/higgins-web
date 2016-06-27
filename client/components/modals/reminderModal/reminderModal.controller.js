@@ -6,7 +6,7 @@ class ReminderModalController {
     this.$scope = $scope;
     this.$uibModalInstance = $uibModalInstance;
     this.alertService = alertService;
-
+    this.focusInput = true;
     this.dateTimePickerOpen = false;
 
     this.roommates = this.$scope.$resolve.roommates;
@@ -80,6 +80,7 @@ class ReminderModalController {
 
     if (reminderNameExists && dateTimePicked && AssigneeAdded) {
       this.$uibModalInstance.close(this.reminder);
+      this.focusInput = false;
     }
   }
 
@@ -90,6 +91,7 @@ class ReminderModalController {
 
   cancel() {
     this.$uibModalInstance.dismiss('cancel');
+    this.focusInput = false;
   }
 
 
