@@ -87,7 +87,7 @@ export function setTokenCookie(req, res) {
       if (user.onboarded === false) {
         return res.redirect('/onboarding/room');
       } else {
-        return res.redirect('/home');
+        return res.redirect('/dashboard');
       }
     });
 }

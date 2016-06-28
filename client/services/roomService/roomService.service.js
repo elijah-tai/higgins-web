@@ -3,7 +3,12 @@
 angular.module('higginsApp.roomService', [])
   .factory('roomService', function ($http) {
 
-    var getRoomByUserId = function( opts ) {
+    var getRoom = function( opts ) {
+      var roomId = opts.roomId;
+      return $http.get('/api/rooms/' + roomId);
+    };
+
+    var getRoomsByUserId = function( opts ) {
       var userId = opts.userId;
       return $http.get('/api/rooms/' + userId + '/rooms');
     };
@@ -15,6 +20,11 @@ angular.module('higginsApp.roomService', [])
     var updateRoom = function( opts, form ) {
       var roomId = opts.roomId;
       return $http.put('/api/rooms/' + roomId, form);
+    };
+
+    var deleteRoom = function( opts ) {
+      var roomId = opts.roomId;
+      return $http.delete('/api/rooms/' + roomId );
     };
 
     var addRoommate = function( opts ) {
@@ -42,8 +52,10 @@ angular.module('higginsApp.roomService', [])
     // Public API here
     return {
       createRoom: createRoom,
+      getRoom: getRoom,
       updateRoom: updateRoom,
-      getRoomByUserId: getRoomByUserId,
+      deleteRoom: deleteRoom,
+      getRoomsByUserId: getRoomsByUserId,
       addReminder: addReminder,
       addRoommate: addRoommate,
       populateRoommates: populateRoommates,

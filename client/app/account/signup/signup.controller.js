@@ -31,8 +31,6 @@ class SignupController {
             return user;
           })
             .then(user => {
-              //TODO: somehow add user as roommate?
-              //      How are we going to do this?
               var roomname = user.name + '\'s room';
               this.roomService.createRoom({
                 _creator: user._id,
@@ -40,17 +38,17 @@ class SignupController {
               })
                 .then(response => {
                   var roomId = response.data._id;
-                  var userOpts = { userId: user._id };
                   this.userService.updateUserRooms(
-                    userOpts,
+                    { userId: user._id },
                     { roomId: roomId }
                   );
+
+                  this.roomService.addRoommate({ roomId: roomId, roommateId: user._id })
+                    .then(() => {
+                      this.$state.go('room', { roomId: roomId });
+                    });
                 });
-
             });
-
-          this.$state.go('room');
-        
         })
         .catch(err => {
           err = err.data;

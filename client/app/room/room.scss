@@ -1,7 +1,21 @@
+.room-name-container {
+  padding: 3px;
+  border-bottom: 1px dashed;
+  color: rgba(19, 66, 133, 0.82);
+}
+
+.room-toolbar {
+
+}
+
 .close {
   float: right;
 }
 
 md-card > h5 {
   padding-left: 15px;
+}
+
+.page-header > h5 {
+  display: inline;
 }

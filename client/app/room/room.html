@@ -1,13 +1,40 @@
 <div class="container">
   <div class="page-header">
-    <h5> Welcome to {{ roomCtrl.roomName }}! </h5>
+    <uib-alert ng-repeat="alert in roomCtrl.alertService.formAlerts"
+               type="{{ alert.type }}" dismiss-on-timeout="3000"
+               close="roomCtrl.alertService.closeFormAlert($index)">
+      {{ alert.msg }}
+    </uib-alert>
+    <h5 ng-hide="roomCtrl.editingRoomName"
+        ng-click="roomCtrl.editingRoomName = true"> Welcome to
+      <span class="room-name-container">{{ roomCtrl.roomName }}</span>!
+    </h5>
+    <h5 ng-show="roomCtrl.editingRoomName">Welcome to
+    <span>
+      <form>
+      <input type="text" ng-model="roomCtrl.roomName"
+             ng-required
+             focus-input="roomCtrl.focusInput['roomName']"/>
+      <button ng-click="roomCtrl.editRoomName()" class="btn btn-default btn-xs" type="submit">Save</button>
+    </form>
+    </span>
+    </h5>
+    <span class="btn-group room-toolbar">
+      <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <span class="fa fa-sliders"></span>
+      </button>
+      <ul class="dropdown-menu">
+        <li><a ui-sref="dashboard">Manage Rooms</a></li>
+        <li><a href="" ng-click="roomCtrl.deleteRoom()">Delete Room</a></li>
+      </ul>
+    </span>
   </div>
 </div>
 
 <div class="container" ng-init="roomCtrl.init()">
   <div class="row">
 
-    <div class="col-md-8" ng-cloak="roomCtrl.reminders">
+    <div class="col-md-6" ng-cloak="roomCtrl.reminders">
       <ul class="list-inline">
         <li><h5>Reminders</h5></li>
         <li>
@@ -16,7 +43,7 @@
       </ul>
 
       <md-content class="md-padding">
-        <div layout="row" layout-xs="column">
+        <div layout="column" layout-xs="column">
           <md-card flex flex-gt-xs="40" ng-repeat="reminder in roomCtrl.reminders">
             <md-card-actions layout="row" layout-align="end center">
               <md-button ng-click="roomCtrl.deleteReminder(reminder)" class="close">x</md-button>
@@ -31,7 +58,7 @@
       </md-content>
     </div>
 
-    <div class="col-md-4" ng-cloak="roomCtrl.roommates">
+    <div class="col-md-6" ng-cloak="roomCtrl.roommates">
       <ul class="list-inline">
         <li>
           <h5>Roommates</h5>
@@ -44,12 +71,11 @@
       <ul ng-repeat="roommate in roomCtrl.roommates">
         <li>
           {{ roommate.name }} |
-          <span class="btn-group">
-            <button class="fa fa-edit" aria-hidden="true" ng-click="roomCtrl.editRoommate(roommate)"></button> | <button class="fa fa-ban" aria-hidden="true" ng-click="roomCtrl.deleteRoommate(roommate)"></button>
-          </span>
+        <span class="btn-group">
+          <button class="fa fa-edit" aria-hidden="true" ng-click="roomCtrl.editRoommate(roommate)"></button> | <button class="fa fa-ban" aria-hidden="true" ng-click="roomCtrl.deleteRoommate(roommate)"></button>
+        </span>
         </li>
       </ul>
     </div>
-
   </div>
 </div>
