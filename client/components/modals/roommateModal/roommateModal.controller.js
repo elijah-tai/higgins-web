@@ -41,7 +41,7 @@ class RoommateModalController {
     }
   }
 
-  edit() {    
+  edit() {
     var nameExists = true;
     if (!this.name) {
       this.alertService.showFormAlert('roommateName');
@@ -67,10 +67,6 @@ class RoommateModalController {
   cancel() {
     this.$uibModalInstance.dismiss('cancel');
     this.focusInput = false;
-  }
-
-  validate() {
-    
   }
 
 }

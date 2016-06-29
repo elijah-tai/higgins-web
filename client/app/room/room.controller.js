@@ -2,61 +2,71 @@
 
 class RoomController {
 
-  constructor($state, $scope, $rootScope, $uibModal, $log, roomService, roommateService, reminderService, socket) {
+  constructor($state, $stateParams, $scope, $rootScope, $uibModal, $log, roomService,
+              roommateService, reminderService, alertService, socket) {
     this.$state = $state;
+    this.$stateParams = $stateParams;
     this.$scope = $scope;
     this.$rootScope = $rootScope;
+
+    // TODO: How can we access the deleteRoom() function from parent?
+    this.$rootScope.deleteRoom = this.deleteRoom;
+
     this.$uibModal = $uibModal;
     this.$log = $log;
     this.socket = socket;
 
+    this.editingRoomName = false;
+
     this.roomService = roomService;
     this.roommateService = roommateService;
     this.reminderService = reminderService;
+    this.alertService = alertService;
 
     this.roomId = null;
     this.roomName = '';
     this.roommates = [];
     this.reminders = [];
 
-    $scope.$on('$destroy', function() {
+    this.focusInput = {
+      'roomName': false
+    };
+
+    $scope.$on('$destroy', () => {
       socket.unsyncUpdates('roommate');
     });
 
-    $scope.$on('$destroy', function() {
+    $scope.$on('$destroy', () => {
       socket.unsyncUpdates('reminder');
     });
+
   }
 
   // NOTE: would it be possible to put this init into the constructor?
   init() {
     this.$rootScope.nav.getCurrentUser(function(user) {
       return user;
-    })
-      .then(user => {
+    }).then(user => {
         this.currentUser = user;
-        var opts = {
-          userId: this.currentUser._id
-        };
-        this.roomService.getRoomByUserId( opts )
-          .then(response => {
-            // get first room in rooms array
-            this.roomId = response.data[0]._id;
-            this.roomName = response.data[0].name;
-            return this.roomId;
-          })
-          .then(roomId => {
-            this.roomService.populateRoommates({ roomId: roomId })
-              .then(response => {
-                this.roommates = response.data.roommates;
-                this.socket.syncUpdates('roommate', this.roommates);
-              });
+    });
 
-            this.roomService.populateReminders({ roomId: roomId })
-              .then(response => {
-                this.reminders = response.data.reminders;
-                this.socket.syncUpdates('reminder', this.reminders);
-              });
+    this.roomService.getRoom({ roomId: this.$stateParams.roomId })
+      .then(response => {
+        this.roomId = response.data._id;
+        this.roomName = response.data.name;
+        return this.roomId;
+      })
+      .then(roomId => {
+        this.roomService.populateRoommates({ roomId: roomId })
+          .then(response => {
+            this.roommates = response.data.roommates;
+            this.socket.syncUpdates('roommate', this.roommates);
+          });
+
+        this.roomService.populateReminders({ roomId: roomId })
+          .then(response => {
+            this.reminders = response.data.reminders;
+            this.socket.syncUpdates('reminder', this.reminders);
           });
       });
   }
@@ -149,16 +159,19 @@ class RoomController {
     for (var phone in assignees) {
       if (assignees[phone] === true) {
         for (var rm in this.roommates) {
-          if (this.roommates[rm].phone === phone) {
+          console.log(rm);
+          if (this.roommates[rm].phone === parseInt(phone)) {
             roommateIdArray.push(this.roommates[rm]._id);
           }
         }
       }
     }
+
     return roommateIdArray;
   }
 
   addReminder(reminder) {
+    console.log(reminder.assignees);
     this.reminderService.createReminder({
       name: reminder.name,
       assignees: this.getRoommateIds(reminder.assignees),
@@ -176,8 +189,6 @@ class RoomController {
 
   deleteReminder(reminder) {
     this.reminderService.deleteReminder({reminderId: reminder._id});
-
-    // TODO: Also need to delete reminder from all rooms
   }
 
   openAddReminderModal() {
@@ -201,6 +212,43 @@ class RoomController {
         self.addReminder(addedReminder);
       }, function() {
         self.$log.info('add reminder modal dismissed');
+      });
+  }
+
+  editRoomName() {
+    if (this.roomName === '') {
+      this.alertService.showFormAlert('roomName');
+      this.editingRoomName = true;
+    } else {
+      this.editingRoomName = false;
+      this.roomService.updateRoom({ roomId: this.roomId }, { name: this.roomName });
+    }
+  }
+
+  deleteRoom() {
+    var self = this;
+    this.$uibModal.open({
+      animation: true,
+      backdrop: false,
+      templateUrl: 'components/modals/roomModal/confirmDeleteRoomModal.html',
+      controller: 'RoomModalController',
+      controllerAs: 'roomModalCtrl',
+      keyboard: true,
+      size: 'sm',
+      resolve: {
+        roomId: function() {
+          return self.roomId;
+        }
+      }
+    })
+      .result
+      .then(function(deletedRoomId) {
+        self.roomService.deleteRoom({ roomId: deletedRoomId })
+          .then(() => {
+            self.$state.go('dashboard');
+          });
+      }, function() {
+        self.$log.info('delete room modal dismissed');
       });
   }
 

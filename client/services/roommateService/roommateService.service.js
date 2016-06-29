@@ -8,7 +8,7 @@ angular.module('higginsApp.roommateService', [])
     };
 
     var createRoommate = function( form ) {
-      return $http.post('/api/roommates', form );
+      return $http.post('/api/roommates', form);
     };
 
     var deleteRoommate = function( opts ) {
