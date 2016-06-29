@@ -3,16 +3,17 @@
 class SignupController {
   //end-non-standard
 
-  constructor(Auth, $rootScope, $state, roomService, userService) {
-      this.Auth = Auth;
-      this.$rootScope = $rootScope;
-      this.$state = $state;
+  constructor(Auth, $rootScope, $state, roomService, roommateService, userService) {
+    this.Auth = Auth;
+    this.$rootScope = $rootScope;
+    this.$state = $state;
 
-      this.roomService = roomService;
-      this.userService = userService;
+    this.roomService = roomService;
+    this.roommateService = roommateService;
+    this.userService = userService;
 
-      this.focusInput = true;
-    }
+    this.focusInput = true;
+  }
     //start-non-standard
 
   register(form) {
@@ -42,10 +43,17 @@ class SignupController {
                     { userId: user._id },
                     { roomId: roomId }
                   );
-
-                  this.roomService.addRoommate({ roomId: roomId, roommateId: user._id })
-                    .then(() => {
-                      this.$state.go('room', { roomId: roomId });
+                  this.roommateService.createRoommate({
+                    _roomId: roomId,
+                    name: user.name,
+                    phone: user.phone
+                  })
+                    .then((response) => {
+                      var roommateId = response.data._id;
+                      this.roomService.addRoommate({ roomId: roomId, roommateId: roommateId })
+                        .then(() => {
+                          this.$state.go('room', { roomId: roomId });
+                        });
                     });
                 });
             });
