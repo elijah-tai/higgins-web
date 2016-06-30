@@ -57,11 +57,6 @@ var all = {
     clientID:     process.env.GOOGLE_ID || 'id',
     clientSecret: process.env.GOOGLE_SECRET || 'secret',
     callbackURL:  (process.env.DOMAIN || '') + '/auth/google/callback'
-  },
-
-  twilio: {
-    accountSid: process.env.TWILIO_SID || 'AC360ef829d096f3395c5b31a14d7bed28',
-    authToken: process.env.TWILIO_AUTH_TOKEN || '24c72c1643740874096b8ae98a014508'
   }
 
 };
