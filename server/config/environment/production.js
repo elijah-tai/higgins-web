@@ -20,5 +20,13 @@ module.exports = {
           process.env.OPENSHIFT_MONGODB_DB_URL +
           process.env.OPENSHIFT_APP_NAME ||
           'mongodb://localhost/higgins'
+  },
+
+  // wj's twilio
+  twilio: {
+    accountSid: process.env.TWILIO_SID || 'AC360ef829d096f3395c5b31a14d7bed28',
+    authToken: process.env.TWILIO_AUTH_TOKEN || '24c72c1643740874096b8ae98a014508',
+    phoneNumber: process.env.TWILIO_NUM || '+16476943681'
   }
+
 };

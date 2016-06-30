@@ -12,6 +12,7 @@
 var scheduler = require('../../components/scheduler/scheduler.js');
 
 import _ from 'lodash';
+import logger from 'winston';
 import Reminder from './reminder.model';
 
 function respondWithResult(res, statusCode) {
@@ -79,10 +80,12 @@ export function show(req, res) {
 
 // Creates a new Reminder in the DB
 export function create(req, res) {
-  return Reminder.create(req.body)
+  var newReminder = new Reminder(req.body);
+  return newReminder.save(function(err, reminder) {
+    scheduler.createSchedule(reminder)
+  })
     .then(respondWithResult(res, 201))
-    .then(scheduler.createSchedule(req.body))
-    .catch(handleError(res));
+    .catch(handleError(res))
 }
 
 // Updates an existing Reminder in the DB
@@ -99,6 +102,7 @@ export function update(req, res) {
 
 // Deletes a Reminder from the DB
 export function destroy(req, res) {
+  scheduler.cancelScheduledJobs(req.params.id);
   return Reminder.findById(req.params.id).exec()
     .then(handleEntityNotFound(res))
     .then(removeEntity(res))

@@ -13,7 +13,7 @@ class ReminderModalController {
 
     this.reminder = {
       name: '',
-      assignees: [],
+      assignees: {},
       datetime: new Date(),
       doesRecur: false,
       recurType: null
@@ -67,7 +67,7 @@ class ReminderModalController {
     }
 
     var AssigneeAdded = true;
-    if (this.reminder.assignees.length === 0) {
+    if (Object.keys(this.reminder.assignees).length === 0) {
       AssigneeAdded = false;
       this.alertService.showFormAlert('atLeastOneAssignee');
     }

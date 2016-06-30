@@ -8,7 +8,7 @@ import Room from '../api/room/room.model';
 import User from '../api/user/user.model';
 import Roommate from '../api/roommate/roommate.model';
 import Reminder from '../api/reminder/reminder.model';
-import winston from 'winston';
+import logger from 'winston';
 
 User.find({}).remove()
   .then(() => {
@@ -26,19 +26,19 @@ User.find({}).remove()
       password: 'admin'
     })
       .then(() => {
-        winston.info('finished populating users');
+        logger.info('finished populating users');
       })
       .then(() => {
         User.findOne({ name: 'Test User' }, function(err, user) {
           Room.update({ name: 'Test Room' }, { $set: { _creator: user._id }})
             .then(() => {
-              winston.info('finished adding Test User to Test Room\'s _creator field');
+              logger.info('finished adding Test User to Test Room\'s _creator field');
             })
             .then(() => {
               Room.findOne({ name: 'Test Room' }, function(err, room) {
                 User.update({ name: 'Test User' }, { $push: { rooms: room._id }})
                   .then(() => {
-                    winston.info('finished adding Test Room to Test User\'s rooms array');
+                    logger.info('finished adding Test Room to Test User\'s rooms array');
                   })
               })
             })
@@ -55,7 +55,7 @@ Room.find({}).remove()
       roommates: []
     })
     .then(() => {
-      winston.info('finished populating rooms');
+      logger.info('finished populating rooms');
     });
   });
 
@@ -69,7 +69,7 @@ Roommate.find({}).remove()
       phone: 234567819
     })
       .then(() => {
-        winston.info('finished populating roommates');
+        logger.info('finished populating roommates');
       });
   });
 
@@ -80,7 +80,7 @@ Reminder.find({}).remove()
        name: 'Test reminder'
     })
   .then(() => {
-      winston.info('finished populating reminders');
+      logger.info('finished populating reminders');
     });
   });
 
@@ -91,6 +91,6 @@ Reminder.find({}).remove()
        name: 'Test reminder'
     })
   .then(() => {
-      winston.info('finished populating reminders');
+      logger.info('finished populating reminders');
     });
   });
