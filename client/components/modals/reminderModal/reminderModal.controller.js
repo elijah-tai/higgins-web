@@ -4,76 +4,71 @@ class ReminderModalController {
 
   constructor($scope, $uibModalInstance, alertService) {
     this.$scope = $scope;
+
     this.$uibModalInstance = $uibModalInstance;
     this.alertService = alertService;
     this.focusInput = true;
-    this.dateTimePickerOpen = false;
+    this.chooseNewDate = true;
 
     this.roommates = this.$scope.$resolve.roommates;
 
-    this.reminder = {
-      name: '',
-      assignees: {},
-      datetime: new Date(),
-      doesRecur: false,
-      recurType: null
-    };
+    if (!!this.$scope.$resolve.reminder) {
 
-    var self = this;
+      this.reminder = {
+        _id : this.$scope.$resolve.reminder._id,
+        name : this.$scope.$resolve.reminder.name,
+        assignees: this.populateAssigneeDict(this.$scope.$resolve.reminder.assignees),
+        datetime: this.$scope.$resolve.reminder.datetime,
+        doesRecur: this.$scope.$resolve.reminder.doesRecur,
+        recurType: this.$scope.$resolve.reminder.recurType
+      };
 
-    // date picker
-    this.dateOptions = {
-      min: new Date(),
-      format: 'mmmm d, yyyy',
-      onSet: function(e) {
-        // e.select is number of milliseconds since Unix Epoch
-        self.date = new Date(e.select);
-        if (!!self.time) {
-          var secondsSinceEpoch = self.date.setMinutes(self.time);
-          self.reminder.datetime = new Date(secondsSinceEpoch);
-        }
-      }
-    };
+    } else {
 
-    // time picker
-    this.timeOptions = {
-      min: new Date(),
-      interval: 1,
-      closeOnSelect: true,
-      onSet: function(e) {
-        self.time = e.select;
-        if (!!self.date) {
-          // e.select is number of minutes after midnight
-          var date = self.date;
-          var secondsSinceEpoch = date.setMinutes(e.select);
-          self.reminder.datetime = new Date(secondsSinceEpoch);
-        }
-      }
-    };
+      this.reminder = {
+        name: '',
+        assignees: {},
+        datetime: new Date(),
+        doesRecur: false,
+        recurType: null
+      };
+
+    }
+
+    this.minDate = new Date();
+
+  }
+
+  populateAssigneeDict(assignees) {
+    var dict = {};
+    assignees.forEach(function (a) {
+      dict[a] = true;
+    });
+    return dict;
   }
 
   openReminderDateTimePicker(e) {
     e.preventDefault();
     e.stopPropagation();
-
-    this.dateTimePickerOpen = true;
   }
 
+  // TODO: add checking for prev reminder === reminder so that we dont always send the put/post?
   add() {
-    var reminderNameExists = true;
+    var reminderNameExists = true,
+      AssigneeAdded = true,
+      dateTimePicked = true;
+
     if (!this.reminder.name) {
       reminderNameExists = false;
       this.alertService.showFormAlert('reminderName');
     }
 
-    var AssigneeAdded = true;
     if (Object.keys(this.reminder.assignees).length === 0) {
       AssigneeAdded = false;
       this.alertService.showFormAlert('atLeastOneAssignee');
     }
 
-    var dateTimePicked = true;
-    if (!this.time || !this.date) {
+    if (!this.reminder.datetime) {
       dateTimePicked = false;
       this.alertService.showFormAlert('reminderDateTime');
     }
@@ -85,7 +80,30 @@ class ReminderModalController {
   }
 
   edit() {
+    var reminderNameExists = true,
+        AssigneeAdded = true,
+        dateTimePicked = true;
 
+    if (!this.reminder.name) {
+      reminderNameExists = false;
+      this.alertService.showFormAlert('reminderName');
+    }
+
+    if (Object.keys(this.reminder.assignees).length === 0) {
+      AssigneeAdded = false;
+      this.alertService.showFormAlert('atLeastOneAssignee');
+    }
+
+    if (!this.reminder.datetime) {
+      dateTimePicked = false;
+      this.alertService.showFormAlert('reminderDateTime');
+    }
+
+    if ( (!this.chooseNewDate && this.reminder.datetime) ||
+         (reminderNameExists && dateTimePicked && AssigneeAdded) ) {
+      this.$uibModalInstance.close(this.reminder);
+      this.focusInput = false;
+    }
   }
 
 

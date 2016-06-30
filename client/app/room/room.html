@@ -46,7 +46,8 @@
         <div layout="column" layout-xs="column">
           <md-card flex flex-gt-xs="40" ng-repeat="reminder in roomCtrl.reminders">
             <md-card-actions layout="row" layout-align="end center">
-              <md-button ng-click="roomCtrl.deleteReminder(reminder)" class="close">x</md-button>
+              <md-button ng-click="roomCtrl.openEditReminderModal(reminder)"><span class="fa fa-pencil"></span></md-button>
+              <md-button ng-click="roomCtrl.deleteReminder(reminder)"><span class="fa fa-times"></span></md-button>
             </md-card-actions>
             <h5>{{ reminder.name }}</h5>
             <md-card-content>
@@ -72,7 +73,7 @@
         <li>
           {{ roommate.name }} |
         <span class="btn-group">
-          <button class="fa fa-edit" aria-hidden="true" ng-click="roomCtrl.editRoommate(roommate)"></button> | <button class="fa fa-ban" aria-hidden="true" ng-click="roomCtrl.deleteRoommate(roommate)"></button>
+          <button class="fa fa-edit" aria-hidden="true" ng-click="roomCtrl.openEditRoommateModal(roommate)"></button> | <button class="fa fa-ban" aria-hidden="true" ng-click="roomCtrl.deleteRoommate(roommate)"></button>
         </span>
         </li>
       </ul>

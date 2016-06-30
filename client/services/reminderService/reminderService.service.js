@@ -12,7 +12,7 @@ angular.module('higginsApp.reminderService', [])
     };
 
     var editReminder = function( opts, form ) {
-      return $http.put('/api/reminder/' + opts.reminderId, form);
+      return $http.put('/api/reminders/' + opts.reminderId, form);
     };
 
     // Public API here

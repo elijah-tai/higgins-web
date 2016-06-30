@@ -71,9 +71,8 @@ class RoomController {
       });
   }
 
-  addRoommate(addedRoommate) {
+  addRoommate(roommate) {
     // create roommate and add to room
-    var roommate = addedRoommate;
     this.roommateService.createRoommate({
       _roomId: this.roomId,
       name: roommate.name,
@@ -81,13 +80,23 @@ class RoomController {
     })
       .then(response => {
         var roommateId = response.data._id;
-
         var opts = {
           roomId: this.roomId,
           roommateId: roommateId
         };
         this.roomService.addRoommate( opts );
       });
+  }
+
+  editRoommate(roommate) {
+    var opts = {
+      roommateId: roommate._id
+    };
+    var form = {
+      name: roommate.name,
+      phone: roommate.phone
+    };
+    this.roommateService.editRoommate(opts, form);
   }
 
   deleteRoommate(roommate) {
@@ -100,7 +109,7 @@ class RoomController {
     // this.roomService.deleteRoommate( opts ); --> query reminders for roommates, then delete
   }
 
-  editRoommate(roommate) {
+  openEditRoommateModal(roommate) {
     var self = this;
     this.$uibModal
       .open({
@@ -119,14 +128,7 @@ class RoomController {
       })
       .result
       .then(function(editedRoommate) {
-        var opts = {
-          roommateId: editedRoommate._id
-        };
-        var form = {
-          name: editedRoommate.name,
-          phone: editedRoommate.phone
-        };
-        self.roommateService.editRoommate(opts, form);
+        self.editRoommate(editedRoommate);
       }, function() {
         self.$log.info('edit roommate modal dismissed');
       });
@@ -156,12 +158,11 @@ class RoomController {
   /* jshint loopfunc:true */
   getRoommateIds(assignees) {
     var roommateIdArray = [];
-    for (var phone in assignees) {
-      if (assignees[phone] === true) {
+    for (var id in assignees) {
+      if (assignees[id] === true) {
         for (var rm in this.roommates) {
-          console.log(rm);
-          if (this.roommates[rm].phone === parseInt(phone)) {
-            roommateIdArray.push(this.roommates[rm]._id);
+          if (this.roommates[rm]._id === id) {
+            roommateIdArray.push(id);
           }
         }
       }
@@ -171,20 +172,37 @@ class RoomController {
   }
 
   addReminder(reminder) {
-    console.log(reminder.assignees);
     this.reminderService.createReminder({
+      _roomId: this.roomId,
       name: reminder.name,
       assignees: this.getRoommateIds(reminder.assignees),
       datetime: reminder.datetime,
       doesRecur: reminder.doesRecur,
       recurType: reminder.recurType,
       active: true
-    }).then(response => {
+    };
+    this.reminderService.createReminder(form).then(response => {
       this.roomService.addReminder({
         roomId: this.roomId,
         reminderId: response.data._id
       });
     });
+  }
+
+  editReminder(reminder) {
+    var opts = {
+      reminderId: reminder._id
+    };
+    // the api reminder controller deletes the _id field
+    var form = {
+      name: reminder.name,
+      assignees: this.getRoommateIds(reminder.assignees),
+      datetime: reminder.datetime,
+      doesRecur: reminder.doesRecur,
+      recurType: reminder.recurType,
+      active: true
+    };
+    this.reminderService.editReminder(opts, form);
   }
 
   deleteReminder(reminder) {
@@ -212,6 +230,33 @@ class RoomController {
         self.addReminder(addedReminder);
       }, function() {
         self.$log.info('add reminder modal dismissed');
+      });
+  }
+
+  openEditReminderModal(reminder) {
+    var self = this;
+    this.$uibModal.open({
+      animation: true,
+      backdrop: false,
+      templateUrl: 'components/modals/reminderModal/editReminderModal.html',
+      controller: 'ReminderModalController',
+      controllerAs: 'reminderModalCtrl',
+      keyboard: true,
+      size: 'md',
+      resolve: {
+        roommates: function() {
+          return self.roommates;
+        },
+        reminder: function() {
+          return reminder;
+        }
+      }
+    })
+      .result
+      .then(function(editedReminder) {
+        self.editReminder(editedReminder);
+      }, function() {
+        self.$log.info('edit reminder modal dismissed');
       });
   }
 

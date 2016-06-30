@@ -4,6 +4,10 @@ import mongoose from 'mongoose';
 import {Schema} from 'mongoose';
 
 var ReminderSchema = new mongoose.Schema({
+  _roomId: {
+    type: Schema.ObjectId,
+    ref: 'Room'
+  },
   name: {
     type: String,
     trim: true

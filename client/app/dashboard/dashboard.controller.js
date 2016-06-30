@@ -4,7 +4,6 @@ class DashboardController {
 
   constructor($state, $rootScope, $scope, roomService, roommateService, userService, socket) {
     this.$state = $state;
-    this.$state.isCreatingRoom = false;
     this.$rootScope = $rootScope;
     this.$rootScope.currentRoom = null;
     this.$scope = $scope;
@@ -18,7 +17,7 @@ class DashboardController {
     this.roomName = '';
     this.hasRooms = false;
     this.rooms = [];
-    this.room = '';
+    this.isCreatingRoom = false;
 
     $scope.$on('$destroy', () => {
       socket.unsyncUpdates('room');
@@ -72,7 +71,7 @@ class DashboardController {
                       var roommateId = response.data._id;
                       this.roomService.addRoommate({ roomId: roomId, roommateId: roommateId });
                     });
-                  this.$state.isCreatingRoom = false;
+                  this.isCreatingRoom = false;
                   this.checkHasRooms();
                 });
             });
@@ -97,7 +96,7 @@ class DashboardController {
   }
 
   showRoomNameInput() {
-    this.$state.isCreatingRoom = true;
+    this.isCreatingRoom = true;
   }
 
 }
