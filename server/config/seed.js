@@ -62,8 +62,8 @@ Room.find({}).remove()
 Roommate.find({}).remove()
   .then(() => {
     Roommate.create({
-      name: 'Test roommate 1',
-      phone: 1234567890
+      name: 'WonJune',
+      phone: 4169099753
     },{
       name: 'Test2',
       phone: 234567819
@@ -71,26 +71,4 @@ Roommate.find({}).remove()
       .then(() => {
         logger.info('finished populating roommates');
       });
-  });
-
-
-Reminder.find({}).remove()
-  .then(() => {
-    Reminder.create({
-       name: 'Test reminder'
-    })
-  .then(() => {
-      logger.info('finished populating reminders');
-    });
-  });
-
-
-Reminder.find({}).remove()
-  .then(() => {
-    Reminder.create({
-       name: 'Test reminder'
-    })
-  .then(() => {
-      logger.info('finished populating reminders');
-    });
   });

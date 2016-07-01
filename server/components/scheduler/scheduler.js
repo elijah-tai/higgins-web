@@ -29,7 +29,6 @@ agenda.on('ready', function() {
 agenda.define('send notification', function(job, done) {
   var reminder = job.attrs.data;
   logger.info('send notification called ', reminder);
-  // done();
 
   // comment while testing locally
   Roommate.find({_id:  { $in: reminder.assignees }}).exec()
@@ -91,6 +90,7 @@ agenda.define('schedule reminder', function(job, done) {
   } else {
     agenda.now('send notification', reminder);
   }
+
   done();
 });
 
