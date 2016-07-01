@@ -171,8 +171,8 @@ class RoomController {
   }
 
   addReminder(reminder) {
-    console.log(reminder.assignees);
     this.reminderService.createReminder({
+      _roomId: this.roomId,
       name: reminder.name,
       assignees: this.getRoommateIds(reminder.assignees),
       datetime: reminder.datetime,

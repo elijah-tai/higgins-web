@@ -14,6 +14,8 @@ var scheduler = require('../../components/scheduler/scheduler.js');
 import _ from 'lodash';
 import logger from 'winston';
 import Reminder from './reminder.model';
+import Room from '../room/room.model';
+import mongoose from 'mongoose';
 
 function respondWithResult(res, statusCode) {
   statusCode = statusCode || 200;
@@ -41,6 +43,7 @@ function removeEntity(res) {
       return entity.remove()
         .then(() => {
           res.status(204).end();
+          return res;
         });
     }
   };
@@ -103,7 +106,20 @@ export function update(req, res) {
 // Deletes a Reminder from the DB
 export function destroy(req, res) {
   scheduler.cancelScheduledJobs(req.params.id);
-  return Reminder.findById(req.params.id).exec()
+
+  return Reminder.findById(req.params.id, function(err, reminder) {
+
+    Room.update(
+      {_id: reminder._roomId},
+      {$pullAll: {reminders: [new mongoose.Types.ObjectId(req.params.id)]}},
+      null, function(err, result) {
+        if (err) {
+          logger.error(err);
+        }
+        logger.info('`reminder.controller.destroy` - Reminder successfully removed from room. Ok status: ' + result.ok);
+      });
+
+  })
     .then(handleEntityNotFound(res))
     .then(removeEntity(res))
     .catch(handleError(res));
