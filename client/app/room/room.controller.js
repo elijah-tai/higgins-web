@@ -170,7 +170,7 @@ class RoomController {
 
     return roommateIdArray;
   }
-
+  
   addReminder(reminder) {
     this.reminderService.createReminder({
       _roomId: this.roomId,
@@ -180,8 +180,7 @@ class RoomController {
       doesRecur: reminder.doesRecur,
       recurType: reminder.recurType,
       active: true
-    };
-    this.reminderService.createReminder(form).then(response => {
+    }).then(response => {
       this.roomService.addReminder({
         roomId: this.roomId,
         reminderId: response.data._id
