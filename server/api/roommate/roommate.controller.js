@@ -10,7 +10,10 @@
 'use strict';
 
 import _ from 'lodash';
+import logger from 'winston';
 import Roommate from './roommate.model';
+import Room from '../room/room.model';
+import mongoose from 'mongoose';
 
 function respondWithResult(res, statusCode) {
   statusCode = statusCode || 200;
@@ -97,7 +100,19 @@ export function update(req, res) {
 
 // Deletes a Roommate from the DB
 export function destroy(req, res) {
-  return Roommate.findById(req.params.id).exec()
+  return Roommate.findById(req.params.id, function(err, roommate) {
+
+    Room.update(
+      {_id: roommate._roomId},
+      {$pullAll: {roommates: [new mongoose.Types.ObjectId(req.params.id)]}},
+      null, function(err, result) {
+        if (err) {
+          logger.error(err);
+        }
+        logger.info('`roommate.controller.destroy` - roommate successfully removed from room. Ok status: ' + result.ok);
+      });
+
+  })
     .then(handleEntityNotFound(res))
     .then(removeEntity(res))
     .catch(handleError(res));

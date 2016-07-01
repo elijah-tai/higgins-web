@@ -13,6 +13,8 @@ import _ from 'lodash';
 import mongoose from 'mongoose';
 import logger from 'winston';
 import Room from './room.model';
+import Reminder from '../reminder/reminder.model';
+import Roommate from '../roommate/roommate.model';
 
 function respondWithResult(res, statusCode) {
   statusCode = statusCode || 200;
@@ -42,6 +44,7 @@ function removeEntity(res) {
       return entity.remove()
         .then(() => {
           res.status(204).end();
+          return res;
         });
     }
   };
@@ -102,7 +105,11 @@ export function update(req, res) {
 
 // Deletes a Room from the DB
 export function destroy(req, res) {
-  return Room.findById(req.params.id).exec()
+  return Room.findById(req.params.id, function(err, room) {
+    if (err) logger.error(err);
+    Reminder.remove({_id: {$in: room.reminders}}).exec();
+    Roommate.remove({_id: {$in: room.roommates}}).exec();
+  }).exec()
     .then(handleEntityNotFound(res))
     .then(removeEntity(res))
     .catch(handleError(res));
