@@ -4,9 +4,10 @@ class ReminderModalController {
 
   constructor($scope, $uibModalInstance, alertService) {
     this.$scope = $scope;
-
     this.$uibModalInstance = $uibModalInstance;
     this.alertService = alertService;
+    this._ = _;
+
     this.focusInput = true;
     this.chooseNewDate = true;
 
@@ -22,6 +23,7 @@ class ReminderModalController {
         doesRecur: this.$scope.$resolve.reminder.doesRecur,
         recurType: this.$scope.$resolve.reminder.recurType
       };
+      this.prevReminder = angular.copy(this.reminder);
 
     } else {
 
@@ -52,7 +54,6 @@ class ReminderModalController {
     e.stopPropagation();
   }
 
-  // TODO: add checking for prev reminder === reminder so that we dont always send the put/post?
   add() {
     var reminderNameExists = true,
       AssigneeAdded = true,
@@ -101,7 +102,11 @@ class ReminderModalController {
 
     if ( (!this.chooseNewDate && this.reminder.datetime) ||
          (reminderNameExists && dateTimePicked && AssigneeAdded) ) {
-      this.$uibModalInstance.close(this.reminder);
+      if (this._.isEqual(this.prevReminder, this.reminder)) {
+        this.$uibModalInstance.dismiss('no change');
+      } else {
+        this.$uibModalInstance.close(this.reminder);
+      }
       this.focusInput = false;
     }
   }

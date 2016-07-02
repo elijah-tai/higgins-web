@@ -10,7 +10,7 @@ angular.module('higginsApp',
     'higginsApp.userService',
     'higginsApp.alertService',
     'ngAnimate',
-    'ngCookies', 
+    'ngCookies',
     'ngResource',
     'ngSanitize',
     'ngMaterial',
@@ -25,6 +25,7 @@ angular.module('higginsApp',
     'frapontillo.bootstrap-switch',
     'datePicker']
 )
+  .constant('_', window._)
   .config(function($urlRouterProvider, $locationProvider) {
     $urlRouterProvider.otherwise('/');
     $locationProvider.html5Mode(true);

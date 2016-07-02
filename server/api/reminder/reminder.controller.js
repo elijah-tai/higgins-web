@@ -27,10 +27,16 @@ function respondWithResult(res, statusCode) {
   };
 }
 
-function saveUpdates(updates) {
+function saveUpdates(id, updates) {
   return function(entity) {
     var updated = _.extend(entity, updates);
-    return updated.save()
+    return updated.save(function(err) {
+      if (err) {
+        logger.error('error: reminder update not saved', err)
+      } else {
+        scheduler.updateSchedule(id, updates);
+      }
+    })
       .then(updated => {
         return updated;
       });
@@ -98,7 +104,7 @@ export function update(req, res) {
   }
   return Reminder.findById(req.params.id).exec()
     .then(handleEntityNotFound(res))
-    .then(saveUpdates(req.body))
+    .then(saveUpdates(req.params.id, req.body))
     .then(respondWithResult(res))
     .catch(handleError(res));
 }
