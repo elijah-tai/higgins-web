@@ -10,7 +10,6 @@ class ReminderModalController {
     this._ = _;
 
     this.focusInput = true;
-    this.chooseNewDate = true;
 
     this.roommates = this.$scope.$resolve.roommates;
 
@@ -38,7 +37,14 @@ class ReminderModalController {
 
     }
 
-    this.minDate = new Date();
+    this.dateTimeOptions = {
+      minDate: new Date(),
+      showClose: true,
+      focusOnShow: false,
+      allowInputToggle: true,
+      format: 'ddd MMM D, YYYY h:mm a',
+      sideBySide: true
+    }
 
   }
 
@@ -102,7 +108,7 @@ class ReminderModalController {
       this.alertService.showFormAlert('reminderDateTime');
     }
 
-    if ( (!this.chooseNewDate && this.reminder.datetime) ||
+    if ( (this.reminder.datetime) ||
          (reminderNameExists && dateTimePicked && AssigneeAdded) ) {
       if (this._.isEqual(this.prevReminder, this.reminder)) {
           this.$uibModalInstance.dismiss('no change');

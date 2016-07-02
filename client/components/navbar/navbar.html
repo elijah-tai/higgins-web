@@ -7,10 +7,10 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a href="/" class="navbar-brand" ng-show="!nav.isLoggedIn()">higgins</a>
-      <a href="dashboard" class="navbar-brand" ng-if="nav.isLoggedIn()">higgins</a>
+      <a href="/" class="navbar-brand" ng-show="!nav.isLoggedIn()" ng-click="nav.isCollapsed = true">higgins</a>
+      <a href="dashboard" class="navbar-brand" ng-if="nav.isLoggedIn()" ng-click="nav.isCollapsed = true">higgins</a>
     </div>
-    <div uib-collapse="nav.isCollapsed" class="navbar-collapse collapse" id="navbar-main">
+    <div uib-collapse="nav.isCollapsed" class="navbar-collapse collapse" id="navbar-main" ng-click="nav.toggleCollapse()">
       <ul class="nav navbar-nav">
         <li ng-repeat="item in nav.menu" ui-sref-active="active">
             <a ui-sref="{{item.state}}">{{item.title}}</a>
