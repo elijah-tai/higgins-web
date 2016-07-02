@@ -7,7 +7,7 @@
 		"user",
 		"admin"
 	]
-});
+})
 
-
+;
 })(angular);

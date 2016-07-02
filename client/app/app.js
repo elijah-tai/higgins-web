@@ -21,9 +21,9 @@ angular.module('higginsApp',
     'ui.bootstrap.alert',
     'ui.bootstrap.dropdown',
     'ui.bootstrap.modal',
-    'ui.bootstrap.datetimepicker',
     'frapontillo.bootstrap-switch',
-    'datePicker']
+    'ae-datetimepicker'
+  ]
 )
   .constant('_', window._)
   .config(function($urlRouterProvider, $locationProvider) {
