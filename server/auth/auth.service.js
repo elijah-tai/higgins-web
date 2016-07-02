@@ -84,10 +84,6 @@ export function setTokenCookie(req, res) {
       var token = signToken(req.user._id, req.user.role);
       res.cookie('token', token);
       winston.info('Is user onboarded: ', user.onboarded);
-      if (user.onboarded === false) {
-        return res.redirect('/onboarding/room');
-      } else {
-        return res.redirect('/dashboard');
-      }
+      return res.redirect('/dashboard');
     });
 }
