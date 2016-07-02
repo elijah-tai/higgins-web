@@ -122,37 +122,8 @@ function cancelScheduleReminder(id) {
   });
 }
 
-export function updateSchedule(id, reminder) {
-  // There should only be 1 job for a given id at a time
-  agenda.jobs({'data._id': id}, function(err, jobs) {
-    jobs.forEach(function(job) {
-      logger.info('editing job: ', id);
-
-      // agenda sometimes saves stored datetime as Date object
-      if (typeof job.attrs.data.datetime === 'object') {
-        job.attrs.data.datetime = job.attrs.data.datetime.toISOString();
-      }
-
-      // if the datetime hasnt changed
-      // edit this job (regardless of whether it is schedule or send)
-      if ( (job.attrs.data.datetime === reminder.datetime.toString()) &&
-           (job.attrs.data.doesRecur === reminder.doesRecur) &&
-           (job.attrs.data.recurType === reminder.recurType) ) {
-        // logger.info('saved in place');
-        job.attrs.data.name = reminder.name;
-        job.attrs.data.assignees = reminder.assignees;
-        job.save(function(err) { if (err) { logger.error(err); } });
-      // otherwise recreate it
-      } else {
-        // logger.info('created new');
-        job.remove(function(err) { if (err) { logger.error(err); } });
-        var reminderObj = reminder;
-        reminderObj.id = id;
-        createSchedule(reminderObj)
-      }
-      
-    });
-  });
+function scheduleDatePassed() {
+  logger.error('attempting to schedule a reminder with a date that has passed');
 }
 
 export function cancelScheduledJobs(id) {
@@ -160,18 +131,100 @@ export function cancelScheduledJobs(id) {
   cancelScheduleReminder(id);
 }
 
+export function updateSchedule(id, reminder) {
+  // There should only be 1 job for a given id at a time
+  // send-notification for one-time reminders are deleted once they occur,
+  // thus, they are not caught by this function
+  agenda.jobs({'data._id': id}, function(err, jobs) {
+    jobs.forEach(function(job) {
+      logger.info('editing job: ', id);
+      var now = Date.now(),
+          hasHappened = moment(now).isAfter(job.attrs.data.datetime),
+          datePast = moment(now).isAfter(reminder.datetime);
+      
+      // agenda sometimes saves stored datetime as Date object
+      if (typeof job.attrs.data.datetime === 'object') {
+        job.attrs.data.datetime = job.attrs.data.datetime.toISOString();
+      }
+
+      // if the datetime hasnt changed, edit this job
+      // (regardless of whether it is schedule rem / send notif)
+      if ( (job.attrs.data.datetime === reminder.datetime.toString()) &&
+           (job.attrs.data.doesRecur === reminder.doesRecur) &&
+           (job.attrs.data.recurType === reminder.recurType) ) {
+        logger.info('saved in place');
+        job.attrs.data.name = reminder.name;
+        job.attrs.data.assignees = reminder.assignees;
+        job.save(function(err) { if (err) { logger.error(err); } });
+      // If datetime has passed + new reminder has past date + was previously recurring job
+      // job.attrs.data.doesRecur is benign, since one time reminders get deleted when they occur
+      // update nextRunAt: add interval date from date last run
+      } else if (hasHappened && datePast && job.attrs.data.doesRecur) {
+        job.attrs.data.name = reminder.name;
+        job.attrs.data.assignees = reminder.assignees;
+        job.attrs.data.doesRecur = reminder.doesRecur;
+        job.attrs.data.recurType = reminder.recurType;
+        
+        // invalid date (past date) + new reminder still recurs
+        // keep the past date and update nextRunAt
+        if (reminder.doesRecur) {
+          logger.info('has happened - does recur');
+          var lastRunAt = (job.attrs.lastRunAt) ? (job.attrs.lastRunAt) : (job.attrs.data.datetime),
+              newDate = moment(lastRunAt);
+
+          switch(reminder.recurType) {
+            case 'Daily':
+              newDate.add(1, 'd');
+              break;
+            case 'Weekly':
+              newDate.add(1, 'w');
+              break;
+            case 'Monthly':
+              newDate.add(1, 'M');
+              break;
+            case 'Yearly':
+              newDate.add(1, 'y');
+              break;
+          }
+
+          job.attrs.nextRunAt = newDate.toISOString();
+          job.save(function(err) { if (err) { logger.error(err); } });
+        // invalid date (past date) + new reminder doesn't recur
+        // cancel the job
+        } else {
+          logger.info('has happened - one-time reminder');
+          job.remove(function(err) { if (err) { logger.error(err); } });
+        }
+
+      // If datetime has not passed / new valid datetime chosen, remove and recreate
+      } else {
+        logger.info('creating new');
+        job.remove(function(err) { if (err) { logger.error(err); } });
+        var reminderObj = reminder;
+        reminderObj.id = id;
+        createSchedule(reminderObj);
+      }
+      
+    });
+  });
+}
+
 export function createSchedule(reminder) {
-  var when = new Date(reminder.datetime);
-
-  var reminderObj = {
-    _id: reminder.id,
-    name: reminder.name,
-    datetime: reminder.datetime,
-    assignees: reminder.assignees,
-    recurType: reminder.recurType,
-    doesRecur: reminder.doesRecur,
-    active: reminder.active
-  };
-
-  agenda.schedule(when, 'schedule reminder', reminderObj);
+  var datePast = moment(Date.now()).isAfter(reminder.datetime);
+  if (!datePast) {
+    var reminderObj = {
+          _id: reminder.id,
+          name: reminder.name,
+          datetime: reminder.datetime,
+          assignees: reminder.assignees,
+          recurType: reminder.recurType,
+          doesRecur: reminder.doesRecur,
+          active: reminder.active
+        },
+        when = new Date(reminder.datetime);
+    agenda.schedule(when, 'schedule reminder', reminderObj);
+  } else {
+    scheduleDatePassed();
+  }
+  
 }
