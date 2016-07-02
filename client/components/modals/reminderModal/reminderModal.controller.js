@@ -42,9 +42,8 @@ class ReminderModalController {
       showClose: true,
       focusOnShow: false,
       allowInputToggle: true,
-      format: 'ddd MMM D, YYYY h:mm a',
-      sideBySide: true
-    }
+      format: 'ddd MMM D, YYYY h:mm a'
+    };
 
   }
 
