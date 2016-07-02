@@ -28,6 +28,7 @@
       <div class="input-group" ng-show="reminderModalCtrl.chooseNewDate">
         <input class="form-control"
                date-time
+               readonly="true"
                ng-model="reminderModalCtrl.reminder.datetime"
                format="dddd, MMM Do YYYY, h:mm a"
                min-date="reminderModalCtrl.minDate">
