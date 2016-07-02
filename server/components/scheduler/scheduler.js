@@ -3,6 +3,7 @@ import twilio from 'twilio';
 import logger from 'winston';
 import Roommate from '../../api/roommate/roommate.model';
 import config from '../../config/environment';
+var moment = require('moment');
 
 var agenda = new Agenda(
   {
@@ -30,6 +31,11 @@ agenda.define('send notification', function(job, done) {
   var reminder = job.attrs.data;
   logger.info('send notification called ', reminder);
 
+  // cancel this job, if one-time reminder
+  if (!reminder.doesRecur) {
+    cancelSendNotification(reminder._id);
+  }
+
   // comment while testing locally
   Roommate.find({_id:  { $in: reminder.assignees }}).exec()
     .then(roommates => {
@@ -55,17 +61,7 @@ agenda.define('schedule reminder', function(job, done) {
   logger.info('schedule reminder called ', reminder._id);
 
   // delete this schedule job from the db
-  var thisJob = {
-    'name' : 'schedule reminder',
-    'data._id' : reminder._id
-  };
-  agenda.cancel(thisJob, function(err, numRemoved) {
-    if (err) {
-      logger.error(err);
-    } else if (numRemoved) {
-      logger.info('cancelled schedule reminder', reminder._id);
-    }
-  });
+  cancelScheduleReminder(reminder._id);
 
   if (reminder.doesRecur) {
     var sendNotification = agenda.create('send notification', reminder);
@@ -98,22 +94,11 @@ agenda.define('schedule reminder', function(job, done) {
 // TODO: or when reminder updated with new date / recurrence (when implemented)
 // TODO: or when reminder has no roommates (when implemented)
 // TODO: when room is deleted, should call delete reminders (when implemented)
-export function cancelScheduledJobs(id) {
-  var scheduleReminder = {
-      'name' : 'schedule reminder',
-      'data._id' : id
-    },
-    sendNotification = {
-      'name' : 'send notification',
-      'data._id' : id
-    };
-  agenda.cancel(scheduleReminder, function(err, numRemoved) {
-    if (err) {
-      logger.error(err);
-    } else if (numRemoved) {
-      logger.info('cancelled schedule reminder', id);
-    }
-  });
+function cancelSendNotification(id) {
+  var sendNotification = {
+    'name' : 'send notification',
+    'data._id' : id
+  };
   agenda.cancel(sendNotification, function(err, numRemoved) {
     if (err) {
       logger.error(err);
@@ -121,6 +106,58 @@ export function cancelScheduledJobs(id) {
       logger.info('cancelled send notification', id);
     }
   });
+}
+
+function cancelScheduleReminder(id) {
+  var scheduleReminder = {
+    'name' : 'schedule reminder',
+    'data._id' : id
+  };
+  agenda.cancel(scheduleReminder, function(err, numRemoved) {
+    if (err) {
+      logger.error(err);
+    } else if (numRemoved) {
+      logger.info('cancelled schedule reminder', id);
+    }
+  });
+}
+
+export function updateSchedule(id, reminder) {
+  // There should only be 1 job for a given id at a time
+  agenda.jobs({'data._id': id}, function(err, jobs) {
+    jobs.forEach(function(job) {
+      logger.info('editing job: ', id);
+
+      // agenda sometimes saves stored datetime as Date object
+      if (typeof job.attrs.data.datetime === 'object') {
+        job.attrs.data.datetime = job.attrs.data.datetime.toISOString();
+      }
+
+      // if the datetime hasnt changed
+      // edit this job (regardless of whether it is schedule or send)
+      if ( (job.attrs.data.datetime === reminder.datetime.toString()) &&
+           (job.attrs.data.doesRecur === reminder.doesRecur) &&
+           (job.attrs.data.recurType === reminder.recurType) ) {
+        // logger.info('saved in place');
+        job.attrs.data.name = reminder.name;
+        job.attrs.data.assignees = reminder.assignees;
+        job.save(function(err) { if (err) { logger.error(err); } });
+      // otherwise recreate it
+      } else {
+        // logger.info('created new');
+        job.remove(function(err) { if (err) { logger.error(err); } });
+        var reminderObj = reminder;
+        reminderObj.id = id;
+        createSchedule(reminderObj)
+      }
+      
+    });
+  });
+}
+
+export function cancelScheduledJobs(id) {
+  cancelSendNotification(id);
+  cancelScheduleReminder(id);
 }
 
 export function createSchedule(reminder) {
