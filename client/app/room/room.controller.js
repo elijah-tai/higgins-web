@@ -170,7 +170,7 @@ class RoomController {
 
     return roommateIdArray;
   }
-  
+
   addReminder(reminder) {
     this.reminderService.createReminder({
       _roomId: this.roomId,
@@ -294,6 +294,16 @@ class RoomController {
       }, function() {
         self.$log.info('delete room modal dismissed');
       });
+  }
+
+  showRoommateOptions(roommate) {
+    if (typeof roommate.showOptions === 'undefined') {
+      roommate.showOptions = true;
+    } else if (roommate.showOptions === true){
+      roommate.showOptions = false;
+    } else {
+      roommate.showOptions = true;
+    }
   }
 
 }

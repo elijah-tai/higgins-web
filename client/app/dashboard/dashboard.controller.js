@@ -2,11 +2,12 @@
 
 class DashboardController {
 
-  constructor($state, $rootScope, $scope, roomService, roommateService, userService, socket) {
+  constructor($state, $rootScope, $scope, $timeout, roomService, roommateService, userService, socket) {
     this.$state = $state;
     this.$rootScope = $rootScope;
     this.$rootScope.currentRoom = null;
     this.$scope = $scope;
+    this.$timeout = $timeout;
 
     this.roomService = roomService;
     this.roommateService = roommateService;

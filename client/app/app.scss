@@ -6,6 +6,7 @@ $fa-font-path: "../bower_components/font-awesome/fonts";
 @import '../bower_components/font-awesome/scss/font-awesome';
 @import 'colors.scss';
 @import '../services/alertService/alert';
+
 /**
  * App-wide Styles
  */
@@ -27,6 +28,16 @@ $fa-font-path: "../bower_components/font-awesome/fonts";
   background: #ccc;
   color: #414141;
   padding: 0.2em 0;
+}
+
+[ng-click],
+[data-ng-click],
+[x-ng-click] {
+  cursor: pointer;
+}
+
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none !important;
 }
 
 // Component styles are injected through grunt
