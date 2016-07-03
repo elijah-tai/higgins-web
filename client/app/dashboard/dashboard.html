@@ -3,21 +3,14 @@
 </div>
 
 <div class="container">
-  <button type="button" class="btn btn-primary" ng-if="!dashCtrl.isCreatingRoom" ng-click="dashCtrl.showRoomNameInput()">
-    Create a new room
-  </button>
-</div>
-
-<div class="container" ng-if="dashCtrl.isCreatingRoom">
     <div class="col-lg-6">
       <div class="input-group">
         <input type="text" class="form-control"
-               placeholder="Enter a name for your room - be creative :)"
+               placeholder="Create a new room..."
                ng-model="dashCtrl.roomName"
-               focus-input="dashCtrl.isCreatingRoom"
                on-enter="dashCtrl.createRoom()">
       <span class="input-group-btn">
-        <button class="btn btn-default" type="button" ng-click="dashCtrl.createRoom()">Create</button>
+        <button type="button" class="btn btn-default" ng-click="dashCtrl.createRoom()">Create</button>
       </span>
       </div><!-- /input-group -->
     </div><!-- /.col-lg-6 -->
