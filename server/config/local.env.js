@@ -19,5 +19,5 @@ module.exports = {
   GOOGLE_SECRET: 'hjWDa6HNEjHYAca1_ErFzj97',
 
   // Control debug level for modules using visionmedia/debug
-  DEBUG: ''
+  DEBUG: 'http*,socket.io:socket'
 };

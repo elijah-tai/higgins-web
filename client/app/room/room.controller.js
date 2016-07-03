@@ -60,13 +60,13 @@ class RoomController {
         this.roomService.populateRoommates({ roomId: roomId })
           .then(response => {
             this.roommates = response.data.roommates;
-            this.socket.syncUpdates('roommate', this.roommates);
+            this.socket.syncUpdates('roommate', this.roommates, this.currentUser._id);
           });
 
         this.roomService.populateReminders({ roomId: roomId })
           .then(response => {
             this.reminders = response.data.reminders;
-            this.socket.syncUpdates('reminder', this.reminders);
+            this.socket.syncUpdates('reminder', this.reminders, this.currentUser._id);
           });
       });
   }
@@ -75,6 +75,7 @@ class RoomController {
     // create roommate and add to room
     this.roommateService.createRoommate({
       _roomId: this.roomId,
+      _creator: this.currentUser._id,
       name: roommate.name,
       phone: parseInt(roommate.phone)
     })
@@ -174,6 +175,7 @@ class RoomController {
   addReminder(reminder) {
     this.reminderService.createReminder({
       _roomId: this.roomId,
+      _creator: this.currentUser._id,
       name: reminder.name,
       assignees: this.getRoommateIds(reminder.assignees),
       datetime: reminder.datetime,

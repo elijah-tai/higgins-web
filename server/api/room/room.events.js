@@ -7,6 +7,7 @@
 import {EventEmitter} from 'events';
 import Room from './room.model';
 var RoomEvents = new EventEmitter();
+import logger from 'winston';
 
 // Set max event listeners (0 == unlimited)
 RoomEvents.setMaxListeners(0);
@@ -25,7 +26,9 @@ for (var e in events) {
 
 function emitEvent(event) {
   return function(doc) {
-    RoomEvents.emit(event + ':' + doc._id, doc);
+    logger.info('Emitting room model event: ' + event + ', doc._id:' + doc._id + ', doc._creator:' + doc._creator);
+    RoomEvents.emit(event + ':' + doc._id + ':' + doc._creator, doc);
+    logger.info('Emitting room model event: ' + event);
     RoomEvents.emit(event, doc);
   }
 }

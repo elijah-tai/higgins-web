@@ -7,6 +7,7 @@
 import {EventEmitter} from 'events';
 import Roommate from './roommate.model';
 var RoommateEvents = new EventEmitter();
+import logger from 'winston';
 
 // Set max event listeners (0 == unlimited)
 RoommateEvents.setMaxListeners(0);
@@ -25,7 +26,8 @@ for (var e in events) {
 
 function emitEvent(event) {
   return function(doc) {
-    RoommateEvents.emit(event + ':' + doc._id, doc);
+    logger.info('Emitting roommate model event: ' + event + ':' + doc._id + ':' + doc._creator);
+    RoommateEvents.emit(event + ':' + doc._id + ':' + doc._creator, doc);
     RoommateEvents.emit(event, doc);
   }
 }

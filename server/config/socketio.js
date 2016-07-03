@@ -11,16 +11,6 @@ function onDisconnect(socket) {
 
 // When the user connects.. perform this
 function onConnect(socket) {
-  // When the client emits 'info', this listens and executes
-  socket.on('info', data => {
-    socket.log(JSON.stringify(data, null, 2));
-  });
-
-  // Insert sockets below
-  require('../api/reminder/reminder.socket').register(socket);
-  require('../api/roommate/roommate.socket').register(socket);
-  require('../api/room/room.socket').register(socket);
-
 }
 
 export default function(socketio) {
@@ -39,6 +29,11 @@ export default function(socketio) {
   //   handshake: true
   // }));
 
+  // Insert sockets below
+  require('../api/reminder/reminder.socket').register(socketio);
+  require('../api/roommate/roommate.socket').register(socketio);
+  require('../api/room/room.socket').register(socketio);
+
   socketio.on('connection', function(socket) {
     socket.address = socket.request.connection.remoteAddress +
       ':' + socket.request.connection.remotePort;
@@ -49,14 +44,22 @@ export default function(socketio) {
       console.log(`SocketIO ${socket.nsp.name} [${socket.address}]`, ...data);
     };
 
+    socket.on('info', data => {
+      socket.log(JSON.stringify(data, null, 2));
+    });
+
+    socket.on('join', function(data) {
+      socket.join(data.userId);
+    });
+
+    socket.on('leave', function(data) {
+      socket.leave(data.userId);
+    });
+
     // Call onDisconnect.
     socket.on('disconnect', () => {
       onDisconnect(socket);
       socket.log('DISCONNECTED');
     });
-
-    // Call onConnect.
-    onConnect(socket);
-    socket.log('CONNECTED');
   });
 }

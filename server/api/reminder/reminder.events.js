@@ -7,6 +7,7 @@
 import {EventEmitter} from 'events';
 import Reminder from './reminder.model';
 var ReminderEvents = new EventEmitter();
+import logger from 'winston';
 
 // Set max event listeners (0 == unlimited)
 ReminderEvents.setMaxListeners(0);
@@ -25,7 +26,8 @@ for (var e in events) {
 
 function emitEvent(event) {
   return function(doc) {
-    ReminderEvents.emit(event + ':' + doc._id, doc);
+    logger.info('Emitting reminder model event: ' + event + ':' + doc._id + ':' + doc._creator);
+    ReminderEvents.emit(event + ':' + doc._id + ':' + doc._creator, doc);
     ReminderEvents.emit(event, doc);
   }
 }
