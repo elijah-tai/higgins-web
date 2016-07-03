@@ -26,16 +26,25 @@
 
 <div class="container" ng-show="dashCtrl.hasRooms" style="margin-top: 2%">
   <div class="col-lg-6">
-    <ul ng-repeat="room in dashCtrl.rooms">
-      <li>
-        <button type="submit" class="btn btn-success" ng-click="dashCtrl.goToRoom(room)">
-          {{ room.name }}
-        </button>
-        <button type="button" class="close" ng-click="dashCtrl.deleteRoom(room)">
-            &times;
-        </button>
-      </li>
-    </ul>
+    <div class="room-card room-card__fixedWidth" ng-repeat="room in dashCtrl.rooms">
+      <div class="room-card__description">
+        <div class="room-card__roomText">
+          <a ng-click="dashCtrl.goToRoom(room)" style="text-decoration: none;">{{ room.name }}</a>
+        </div>
+        <div class="room-card__actions">
+          <div class="btn-group">
+            <label class="btn btn-sm btn-danger"
+                   ng-model="checkModel.middle"
+                   uib-btn-checkbox
+                   ng-click="dashCtrl.deleteRoom(room)">Delete</label>
+          </div>
+        </div>
+      </div>
+      <div class="room-card__details">
+        <span class="room-card__reminders"> {{ room.reminders.length }} reminder{{ room.reminders.length > 1 ? 's' : ''}}</span>
+        <span class="room-card__roommates"> {{ room.roommates.length }} roommate{{ room.roommates.length > 1 ? 's' : ''}} </span>
+      </div>
+    </div>
   </div>
 </div>
 
