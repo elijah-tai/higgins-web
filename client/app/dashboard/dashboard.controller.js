@@ -18,7 +18,6 @@ class DashboardController {
     this.roomName = '';
     this.hasRooms = false;
     this.rooms = [];
-    this.isCreatingRoom = false;
 
     $scope.$on('$destroy', () => {
       socket.unsyncUpdates('room');
@@ -71,9 +70,8 @@ class DashboardController {
                     .then((response) => {
                       var roommateId = response.data._id;
                       this.roomService.addRoommate({ roomId: roomId, roommateId: roommateId });
+                      this.checkHasRooms();
                     });
-                  this.isCreatingRoom = false;
-                  this.checkHasRooms();
                 });
             });
         });
@@ -94,10 +92,6 @@ class DashboardController {
     } else {
       this.hasRooms = false;
     }
-  }
-
-  showRoomNameInput() {
-    this.isCreatingRoom = true;
   }
 
 }
