@@ -33,7 +33,7 @@ class DashboardController {
         this.roomService.getRoomsByUserId({ userId: user._id })
           .then(rooms => {
             this.rooms = rooms.data;
-            this.socket.syncUpdates('room', this.rooms);
+            this.socket.emit('join', {userId: user._id});
 
             if (typeof this.rooms !== 'undefined' && this.rooms.length > 0) {
               this.hasRooms = true;
@@ -48,6 +48,7 @@ class DashboardController {
   }
 
   createRoom() {
+    this.socket.syncUpdates('room', this.rooms, this.currentUser._id);
     if (!!this.roomName && !!this.currentUser) {
       this.roomService.createRoom({
         _creator: this.currentUser._id,
@@ -64,6 +65,7 @@ class DashboardController {
                 .then(() => {
                   this.roommateService.createRoommate({
                     _roomId: roomId,
+                    _creator: user._id,
                     name: user.name,
                     phone: user.phone
                   })
@@ -71,6 +73,7 @@ class DashboardController {
                       var roommateId = response.data._id;
                       this.roomService.addRoommate({ roomId: roomId, roommateId: roommateId });
                       this.checkHasRooms();
+                      this.roomName = '';
                     });
                 });
             });

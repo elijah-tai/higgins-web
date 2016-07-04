@@ -8,6 +8,10 @@ var ReminderSchema = new mongoose.Schema({
     type: Schema.ObjectId,
     ref: 'Room'
   },
+  _creator: {
+    type: Schema.ObjectId,
+    ref: 'User'
+  },
   name: {
     type: String,
     trim: true

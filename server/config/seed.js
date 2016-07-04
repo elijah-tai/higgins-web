@@ -59,16 +59,16 @@ Room.find({}).remove()
     });
   });
 
-Roommate.find({}).remove()
-  .then(() => {
-    Roommate.create({
-      name: 'WonJune',
-      phone: 4169099753
-    },{
-      name: 'Test2',
-      phone: 234567819
-    })
-      .then(() => {
-        logger.info('finished populating roommates');
-      });
-  });
+// Roommate.find({}).remove()
+//   .then(() => {
+//     Roommate.create({
+//       name: 'WonJune',
+//       phone: 4169099753
+//     },{
+//       name: 'Test2',
+//       phone: 234567819
+//     })
+//       .then(() => {
+//         logger.info('finished populating roommates');
+//       });
+//   });

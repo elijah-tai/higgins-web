@@ -6,7 +6,7 @@ angular.module('higginsApp')
     // socket.io now auto-configures its connection when we ommit a connection url
     var ioSocket = io('', {
       // Send auth token on connection, you will need to DI the Auth service above
-      // 'query': 'token=' + Auth.getToken()
+      // 'query': 'token=' + Auth.getToken(),
       path: '/socket.io-client'
     });
 
@@ -16,24 +16,27 @@ angular.module('higginsApp')
 
     return {
       socket,
+      emit: socket.emit,
 
       /**
-       * Register listeners to sync an array with updates on a model
+       * Register listeners to sync an array with updates on a model for a particular user
        *
        * Takes the array we want to sync, the model name that socket updates are sent from,
-       * and an optional callback function after new items are updated.
+       * the userId for whom the model belongs to, and an optional callback function after
+       * new items are updated.
        *
        * @param {String} modelName
        * @param {Array} array
+       * @param {Object} userId
        * @param {Function} cb
        */
-      syncUpdates(modelName, array, cb) {
+      syncUpdates(modelName, array, userId, cb) {
         cb = cb || angular.noop;
 
         /**
          * Syncs item creation/updates on 'model:save'
          */
-        socket.on(modelName + ':save', function(item) {
+        socket.on(modelName + ':save' + ':' + userId, function(item) {
           var oldItem = _.find(array, {
             _id: item._id
           });
@@ -55,7 +58,7 @@ angular.module('higginsApp')
         /**
          * Syncs removed items on 'model:remove'
          */
-        socket.on(modelName + ':remove', function(item) {
+        socket.on(modelName + ':remove' + ':' + userId, function(item) {
           var event = 'deleted';
           _.remove(array, {
             _id: item._id
@@ -65,9 +68,10 @@ angular.module('higginsApp')
       },
 
       /**
-       * Removes listeners for a models updates on the socket
+       * Removes listeners for a model's updates on the socket for a particular userId
        *
        * @param modelName
+       * @param userId
        */
       unsyncUpdates(modelName) {
         socket.removeAllListeners(modelName + ':save');
