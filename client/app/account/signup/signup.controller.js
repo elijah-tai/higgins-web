@@ -3,10 +3,11 @@
 class SignupController {
   //end-non-standard
 
-  constructor(Auth, $rootScope, $state, roomService, roommateService, userService) {
+  constructor(Auth, $rootScope, $state, roomService, roommateService, userService, socket) {
     this.Auth = Auth;
     this.$rootScope = $rootScope;
     this.$state = $state;
+    this.socket = socket;
 
     this.roomService = roomService;
     this.roommateService = roommateService;
@@ -45,6 +46,7 @@ class SignupController {
                   );
                   this.roommateService.createRoommate({
                     _roomId: roomId,
+                    _creator: user._id,
                     name: user.name,
                     phone: user.phone
                   })
@@ -52,7 +54,7 @@ class SignupController {
                       var roommateId = response.data._id;
                       this.roomService.addRoommate({ roomId: roomId, roommateId: roommateId })
                         .then(() => {
-                          this.$state.go('room', { roomId: roomId });
+                          this.$state.go('dashboard');
                         });
                     });
                 });
