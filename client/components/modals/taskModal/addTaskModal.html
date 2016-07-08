@@ -1,0 +1,76 @@
+<div class="modal-header">
+  <h5 class="modal-title">Add Task</h5>
+</div>
+<div class="modal-body" on-enter="taskModalCtrl.add()" tabindex="0">
+
+  <div class="form-group">
+    <label>Task Name</label>
+    <input type="text" class="form-control"
+           placeholder="e.g. Take out the garbage"
+           ng-model="taskModalCtrl.task.name"
+           focus-input="taskModalCtrl.focusInput">
+  </div>
+
+  <div class="form-group">
+    <label>Assignees</label>
+    <div class="row">
+      <ul ng-repeat="member in taskModalCtrl.members">
+        <input type="checkbox"
+               ng-model="taskModalCtrl.task.assignees[member._id]">
+        {{ member.name }}
+      </ul>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label>Date & Time</label>
+    <form class="form-horizontal">
+      <div class="input-group"
+           datetimepicker
+           ng-model="taskModalCtrl.task.datetime"
+           options="taskModalCtrl.dateTimeOptions">
+        <input type="text" class="form-control"/>
+          <span class="input-group-addon">
+              Change Date/Time
+          </span>
+      </div>
+    </form>
+  </div>
+
+  <div class="form-group">
+    <label>Recurring Task?</label>
+    <div class="recur-button">
+      <input
+        bs-switch
+        switch-size="small"
+        switch-on-text="Yes"
+        switch-off-text="No"
+        type="checkbox"
+        ng-model="taskModalCtrl.task.doesRecur">
+    </div>
+  </div>
+
+  <div class="form-group" ng-if="!!taskModalCtrl.task.doesRecur">
+    <div class="btn-group" uib-dropdown is-open="status.isopen">
+      <button id="single-button" type="button" class="btn btn-default" uib-dropdown-toggle ng-disabled="disabled">
+        Recurs: {{ taskModalCtrl.task.recurType }} <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
+        <li role="menuitem" ng-click="taskModalCtrl.task.recurType = 'Daily'"><a href="#">Daily</a></li>
+        <li role="menuitem" ng-click="taskModalCtrl.task.recurType = 'Weekly'"><a href="#">Weekly</a></li>
+        <li role="menuitem" ng-click="taskModalCtrl.task.recurType = 'Monthly'"><a href="#">Monthly</a></li>
+        <li role="menuitem" ng-click="taskModalCtrl.task.recurType = 'Yearly'"><a href="#">Yearly</a></li>
+      </ul>
+    </div>
+  </div>
+
+<div id="alert-box">
+  <uib-alert ng-repeat="alert in taskModalCtrl.alertService.formAlerts" type="{{ alert.type }}" dismiss-on-timeout="3000" close="taskModalCtrl.alertService.closeFormAlert($index)">{{ alert.msg }}</uib-alert>
+</div>
+
+
+</div>
+<div class="modal-footer">
+  <button class="btn btn-primary" type="button" ng-click="taskModalCtrl.add()">Add</button>
+  <button class="btn btn-warning" type="button" ng-click="taskModalCtrl.cancel()">Cancel</button>
+</div>

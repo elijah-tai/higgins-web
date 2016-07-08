@@ -3,13 +3,13 @@
 angular.module('higginsApp.userService', [])
   .factory('userService', function ($http) {
 
-    var updateUserRooms = function( opts, form ) {
+    var updateUserGroups = function( opts, form ) {
       var userId = opts.userId;
-      return $http.post('/api/users/' + userId + '/add-room', form);
+      return $http.post('/api/users/' + userId + '/add-group', form);
     };
 
     // Public API here
     return {
-      updateUserRooms: updateUserRooms
+      updateUserGroups: updateUserGroups
     };
   });

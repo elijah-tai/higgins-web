@@ -9,8 +9,8 @@ class SignupController {
     this.$state = $state;
     this.socket = socket;
 
-    this.roomService = roomService;
-    this.roommateService = roommateService;
+    this.groupService = groupService;
+    this.memberService = memberService;
     this.userService = userService;
 
     this.focusInput = true;
@@ -33,26 +33,28 @@ class SignupController {
             return user;
           })
             .then(user => {
-              var roomname = user.name + '\'s room';
-              this.roomService.createRoom({
+              var groupname = user.name + '\'s group';
+              this.groupService.createGroup({
                 _creator: user._id,
-                name: roomname
+                name: groupname
               })
                 .then(response => {
-                  var roomId = response.data._id;
-                  this.userService.updateUserRooms(
+
+                  var groupId = response.data._id;
+                  this.userService.updateUserGroups(
                     { userId: user._id },
-                    { roomId: roomId }
+                    { groupId: groupId }
                   );
-                  this.roommateService.createRoommate({
-                    _roomId: roomId,
+
+                  this.memberService.createMember({
+                    _groupId: groupId,
                     _creator: user._id,
                     name: user.name,
                     phone: user.phone
                   })
                     .then((response) => {
-                      var roommateId = response.data._id;
-                      this.roomService.addRoommate({ roomId: roomId, roommateId: roommateId })
+                      var memberId = response.data._id;
+                      this.groupService.addMember({ groupId: groupId, memberId: memberId })
                         .then(() => {
                           this.$state.go('dashboard');
                         });

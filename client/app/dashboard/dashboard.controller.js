@@ -2,25 +2,25 @@
 
 class DashboardController {
 
-  constructor($state, $rootScope, $scope, $timeout, roomService, roommateService, userService, socket) {
+  constructor($state, $rootScope, $scope, $timeout, groupService, memberService, userService, socket) {
     this.$state = $state;
     this.$rootScope = $rootScope;
-    this.$rootScope.currentRoom = null;
+    this.$rootScope.currentGroup = null;
     this.$scope = $scope;
     this.$timeout = $timeout;
 
-    this.roomService = roomService;
-    this.roommateService = roommateService;
+    this.groupService = groupService;
+    this.memberService = memberService;
     this.userService = userService;
     this.socket = socket;
 
     this.currentUser = null;
-    this.roomName = '';
-    this.hasRooms = false;
-    this.rooms = [];
+    this.groupName = '';
+    this.hasGroups = false;
+    this.groups = [];
 
     $scope.$on('$destroy', () => {
-      socket.unsyncUpdates('room');
+      socket.unsyncUpdates('group');
     });
   }
 
@@ -30,50 +30,50 @@ class DashboardController {
     })
       .then(user => {
         this.currentUser = user;
-        this.roomService.getRoomsByUserId({ userId: user._id })
-          .then(rooms => {
-            this.rooms = rooms.data;
+        this.groupService.getGroupsByUserId({ userId: user._id })
+          .then(groups => {
+            this.groups = groups.data;
             this.socket.emit('join', {userId: user._id});
 
-            if (typeof this.rooms !== 'undefined' && this.rooms.length > 0) {
-              this.hasRooms = true;
+            if (typeof this.groups !== 'undefined' && this.groups.length > 0) {
+              this.hasGroups = true;
             }
           });
       });
   }
 
-  goToRoom(room) {
-    this.$rootScope.currentRoom = room;
-    this.$state.go('room', { roomId: room._id });
+  goToGroup(group) {
+    this.$rootScope.currentGroup = group;
+    this.$state.go('group', { groupId: group._id });
   }
 
-  createRoom() {
-    this.socket.syncUpdates('room', this.rooms, this.currentUser._id);
-    if (!!this.roomName && !!this.currentUser) {
-      this.roomService.createRoom({
+  createGroup() {
+    this.socket.syncUpdates('group', this.groups, this.currentUser._id);
+    if (!!this.groupName && !!this.currentUser) {
+      this.groupService.createGroup({
         _creator: this.currentUser._id,
-        name: this.roomName
+        name: this.groupName
       })
         .then(response => {
-          var roomId = response.data._id;
-          this.$rootScope.currentRoom = response.data;
+          var groupId = response.data._id;
+          this.$rootScope.currentGroup = response.data;
           this.$rootScope.nav.getCurrentUser(function(user) {
             return user;
           })
             .then(user => {
-              this.userService.updateUserRooms({ userId: user._id }, { roomId: roomId })
+              this.userService.updateUserGroups({ userId: user._id }, { groupId: groupId })
                 .then(() => {
-                  this.roommateService.createRoommate({
-                    _roomId: roomId,
+                  this.memberService.createMember({
+                    _groupId: groupId,
                     _creator: user._id,
                     name: user.name,
                     phone: user.phone
                   })
                     .then((response) => {
-                      var roommateId = response.data._id;
-                      this.roomService.addRoommate({ roomId: roomId, roommateId: roommateId });
-                      this.checkHasRooms();
-                      this.roomName = '';
+                      var memberId = response.data._id;
+                      this.groupService.addMember({ groupId: groupId, memberId: memberId });
+                      this.checkHasGroups();
+                      this.groupName = '';
                     });
                 });
             });
@@ -81,19 +81,19 @@ class DashboardController {
     }
   }
 
-  deleteRoom(room) {
+  deleteGroup(group) {
     // TODO: should show confirmation modal
-    this.roomService.deleteRoom({ roomId: room._id })
+    this.groupService.deleteGroup({ groupId: group._id })
       .then(() => {
-        this.checkHasRooms();
+        this.checkHasGroups();
       });
   }
 
-  checkHasRooms() {
-    if (typeof this.rooms !== 'undefined' && this.rooms.length > 0) {
-      this.hasRooms = true;
+  checkHasGroups() {
+    if (typeof this.groups !== 'undefined' && this.groups.length > 0) {
+      this.hasGroups = true;
     } else {
-      this.hasRooms = false;
+      this.hasGroups = false;
     }
   }
 

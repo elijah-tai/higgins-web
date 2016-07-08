@@ -1,0 +1,26 @@
+<div class="modal-header">
+  <h5 class="modal-title">Add Member</h5>
+</div>
+<div class="modal-body" on-enter="memberModalCtrl.add()" tabindex="0">
+  <div class="form-group">
+    <label>Name</label>
+    <input type="text" class="form-control"
+           placeholder="Bruce Wayne"
+           ng-model="memberModalCtrl.name"
+           focus-input="memberModalCtrl.focusInput">
+  </div>
+
+  <div class="form-group">
+    <label>Phone Number</label>
+    <input phone-input type="text" class="form-control" placeholder="(123) 456-7890" ng-model="memberModalCtrl.phone">
+  </div>
+</div>
+
+<div id="alert-box">
+  <uib-alert ng-repeat="alert in memberModalCtrl.alertService.formAlerts" type="{{ alert.type }}" dismiss-on-timeout="3000" close="memberModalCtrl.alertService.closeFormAlert($index)">{{ alert.msg }}</uib-alert>
+</div>
+
+<div class="modal-footer">
+  <button class="btn btn-primary" type="button" ng-click="memberModalCtrl.add()">Add</button>
+  <button class="btn btn-warning" type="button" ng-click="memberModalCtrl.cancel()">Cancel</button>
+</div>

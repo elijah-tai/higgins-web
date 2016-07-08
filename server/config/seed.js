@@ -4,10 +4,10 @@
  */
 
 'use strict';
-import Room from '../api/room/room.model';
+import Group from '../api/group/group.model';
 import User from '../api/user/user.model';
-import Roommate from '../api/roommate/roommate.model';
-import Reminder from '../api/reminder/reminder.model';
+import Member from '../api/member/member.model';
+import Task from '../api/task/task.model';
 import logger from 'winston';
 
 User.find({}).remove()
@@ -30,15 +30,15 @@ User.find({}).remove()
       })
       .then(() => {
         User.findOne({ name: 'Test User' }, function(err, user) {
-          Room.update({ name: 'Test Room' }, { $set: { _creator: user._id }})
+          Group.update({ name: 'Test Group' }, { $set: { _creator: user._id }})
             .then(() => {
-              logger.info('finished adding Test User to Test Room\'s _creator field');
+              logger.info('finished adding Test User to Test Group\'s _creator field');
             })
             .then(() => {
-              Room.findOne({ name: 'Test Room' }, function(err, room) {
-                User.update({ name: 'Test User' }, { $push: { rooms: room._id }})
+              Group.findOne({ name: 'Test Group' }, function(err, group) {
+                User.update({ name: 'Test User' }, { $push: { groups: group._id }})
                   .then(() => {
-                    logger.info('finished adding Test Room to Test User\'s rooms array');
+                    logger.info('finished adding Test Group to Test User\'s groups array');
                   })
               })
             })
@@ -46,22 +46,22 @@ User.find({}).remove()
       });
   });
 
-Room.find({}).remove()
+Group.find({}).remove()
   .then(() => {
-    Room.create({
-      name: 'Test Room',
+    Group.create({
+      name: 'Test Group',
       info: '123 Alphabet Street',
       active: true,
-      roommates: []
+      members: []
     })
     .then(() => {
-      logger.info('finished populating rooms');
+      logger.info('finished populating groups');
     });
   });
 
-// Roommate.find({}).remove()
+// Member.find({}).remove()
 //   .then(() => {
-//     Roommate.create({
+//     Member.create({
 //       name: 'WonJune',
 //       phone: 4169099753
 //     },{
@@ -69,6 +69,6 @@ Room.find({}).remove()
 //       phone: 234567819
 //     })
 //       .then(() => {
-//         logger.info('finished populating roommates');
+//         logger.info('finished populating members');
 //       });
 //   });
