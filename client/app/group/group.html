@@ -1,0 +1,115 @@
+<div class="container">
+  <div class="page-header">
+    <uib-alert ng-repeat="alert in groupCtrl.alertService.formAlerts"
+               type="{{ alert.type }}" dismiss-on-timeout="3000"
+               close="groupCtrl.alertService.closeFormAlert($index)">
+      {{ alert.msg }}
+    </uib-alert>
+    <h4 ng-hide="groupCtrl.editingGroupName"
+        ng-click="groupCtrl.editingGroupName = true"> Welcome to
+      <span class="group-name-container">{{ groupCtrl.groupName }}</span>!
+    </h4>
+    <h4 ng-show="groupCtrl.editingGroupName">Welcome to
+    <span>
+      <form>
+      <input type="text" ng-model="groupCtrl.groupName"
+             ng-required
+             focus-input="groupCtrl.focusInput['groupName']"/>
+      <button ng-click="groupCtrl.editGroupName()" class="btn btn-default btn-sm" type="submit">Save</button>
+    </form>
+    </span>
+    </h4>
+    <span class="btn-group group-toolbar">
+      <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <span class="fa fa-sliders"></span>
+      </button>
+      <ul class="dropdown-menu">
+        <li><a ui-sref="dashboard">Manage Groups</a></li>
+        <li><a href="" ng-click="groupCtrl.deleteGroup()">Delete Group</a></li>
+      </ul>
+    </span>
+  </div>
+</div>
+
+<div class="container" ng-init="groupCtrl.init()">
+  <div class="row">
+    <div class="col-md-6 tasks-column" ng-cloak="groupCtrl.tasks">
+      <ul class="list-inline">
+        <li><h4>Tasks</h4></li>
+        <li class="add-task-button">
+          <button type="button" class="btn btn-sm btn-primary" ng-click="groupCtrl.openAddTaskModal()">Add Task</button>
+        </li>
+      </ul>
+
+      <!-- TODO: Extract this out as task card directive -->
+      <div class="task-card task-card--fixedWidth" ng-repeat="task in groupCtrl.tasks">
+        <div class="task-card__description">
+          <div class="task-card__taskText">{{ task.name }}</div>
+          <div class="task-card__actions">
+            <div class="btn-group">
+              <label class="btn btn-sm btn-default"
+                     ng-model="checkModel.left"
+                     uib-btn-checkbox
+                     ng-click="groupCtrl.openEditTaskModal(task)">Edit</label>
+              <label class="btn btn-sm btn-danger"
+                     ng-model="checkModel.right"
+                     uib-btn-checkbox
+                     ng-click="groupCtrl.deleteTask(task)">Delete</label>
+            </div>
+          </div>
+        </div>
+        <div class="task-card__details">
+          <span class="task-card__datetime"><b>At:</b> {{ task.datetime | date : 'EEE, MMM d yyyy, h:mm a' }}</span>
+          <span class="task-card__recurrence"><b>Recurrence:</b> {{ task.doesRecur ? task.recurType : 'One-Time' }}</span>
+        </div>
+      </div>
+
+      <div class="container" ng-if="groupCtrl.tasks.length < 1">
+        <h5 class="text-left">You don't seem to have any tasks, try adding one!</h5>
+      </div>
+    </div>
+
+    <div class="col-md-6" ng-cloak="groupCtrl.members">
+      <ul class="list-inline">
+        <li>
+          <h4>Members</h4>
+        </li>
+        <li class="add-member-button">
+          <button type="button" class="btn btn-sm btn-primary" ng-click="groupCtrl.openAddMemberModal()">Add Member</button>
+        </li>
+      </ul>
+
+      <!--TODO: Extract this out as member card directive -->
+      <div class="member-card-container">
+        <div class="member-card"
+             ng-repeat="member in groupCtrl.members"
+             ng-mouseenter="member.showOptions = true"
+             ng-mouseleave="member.showOptions = false"
+             ng-click="groupCtrl.showMemberOptions(member)">
+          <div class="member-card__memberText"
+               ng-hide="member.showOptions">
+            <b>{{ member.name }}</b> <br>
+            {{ member.phone }}
+          </div>
+          <span class="member-card__options" ng-show="member.showOptions">
+            <div class="btn-group">
+              <label class="btn btn-sm btn-default"
+                     ng-model="checkModel.left"
+                     uib-btn-checkbox
+                     ng-click="groupCtrl.openEditMemberModal(member)">Edit</label>
+              <label class="btn btn-sm btn-danger"
+                     ng-model="checkModel.right"
+                     uib-btn-checkbox
+                     ng-click="groupCtrl.deleteMember(member)">Delete</label>
+            </div>
+          </span>
+        </div>
+      </div>
+
+      <div class="container" ng-if="groupCtrl.members.length < 1">
+        <h5 class="text-left">You don't seem to have any members, try adding one!</h5>
+      </div>
+
+    </div>
+  </div>
+</div>

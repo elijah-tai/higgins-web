@@ -10,7 +10,7 @@
 }
 
 /* ROOM CARDS */
-.room-card {
+.group-card {
   display: flex;
   flex-direction: column;
   border: 1px solid #CAD0D2;
@@ -19,14 +19,14 @@
   margin: 1%;
 }
 
-.room-card__description {
+.group-card__description {
   display: flex;
   flex-direction: row;
   align-items: left;
   padding: 15px 0;
 }
 
-.room-card__roomText {
+.group-card__groupText {
   color: #57727C;
   font-size: 14px;
   font-weight: 500;
@@ -36,12 +36,12 @@
   padding-top: 5px;
 }
 
-.room-card__actions {
+.group-card__actions {
   margin-left: auto;
   margin-right: 10px;
 }
 
-.room-card__details {
+.group-card__details {
   text-align: center;
   color: #57727C;
   font-size: 14px;
@@ -50,14 +50,14 @@
   background-color: #EEF3F5;
 }
 
-.room-card__reminders {
+.group-card__tasks {
   float: left;
 }
 
-.room-card__roommates {
+.group-card__members {
   float: right;
 }
 
-.room-card__fixedWidth {
+.group-card__fixedWidth {
   flex-basis: 200px;
 }

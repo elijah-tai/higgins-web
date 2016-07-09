@@ -9,9 +9,9 @@ import path from 'path';
 
 export default function(app) {
   // Insert routes below
-  app.use('/api/reminders', require('./api/reminder'));
-  app.use('/api/roommates', require('./api/roommate'));
-  app.use('/api/rooms', require('./api/room'));
+  app.use('/api/tasks', require('./api/task'));
+  app.use('/api/members', require('./api/member'));
+  app.use('/api/groups', require('./api/group'));
   app.use('/api/users', require('./api/user'));
 
   app.use('/auth', require('./auth').default);

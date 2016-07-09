@@ -1,7 +1,7 @@
 import Agenda from 'agenda';
 import twilio from 'twilio';
 import logger from 'winston';
-import Roommate from '../../api/roommate/roommate.model';
+import Member from '../../api/member/member.model';
 import config from '../../config/environment';
 var moment = require('moment');
 
@@ -28,21 +28,21 @@ agenda.on('ready', function() {
 });
 
 agenda.define('send notification', function(job, done) {
-  var reminder = job.attrs.data;
-  logger.info('send notification called ', reminder);
+  var task = job.attrs.data;
+  logger.info('send notification called ', task);
 
-  // cancel this job, if one-time reminder
-  if (!reminder.doesRecur) {
-    cancelSendNotification(reminder._id);
+  // cancel this job, if one-time task
+  if (!task.doesRecur) {
+    cancelSendNotification(task._id);
   }
 
   // comment while testing locally
-  Roommate.find({_id:  { $in: reminder.assignees }}).exec()
-    .then(roommates => {
-      roommates.forEach(function(roommate) {
+  Member.find({_id:  { $in: task.assignees }}).exec()
+    .then(members => {
+      members.forEach(function(member) {
         client.messages.create({
-          body: 'Hey ' + roommate.name + '! Higgins here, just reminding you to ' + reminder.name.charAt(0).toLowerCase() + reminder.name.slice(1),
-          to: '+1' + roommate.phone,
+          body: 'Hey ' + member.name + '! Higgins here, just reminding you to ' + task.name.charAt(0).toLowerCase() + task.name.slice(1),
+          to: '+1' + member.phone,
           from: twilioPhoneNum
         }, function(err, message) {
           if (err) {
@@ -56,16 +56,16 @@ agenda.define('send notification', function(job, done) {
 });
 
 // call this function on the date
-agenda.define('schedule reminder', function(job, done) {
-  var reminder = job.attrs.data;
-  logger.info('schedule reminder called ', reminder._id);
+agenda.define('schedule task', function(job, done) {
+  var task = job.attrs.data;
+  logger.info('schedule task called ', task._id);
 
   // delete this schedule job from the db
-  cancelScheduleReminder(reminder._id);
+  cancelScheduleTask(task._id);
 
-  if (reminder.doesRecur) {
-    var sendNotification = agenda.create('send notification', reminder);
-    switch(reminder.recurType) {
+  if (task.doesRecur) {
+    var sendNotification = agenda.create('send notification', task);
+    switch(task.recurType) {
       case 'Daily':
         sendNotification.repeatEvery('1 days');
         sendNotification.save();
@@ -84,16 +84,16 @@ agenda.define('schedule reminder', function(job, done) {
         break;
     }
   } else {
-    agenda.now('send notification', reminder);
+    agenda.now('send notification', task);
   }
 
   done();
 });
 
-// cancel send notifications when reminder deleted (both send / schedule)
-// TODO: or when reminder updated with new date / recurrence (when implemented)
-// TODO: or when reminder has no roommates (when implemented)
-// TODO: when room is deleted, should call delete reminders (when implemented)
+// cancel send notifications when task deleted (both send / schedule)
+// TODO: or when task updated with new date / recurrence (when implemented)
+// TODO: or when task has no members (when implemented)
+// TODO: when group is deleted, should call delete tasks (when implemented)
 function cancelSendNotification(id) {
   var sendNotification = {
     'name' : 'send notification',
@@ -108,21 +108,21 @@ function cancelSendNotification(id) {
   });
 }
 
-function cancelScheduleReminder(id) {
-  var scheduleReminder = {
-    'name' : 'schedule reminder',
+function cancelScheduleTask(id) {
+  var scheduleTask = {
+    'name' : 'schedule task',
     'data._id' : id
   };
-  agenda.cancel(scheduleReminder, function(err, numRemoved) {
+  agenda.cancel(scheduleTask, function(err, numRemoved) {
     if (err) {
       logger.error(err);
     } else if (numRemoved) {
-      logger.info('cancelled schedule reminder', id);
+      logger.info('cancelled schedule task', id);
     }
   });
 }
 
-export function updateSchedule(id, reminder) {
+export function updateSchedule(id, task) {
   // There should only be 1 job for a given id at a time
   agenda.jobs({'data._id': id}, function(err, jobs) {
     jobs.forEach(function(job) {
@@ -135,43 +135,43 @@ export function updateSchedule(id, reminder) {
 
       // if the datetime hasnt changed
       // edit this job (regardless of whether it is schedule or send)
-      if ( (job.attrs.data.datetime === reminder.datetime.toString()) &&
-           (job.attrs.data.doesRecur === reminder.doesRecur) &&
-           (job.attrs.data.recurType === reminder.recurType) ) {
+      if ( (job.attrs.data.datetime === task.datetime.toString()) &&
+           (job.attrs.data.doesRecur === task.doesRecur) &&
+           (job.attrs.data.recurType === task.recurType) ) {
         // logger.info('saved in place');
-        job.attrs.data.name = reminder.name;
-        job.attrs.data.assignees = reminder.assignees;
+        job.attrs.data.name = task.name;
+        job.attrs.data.assignees = task.assignees;
         job.save(function(err) { if (err) { logger.error(err); } });
       // otherwise recreate it
       } else {
         // logger.info('created new');
         job.remove(function(err) { if (err) { logger.error(err); } });
-        var reminderObj = reminder;
-        reminderObj.id = id;
-        createSchedule(reminderObj)
+        var taskObj = task;
+        taskObj.id = id;
+        createSchedule(taskObj)
       }
-      
+
     });
   });
 }
 
 export function cancelScheduledJobs(id) {
   cancelSendNotification(id);
-  cancelScheduleReminder(id);
+  cancelScheduleTask(id);
 }
 
-export function createSchedule(reminder) {
-  var when = new Date(reminder.datetime);
+export function createSchedule(task) {
+  var when = new Date(task.datetime);
 
-  var reminderObj = {
-    _id: reminder.id,
-    name: reminder.name,
-    datetime: reminder.datetime,
-    assignees: reminder.assignees,
-    recurType: reminder.recurType,
-    doesRecur: reminder.doesRecur,
-    active: reminder.active
+  var taskObj = {
+    _id: task.id,
+    name: task.name,
+    datetime: task.datetime,
+    assignees: task.assignees,
+    recurType: task.recurType,
+    doesRecur: task.doesRecur,
+    active: task.active
   };
 
-  agenda.schedule(when, 'schedule reminder', reminderObj);
+  agenda.schedule(when, 'schedule task', taskObj);
 }

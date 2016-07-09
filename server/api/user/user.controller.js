@@ -120,22 +120,22 @@ export function me(req, res, next) {
 }
 
 /**
- * Add a room to a user's rooms array.
+ * Add a group to a user's groups array.
  */
-export function addRoom(req, res, next) {
+export function addGroup(req, res, next) {
   var userId = req.user._id;
-  var room = req.body.roomId;
-  winston.info( 'userController.addRoom -> Room to be added to user\'s array: ' + room );
+  var group = req.body.groupId;
+  winston.info( 'userController.addGroup -> Group to be added to user\'s array: ' + group );
   return User.findById(userId).exec()
     .then(user => {
       if (!user) {
-        winston.info('userController.addRoom -> User not found');
+        winston.info('userController.addGroup -> User not found');
         return res.status(404).end();
       }
-      user.rooms.push(room);
+      user.groups.push(group);
       return user.save()
         .then(() => {
-          winston.info('userController.addRoom -> Room ' + room + ' added to user ' + userId );
+          winston.info('userController.addGroup -> Group ' + group + ' added to user ' + userId );
           res.status(204).end();
           return res;
         })

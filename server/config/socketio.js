@@ -30,9 +30,9 @@ export default function(socketio) {
   // }));
 
   // Insert sockets below
-  require('../api/reminder/reminder.socket').register(socketio);
-  require('../api/roommate/roommate.socket').register(socketio);
-  require('../api/room/room.socket').register(socketio);
+  require('../api/task/task.socket').register(socketio);
+  require('../api/member/member.socket').register(socketio);
+  require('../api/group/group.socket').register(socketio);
 
   socketio.on('connection', function(socket) {
     socket.address = socket.request.connection.remoteAddress +

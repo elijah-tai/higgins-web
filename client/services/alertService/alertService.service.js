@@ -7,39 +7,39 @@ angular.module('higginsApp.alertService', [])
 
     var showFormAlert = function(input) {
       switch(input) {
-        // Room Alerts
-        case 'roomName':
+        // Group Alerts
+        case 'groupName':
           this.formAlerts.push({
             type: 'danger',
-            msg: 'Don\'t forget to add your room name!'
+            msg: 'Don\'t forget to add your group name!'
           });
           break;
 
-        // Roommate Alerts
-        case 'roommateName':
+        // Member Alerts
+        case 'memberName':
           this.formAlerts.push({
             type: 'danger',
-            msg: 'Please give your roommate a name.'
+            msg: 'Please give your member a name.'
           });
         break;
-        case 'roommatePhoneNumber':
+        case 'memberPhoneNumber':
           this.formAlerts.push({
             type: 'danger',
-            msg: 'Please enter your roommates 10 digit phone number.'
+            msg: 'Please enter your members 10 digit phone number.'
           });
         break;
-        case 'atLeastOneRoommate':
+        case 'atLeastOneMember':
           this.formAlerts.push({
             type: 'danger',
-            msg: 'Make sure you add at least one roommate.'
+            msg: 'Make sure you add at least one member.'
           });
           break;
 
-        // Reminder Alerts
-        case 'reminderName':
+        // Task Alerts
+        case 'taskName':
           this.formAlerts.push({
             type: 'danger',
-            msg: 'Please name your reminder.'
+            msg: 'Please name your task.'
           });
           break;
         case 'atLeastOneAssignee':
@@ -48,16 +48,16 @@ angular.module('higginsApp.alertService', [])
             msg: 'Remember to assign someone to complete the task!'
           });
         break;
-        case 'reminderDateTime':
+        case 'taskDateTime':
           this.formAlerts.push({
             type: 'danger',
-            msg: 'Make sure to choose a date and time for your reminder.'
+            msg: 'Make sure to choose a date and time for your task.'
           });
         break;
-        case 'atLeastOneReminder':
+        case 'atLeastOneTask':
           this.formAlerts.push({
             type: 'danger',
-            msg: 'Make sure you add at least one reminder.'
+            msg: 'Make sure you add at least one task.'
           });
           break;
 
@@ -68,7 +68,7 @@ angular.module('higginsApp.alertService', [])
 
     var closeFormAlert = function (index) {
       formAlerts.splice(index, 1);
-      // console.log(this.onboardingData.reminderDate);
+      // console.log(this.onboardingData.taskDate);
     };
 
     // do not need to use if dismiss-on-timeout is used

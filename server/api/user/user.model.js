@@ -42,9 +42,9 @@ UserSchema.add({
       }
     }
   },
-  rooms: [{
+  groups: [{
     type: Schema.ObjectId,
-    ref: 'Room'
+    ref: 'Group'
   }],
   provider: String,
   salt: String,

@@ -6,43 +6,43 @@
     <div class="col-lg-6">
       <div class="input-group">
         <input type="text" class="form-control"
-               placeholder="Create a new room..."
-               ng-model="dashCtrl.roomName"
-               on-enter="dashCtrl.createRoom()">
+               placeholder="Create a new group..."
+               ng-model="dashCtrl.groupName"
+               on-enter="dashCtrl.createGroup()">
       <span class="input-group-btn">
-        <button type="button" class="btn btn-default" ng-click="dashCtrl.createRoom()">Create</button>
+        <button type="button" class="btn btn-default" ng-click="dashCtrl.createGroup()">Create</button>
       </span>
       </div><!-- /input-group -->
     </div><!-- /.col-lg-6 -->
   </div><!-- /.row -->
 </div>
 
-<div class="container" ng-show="dashCtrl.hasRooms" style="margin-top: 2%">
+<div class="container" ng-show="dashCtrl.hasGroups" style="margin-top: 2%">
   <div class="col-lg-6">
-    <div class="room-card room-card__fixedWidth" ng-repeat="room in dashCtrl.rooms">
-      <div class="room-card__description">
-        <div class="room-card__roomText">
-          <a ng-click="dashCtrl.goToRoom(room)" style="text-decoration: none;">{{ room.name }}</a>
+    <div class="group-card group-card__fixedWidth" ng-repeat="group in dashCtrl.groups">
+      <div class="group-card__description">
+        <div class="group-card__groupText">
+          <a ng-click="dashCtrl.goToGroup(group)" style="text-decoration: none;">{{ group.name }}</a>
         </div>
-        <div class="room-card__actions">
+        <div class="group-card__actions">
           <div class="btn-group">
             <label class="btn btn-sm btn-danger"
                    ng-model="checkModel.middle"
                    uib-btn-checkbox
-                   ng-click="dashCtrl.deleteRoom(room)">Delete</label>
+                   ng-click="dashCtrl.deleteGroup(group)">Delete</label>
           </div>
         </div>
       </div>
-      <div class="room-card__details">
-        <span class="room-card__reminders"> {{ room.reminders.length }} reminder{{ room.reminders.length > 1 ? 's' : ''}}</span>
-        <span class="room-card__roommates"> {{ room.roommates.length }} roommate{{ room.roommates.length > 1 ? 's' : ''}} </span>
+      <div class="group-card__details">
+        <span class="group-card__tasks"> {{ group.tasks.length }} task{{ group.tasks.length > 1 || group.tasks.length === 0 ? 's' : ''}}</span>
+        <span class="group-card__members"> {{ group.members.length }} member{{ group.members.length > 1 ? 's' : ''}} </span>
       </div>
     </div>
   </div>
 </div>
 
-<div class="container" ng-hide="dashCtrl.hasRooms" ng-cloak>
-  <h5 class="text-center">Looks like you don't have any rooms - try adding one?</h5>
+<div class="container" ng-hide="dashCtrl.hasGroups" ng-cloak>
+  <h5 class="text-center">Looks like you don't have any groups - try adding one?</h5>
 </div>
 
 
