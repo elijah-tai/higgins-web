@@ -6,10 +6,9 @@
       {{ alert.msg }}
     </uib-alert>
     <h4 ng-hide="groupCtrl.editingGroupName"
-        ng-click="groupCtrl.editingGroupName = true"> Welcome to
-      <span class="group-name-container">{{ groupCtrl.groupName }}</span>!
+        ng-click="groupCtrl.editingGroupName = true"><span class="group-name-container">{{ groupCtrl.groupName }}</span>
     </h4>
-    <h4 ng-show="groupCtrl.editingGroupName">Welcome to
+    <h4 ng-show="groupCtrl.editingGroupName">
     <span>
       <form>
       <input type="text" ng-model="groupCtrl.groupName"
@@ -19,7 +18,7 @@
     </form>
     </span>
     </h4>
-    <span class="btn-group group-toolbar">
+    <span class="btn-group group-toolbar" ng-hide="groupCtrl.editingGroupName">
       <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         <span class="fa fa-sliders"></span>
       </button>

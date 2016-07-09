@@ -1,15 +1,21 @@
 $icon-font-path: "../bower_components/bootstrap/fonts/";
+$fa-font-path: "../bower_components/font-awesome/fonts";
 //$icon-font-path: "../bower_components/bootstrap-sass-official/vendor/assets/fonts/bootstrap/";
 @import '../bower_components/bootstrap-sass-official/vendor/assets/stylesheets/bootstrap';
 @import '../bower_components/bootstrap-social/bootstrap-social.scss';
-$fa-font-path: "../bower_components/font-awesome/fonts";
 @import '../bower_components/font-awesome/scss/font-awesome';
 @import 'colors.scss';
 @import '../services/alertService/alert';
 
+@import 'https://fonts.googleapis.com/css?family=Libre+Franklin';
+
 /**
  * App-wide Styles
  */
+
+body {
+  font-family: 'Libre Franklin', sans-serif;
+}
 
 @media (min-width: 979px) {
   body {
@@ -21,6 +27,10 @@ $fa-font-path: "../bower_components/font-awesome/fonts";
   body {
     padding-top: 50px;
   }
+}
+
+.col-lg-6 {
+  padding-left: 0px !important;
 }
 
 .browserupgrade {

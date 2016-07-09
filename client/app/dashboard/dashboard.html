@@ -1,23 +1,23 @@
 <div class="container" ng-init="dashCtrl.init()">
-  <h3>Dashboard</h3>
+  <h3 class="dashboard-title">Dashboard</h3>
 </div>
 
 <div class="container">
-    <div class="col-lg-6">
+    <div class="col-lg-6 dashboard-pull-left">
       <div class="input-group">
         <input type="text" class="form-control"
                placeholder="Create a new group..."
                ng-model="dashCtrl.groupName"
                on-enter="dashCtrl.createGroup()">
       <span class="input-group-btn">
-        <button type="button" class="btn btn-default" ng-click="dashCtrl.createGroup()">Create</button>
+        <button type="button" class="btn btn-default create-button" ng-click="dashCtrl.createGroup()">Create</button>
       </span>
       </div><!-- /input-group -->
     </div><!-- /.col-lg-6 -->
   </div><!-- /.row -->
 </div>
 
-<div class="container" ng-show="dashCtrl.hasGroups" style="margin-top: 2%">
+<div class="container" ng-show="dashCtrl.hasGroups">
   <div class="col-lg-6">
     <div class="group-card group-card__fixedWidth" ng-repeat="group in dashCtrl.groups">
       <div class="group-card__description">
@@ -42,7 +42,7 @@
 </div>
 
 <div class="container" ng-hide="dashCtrl.hasGroups" ng-cloak>
-  <h5 class="text-center">Looks like you don't have any groups - try adding one?</h5>
+  <h5 class="dashboard-text">Looks like you don't have any groups - try adding one?</h5>
 </div>
 
 
