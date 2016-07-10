@@ -7,7 +7,9 @@ import {Schema} from 'mongoose';
 
 const authTypes = ['github', 'facebook', 'google']; // 'twitter'
 
-var UserSchema = new Schema();
+var UserSchema = new Schema({}, {
+  timestamps: true
+});
 
 UserSchema.add({
   name: {
@@ -50,8 +52,7 @@ UserSchema.add({
   salt: String,
   facebook: {},
   twitter: {},
-  google: {},
-  onboarded: Boolean
+  google: {}
 });
 
 /**
