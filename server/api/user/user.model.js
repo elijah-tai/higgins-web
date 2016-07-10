@@ -126,6 +126,26 @@ UserSchema
       });
   }, 'The specified email address is already in use.');
 
+// Validate phone number is not taken
+UserSchema
+  .path('phone')
+  .validate(function(value, respond) {
+    var self = this;
+    return this.constructor.findOne({ phone: value }).exec()
+      .then(function(user) {
+        if (user) {
+          if (self.id === user.id) {
+            return respond(true);
+          }
+          return respond(false);
+        }
+        return respond(true);
+      })
+      .catch(function(err) {
+        throw err;
+      });
+  }, 'The specified phone number is already in use.');
+
 var validatePresenceOf = function(value) {
   return value && value.length;
 };
