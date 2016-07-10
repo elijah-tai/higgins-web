@@ -20,6 +20,8 @@ var MemberSchema = new mongoose.Schema({
     type: Number
   },    // member phone number
   active: { type: Boolean, default: true }
+}, {
+  timestampe: true
 });
 
 export default mongoose.model('Member', MemberSchema);

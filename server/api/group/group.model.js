@@ -28,6 +28,8 @@ var GroupSchema = new mongoose.Schema({
     type: Schema.ObjectId,
     ref: 'Task'
   }]
+}, {
+  timestamp: true
 });
 
 export default mongoose.model('Group', GroupSchema);
