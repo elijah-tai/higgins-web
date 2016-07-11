@@ -28,7 +28,7 @@ export default function(app) {
   app.engine('html', require('ejs').renderFile);
   app.set('view engine', 'html');
   app.use(compression());
-  app.use(bodyParser.urlencoded({ extended: false }));
+  app.use(bodyParser.urlencoded({ extended: true }));
   app.use(bodyParser.json());
   app.use(methodOverride());
   app.use(cookieParser());
@@ -52,18 +52,22 @@ export default function(app) {
    * https://github.com/krakenjs/lusca
    */
   if (env !== 'test' && !process.env.SAUCE_USERNAME) {
-    app.use(lusca({
-      csrf: {
-        angular: true
-      },
-      xframe: 'SAMEORIGIN',
-      hsts: {
-        maxAge: 31536000, //1 year, in seconds
-        includeSubDomains: true,
-        preload: true
-      },
-      xssProtection: true
+    app.use((req, res, next) => {
+      if (req.path === '/respond-to-sms') {
+        next();
+      } else {
+        lusca.csrf({
+          angular: true
+        })(req, res, next);
+      }
+    } );
+    app.use(lusca.xframe('SAMEORIGIN'));
+    app.use(lusca.hsts({
+      maxAge: 31536000, //1 year, in seconds
+      includeSubDomains: true,
+      preload: true
     }));
+    app.use(lusca.xssProtection(true));
   }
 
   app.set('appPath', path.join(config.root, 'client'));

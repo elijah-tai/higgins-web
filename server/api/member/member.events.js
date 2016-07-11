@@ -26,8 +26,8 @@ for (var e in events) {
 
 function emitEvent(event) {
   return function(doc) {
-    logger.info('Emitting member model event: ' + event + ':' + doc._id + ':' + doc._creator);
-    MemberEvents.emit(event + ':' + doc._id + ':' + doc._creator, doc);
+    logger.info('Emitting member model event: ' + event + ':' + doc._id + ':' + doc.creator);
+    MemberEvents.emit(event + ':' + doc._id + ':' + doc.creator, doc);
     MemberEvents.emit(event, doc);
   }
 }

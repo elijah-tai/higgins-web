@@ -51,7 +51,7 @@ class DashboardController {
     this.socket.syncUpdates('group', this.groups, this.currentUser._id);
     if (!!this.groupName && !!this.currentUser) {
       this.groupService.createGroup({
-        _creator: this.currentUser._id,
+        creator: this.currentUser._id,
         name: this.groupName
       })
         .then(response => {
@@ -64,8 +64,8 @@ class DashboardController {
               this.userService.updateUserGroups({ userId: user._id }, { groupId: groupId })
                 .then(() => {
                   this.memberService.createMember({
-                    _groupId: groupId,
-                    _creator: user._id,
+                    group: groupId,
+                    creator: user._id,
                     name: user.name,
                     phone: user.phone
                   })

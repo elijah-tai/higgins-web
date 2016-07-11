@@ -103,7 +103,7 @@ export function destroy(req, res) {
   return Member.findById(req.params.id, function(err, member) {
 
     Group.update(
-      {_id: member._groupId},
+      {_id: member.group},
       {$pullAll: {members: [new mongoose.Types.ObjectId(req.params.id)]}},
       null, function(err, result) {
         if (err) {

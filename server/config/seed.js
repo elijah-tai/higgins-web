@@ -30,9 +30,9 @@ User.find({}).remove()
       })
       .then(() => {
         User.findOne({ name: 'Test User' }, function(err, user) {
-          Group.update({ name: 'Test Group' }, { $set: { _creator: user._id }})
+          Group.update({ name: 'Test Group' }, { $set: { creator: user._id }})
             .then(() => {
-              logger.info('finished adding Test User to Test Group\'s _creator field');
+              logger.info('finished adding Test User to Test Group\'s creator field');
             })
             .then(() => {
               Group.findOne({ name: 'Test Group' }, function(err, group) {

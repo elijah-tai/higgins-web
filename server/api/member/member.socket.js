@@ -23,7 +23,7 @@ export function register(socketio) {
 
 function createListener(event, io) {
   return function(doc) {
-    io.sockets.in(doc._creator).emit(event + ':' + doc._creator, doc);
+    io.sockets.in(doc.creator).emit(event + ':' + doc.creator, doc);
   };
 }
 

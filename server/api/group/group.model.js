@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 import {Schema} from 'mongoose';
 
 var GroupSchema = new mongoose.Schema({
-  _creator: {       // id of the owner of the group
+  creator: {       // id of the owner of the group
     type: Schema.ObjectId,
     ref: 'User'
   },

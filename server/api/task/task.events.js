@@ -26,8 +26,8 @@ for (var e in events) {
 
 function emitEvent(event) {
   return function(doc) {
-    logger.info('Emitting task model event: ' + event + ':' + doc._id + ':' + doc._creator);
-    TaskEvents.emit(event + ':' + doc._id + ':' + doc._creator, doc);
+    logger.info('Emitting task model event: ' + event + ':' + doc._id + ':' + doc.creator);
+    TaskEvents.emit(event + ':' + doc._id + ':' + doc.creator, doc);
     TaskEvents.emit(event, doc);
   }
 }

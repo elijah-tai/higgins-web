@@ -1,7 +1,12 @@
+'use strict';
+
 import Agenda from 'agenda';
 import twilio from 'twilio';
 import logger from 'winston';
+import User from '../../api/user/user.model';
 import Member from '../../api/member/member.model';
+import Group from '../../api/group/group.model';
+import Task from '../../api/task/task.model';
 import config from '../../config/environment';
 var moment = require('moment');
 
@@ -36,12 +41,13 @@ agenda.define('send notification', function(job, done) {
     cancelSendNotification(task._id);
   }
 
-  // comment while testing locally
   Member.find({_id:  { $in: task.assignees }}).exec()
     .then(members => {
       members.forEach(function(member) {
         client.messages.create({
-          body: 'Hey ' + member.name + '! Higgins here, just reminding you to ' + task.name.charAt(0).toLowerCase() + task.name.slice(1),
+          body: 'Hey ' + member.name + ', Higgins here! ' + task.creatorName + ' in the group ' + task.groupName + ' would like to know if you were able to complete the task: '+ task.name.charAt(0).toLowerCase() + task.name.slice(1) + '? Please respond "YES ' + task.ref + '" if you have' +
+          ' completed the task, and "NO ' + task.ref + '" if you have not. Make sure to include the task' +
+          ' reference ID in your response - cheers!',
           to: '+1' + member.phone,
           from: twilioPhoneNum
         }, function(err, message) {
@@ -148,7 +154,7 @@ export function updateSchedule(id, task) {
         job.remove(function(err) { if (err) { logger.error(err); } });
         var taskObj = task;
         taskObj.id = id;
-        createSchedule(taskObj)
+        createSchedule(taskObj);
       }
 
     });
@@ -163,15 +169,57 @@ export function cancelScheduledJobs(id) {
 export function createSchedule(task) {
   var when = new Date(task.datetime);
 
-  var taskObj = {
+  var taskCreatorName = null,
+      groupName = null;
+
+  User.findById( task.creator ).exec()
+    .then(user => {
+      if ( !user ) {
+        logger.error('scheduler.createSchedule - task creator not found');
+      }
+
+      taskCreatorName = user.name;
+
+      Group.findById( task.group ).exec()
+        .then(group => {
+
+          if ( !group ) {
+            logger.error('scheduler.createSchedule - group creator not found');
+          }
+
+          groupName = group.name;
+
+          Member.find({_id:  { $in: task.assignees }}).exec()
+            .then(members => {
+
+              members.forEach(function(member) {
+                client.messages.create({
+                  body: 'Hey ' + member.name + ', Higgins here! ' + taskCreatorName + ' in the group ' + groupName + ' would like to know if you\'re able to: '+ task.name.charAt(0).toLowerCase() + task.name.slice(1) + ' by ' + moment(task.datetime).calendar() + '? Please respond "YES ' + task.ref + '" if you can' +
+                  ' complete the task, and "NO ' + task.ref + '" if you can\'t. Make sure to include the task' +
+                  ' reference ID in your response - cheers!',
+                  to: '+1' + member.phone,
+                  from: twilioPhoneNum
+                }, function(err, message) {
+                  if (err) {
+                    logger.info(err);
+                  } else {
+                    logger.info('Task confirmation message sent with message SID: ' + message.sid);
+                  }
+                });
+              });
+            });
+        });
+    });
+
+  agenda.schedule(when, 'schedule task', {
     _id: task.id,
     name: task.name,
     datetime: task.datetime,
     assignees: task.assignees,
     recurType: task.recurType,
     doesRecur: task.doesRecur,
+    creatorName: taskCreatorName,
+    groupName: groupName,
     active: task.active
-  };
-
-  agenda.schedule(when, 'schedule task', taskObj);
+  });
 }

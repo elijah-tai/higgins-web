@@ -4,24 +4,28 @@ import mongoose from 'mongoose';
 import {Schema} from 'mongoose';
 
 var MemberSchema = new mongoose.Schema({
-  _groupId: {        // id of group that member is attached to
+  group: {        // id of group that member is attached to
     type: Schema.ObjectId,
-    ref: 'Group'
+    ref: 'Group',
+    required: true
   },
-  _creator: {
+  creator: {
     type: Schema.ObjectId,
-    ref: 'User'
+    ref: 'User',
+    required: true
   },
   name: {
     type: String,
-    trim: true
+    trim: true,
+    required: true
   },     // name of member
   phone: {
-    type: Number
+    type: Number,
+    required: true
   },    // member phone number
   active: { type: Boolean, default: true }
 }, {
-  timestampe: true
+  timestamp: true
 });
 
 export default mongoose.model('Member', MemberSchema);

@@ -35,7 +35,7 @@ class SignupController {
             .then(user => {
               var groupname = user.name + '\'s group';
               this.groupService.createGroup({
-                _creator: user._id,
+                creator: user._id,
                 name: groupname
               })
                 .then(response => {
@@ -47,8 +47,8 @@ class SignupController {
                   );
 
                   this.memberService.createMember({
-                    _groupId: groupId,
-                    _creator: user._id,
+                    group: groupId,
+                    creator: user._id,
                     name: user.name,
                     phone: user.phone
                   })

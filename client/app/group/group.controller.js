@@ -74,8 +74,8 @@ class GroupController {
   addMember(member) {
     // create member and add to group
     this.memberService.createMember({
-      _groupId: this.groupId,
-      _creator: this.currentUser._id,
+      group: this.groupId,
+      creator: this.currentUser._id,
       name: member.name,
       phone: parseInt(member.phone)
     })
@@ -174,13 +174,19 @@ class GroupController {
 
   addTask(task) {
     this.taskService.createTask({
-      _groupId: this.groupId,
-      _creator: this.currentUser._id,
+      group: this.groupId,
+      creator: this.currentUser._id,
       name: task.name,
       assignees: this.getMemberIds(task.assignees),
       datetime: task.datetime,
       doesRecur: task.doesRecur,
       recurType: task.recurType,
+      report: this.getMemberIds(task.assignees).map(function(assignee) {
+        return {
+          assignee: assignee,
+          status: 'pending'
+        };
+      }),
       active: true
     }).then(response => {
       this.groupService.addTask({
@@ -211,7 +217,6 @@ class GroupController {
   }
 
   openAddTaskModal() {
-    console.log('clicked');
     var self = this;
     this.$uibModal.open({
       animation: true,
