@@ -117,3 +117,9 @@ export function destroy(req, res) {
     .then(removeEntity(res))
     .catch(handleError(res));
 }
+
+export function findByIds(req, res) {
+  return Member.find( { _id: { $in : req.body.memberIds } } ).exec()
+    .then( respondWithResult(res) )
+    .catch( handleError(res) );
+}

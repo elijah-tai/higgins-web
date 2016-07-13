@@ -44,7 +44,7 @@ class DashboardController {
 
   goToGroup(group) {
     this.$rootScope.currentGroup = group;
-    this.$state.go('group', { groupId: group._id });
+    this.$state.go('group.tasks', { groupId: group._id });
   }
 
   createGroup() {

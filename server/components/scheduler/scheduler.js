@@ -33,6 +33,7 @@ agenda.on('ready', function() {
 });
 
 agenda.define('send notification', function(job, done) {
+
   var task = job.attrs.data;
   logger.info('send notification called ', task);
 
@@ -167,6 +168,12 @@ export function cancelScheduledJobs(id) {
 }
 
 export function createSchedule(task) {
+
+  if ( !task || !task.datetime) {
+    logger.error('scheduler.createSchedule - task DNE');
+    // TODO: should error out
+  }
+
   var when = new Date(task.datetime);
 
   var taskCreatorName = null,

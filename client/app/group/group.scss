@@ -1,6 +1,7 @@
 .group-name-container {
   padding: 3px;
   border-bottom: 1px dashed;
+
   color: rgba(19, 66, 133, 0.82);
 }
 
@@ -12,6 +13,10 @@
 .add-member-button {
   float: right;
   padding-top: 5px;
+}
+
+.group-options {
+  float: right;
 }
 
 .page-header > h4 {
@@ -47,6 +52,28 @@
   text-align: left;
   max-width: calc(100% - 30px);
   margin-left: 15px;
+}
+
+.task-card__taskReportContainer {
+  color: #57727C;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: left;
+  max-width: calc(100% - 30px);
+  margin-left: 15px;
+  margin-top: 10px;
+  margin-bottom: 5px;
+}
+
+.task-card__taskReport {
+  color: #57727C;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: left;
+  max-width: calc(100% - 30px);
+  margin-left: 15px;
+  margin-top: 5px;
+  margin-bottom: 5px;
 }
 
 .task-card__details {
@@ -123,6 +150,14 @@
   text-align: center;
   background-color: rgba(6, 6, 6, 0.68);
   border-radius: 1000px;
+}
+
+/*
+*   Group Views
+*/
+
+#group-views {
+  width:auto;
 }
 
 @media (max-width: 978px) {

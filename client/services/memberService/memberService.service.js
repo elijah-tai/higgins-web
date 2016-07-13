@@ -7,6 +7,10 @@ angular.module('higginsApp.memberService', [])
       return $http.get('/api/members/' + opts.memberId);
     };
 
+    var getMembersByIds = function( form ) {
+      return $http.post('/api/members/findByIds', form );
+    };
+
     var createMember = function( form ) {
       return $http.post('/api/members', form);
     };
@@ -22,6 +26,7 @@ angular.module('higginsApp.memberService', [])
     // Public API here
     return {
       getMember: getMember,
+      getMembersByIds: getMembersByIds,
       createMember: createMember,
       deleteMember: deleteMember,
       editMember: editMember

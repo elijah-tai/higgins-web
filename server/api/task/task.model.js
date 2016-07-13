@@ -31,15 +31,25 @@ var TaskSchema = new mongoose.Schema({
     type: Date,
     required: true
   }, // date and time of task
-  report: [{
-    assignee: {
+  reports: [{
+    assigneeId: {
       type: Schema.ObjectId,
       ref: 'Member',
       required: true
     },
-    status: {
-      type: String, // pending/accepted/rejected/unfinished/finished
+    assigneeName: {
+      type: String,
       required: true
+    },
+    status: {
+      type: String, // pending/accepted/rejected/finished
+      required: true,
+      enum: [
+        'pending',
+        'accepted',
+        'rejected',
+        'complete'
+      ]
     }
   }],
   doesRecur: { type: Boolean, default: false },

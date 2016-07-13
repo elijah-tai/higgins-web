@@ -1,0 +1,85 @@
+<div class="row">
+
+  <!-- CURRENT TASKS -->
+
+  <div class="col-md-6 tasks-column" ng-cloak="groupCtrl.tasks">
+    <ul class="list-inline">
+      <li><h4>Current Tasks</h4></li>
+      <li class="add-task-button">
+        <button type="button" class="btn btn-sm btn-primary" ng-click="groupCtrl.openAddTaskModal()">New Task</button>
+      </li>
+    </ul>
+
+    <!-- TODO: Extract this out as task card directive -->
+    <div class="task-card task-card--fixedWidth" ng-repeat="task in groupCtrl.currentTasks track by $index">
+      <div class="task-card__description">
+        <div class="task-card__taskText">{{ task.name }}</div>
+        <div class="task-card__actions">
+          <div class="btn-group">
+            <label class="btn btn-sm btn-default"
+                   ng-model="checkModel.left"
+                   uib-btn-checkbox
+                   ng-click="groupCtrl.showTaskReport(task)"
+                   data-toggle="collapse"
+                   data-target="#statusReport{{$index}}">Status</label>
+            <label class="btn btn-sm btn-default"
+                   ng-model="checkModel.middle"
+                   uib-btn-checkbox
+                   ng-click="groupCtrl.openEditTaskModal(task)">Edit</label>
+            <label class="btn btn-sm btn-danger"
+                   ng-model="checkModel.right"
+                   uib-btn-checkbox
+                   ng-click="groupCtrl.deleteTask(task)">Delete</label>
+          </div>
+        </div>
+      </div>
+      <div id="statusReport{{$index}}" class="collapse task-card__taskReportContainer">
+          Task Status:
+        <div ng-repeat="report in task.reports">
+          <span><i class="fa fa-arrow-right"></i></span> {{ report.assigneeName }}: <b>{{ report.status }}</b>
+        </div>
+      </div>
+      <div class="task-card__details">
+        <span class="task-card__datetime"><b>At:</b> {{ task.datetime | date : 'EEE, MMM d yyyy, h:mm a' }}</span>
+        <span class="task-card__recurrence"><b>Recurrence:</b> {{ task.doesRecur ? task.recurType : 'One-Time' }}</span>
+      </div>
+    </div>
+
+    <div class="container" ng-if="groupCtrl.currentTasks.length < 1">
+      <h5 class="text-left">You don't seem to have any tasks or have completed all of them!</h5>
+    </div>
+  </div>
+
+
+  <!-- COMPLETED TASKS -->
+
+  <div class="col-md-6 tasks-column" ng-cloak="groupCtrl.tasks">
+    <ul class="list-inline">
+      <li><h4>Completed Tasks</h4></li>
+    </ul>
+
+    <div class="task-card task-card--fixedWidth" ng-repeat="task in groupCtrl.completedTasks">
+      <div class="task-card__description">
+        <div class="task-card__taskText">{{ task.name }}</div>
+        <div class="task-card__actions">
+          <div class="btn-group">
+            <label class="btn btn-sm btn-danger"
+                   ng-model="checkModel.right"
+                   uib-btn-checkbox
+                   ng-click="groupCtrl.deleteTask(task)">Delete</label>
+          </div>
+        </div>
+      </div>
+      <div class="task-card__details">
+        <span class="task-card__datetime"><b>At:</b> {{ task.datetime | date : 'EEE, MMM d yyyy, h:mm a' }}</span>
+        <span class="task-card__recurrence"><b>Recurrence:</b> {{ task.doesRecur ? task.recurType : 'One-Time' }}</span>
+      </div>
+    </div>
+
+    <div class="container" ng-if="groupCtrl.completedTasks.length < 1">
+      <h5 class="text-left">You don't have any completed tasks :(</h5>
+    </div>
+  </div>
+
+
+</div>

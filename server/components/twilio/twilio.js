@@ -16,12 +16,12 @@ module.exports = function(req, res) {
       res.status( 400 ).send('Error in response from twilio.');
     }
 
-    var userResponse = req.body.Body,
-        tokenizedResponse = userResponse.match(/\S+/g),
-        userPhone = req.body.From,
+    var memberResponse = req.body.Body,
+        tokenizedResponse = memberResponse.match(/\S+/g),
+        memberPhone = req.body.From,
         taskRef;
 
-    logger.info( 'Text received from ' + userPhone + ': ' + userResponse );
+    logger.info( 'Text received from ' + memberPhone + ': ' + memberResponse );
 
     if ( tokenizedResponse.length === 2 ) {
 
@@ -29,7 +29,7 @@ module.exports = function(req, res) {
 
         taskRef = tokenizedResponse[1];
 
-        Member.findOne({ phone: userPhone.slice(2) }, function( err, member ) {
+        Member.findOne({ phone: memberPhone.slice(2) }, function( err, member ) {
 
           logger.info('YES answer received for task: ' + taskRef + ' from member: ' + member.name );
 
@@ -37,16 +37,16 @@ module.exports = function(req, res) {
             logger.error( 'twilio.Member.findOne: Could not find member ' + err );
           }
 
-          Task.update({ ref: taskRef, 'report.assignee': member._id }, {
+          Task.update({ ref: taskRef, 'reports.assigneeId': member._id }, {
             $set: {
-              'report.$.status': 'accepted'
+              'reports.$.status': 'accepted'
             }
           }, function( err, numAffected ) {
             if ( !!err ) {
               logger.error('twilio.Task.update error: ' + err );
             }
 
-            logger.info('Task ' + taskRef + ' changed to accepted for user ' + member._id + numAffected);
+            logger.info('Task ' + taskRef + ' changed to accepted for member ' + member._id + numAffected);
             twiml.message('YES answer received for the task reference: ' + taskRef + ', I\'ll notify the task' +
               ' creator!');
 
@@ -61,7 +61,7 @@ module.exports = function(req, res) {
 
         taskRef = tokenizedResponse[1];
 
-        Member.findOne({ phone: userPhone.slice(2) }, function( err, member ) {
+        Member.findOne({ phone: memberPhone.slice(2) }, function( err, member ) {
 
           logger.info('NO answer received for task: ' + taskRef + ' from member: ' + member.name );
 
@@ -69,16 +69,16 @@ module.exports = function(req, res) {
             logger.error( 'twilio.Member.findOne: Could not find member ' + err );
           }
 
-          Task.update({ ref: taskRef, 'report.assignee': member._id }, {
+          Task.update({ ref: taskRef, 'reports.assigneeId': member._id }, {
             $set: {
-              'report.$.status': 'rejected'
+              'reports.$.status': 'rejected'
             }
           }, function( err, numAffected ) {
             if ( !!err ) {
               logger.error('twilio.Task.update error: ' + err );
             }
 
-            logger.info('Task ' + taskRef + ' changed to rejected for user ' + member._id + JSON.stringify(numAffected));
+            logger.info('Task ' + taskRef + ' changed to rejected for member ' + member._id + JSON.stringify(numAffected));
             twiml.message('NO answer received for the task reference: ' + taskRef + ', I\'ll notify the task creator!');
             res.writeHead(200, {'Content-Type': 'text/xml'});
             res.end(twiml.toString());

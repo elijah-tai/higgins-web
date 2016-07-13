@@ -12,4 +12,6 @@ router.put('/:id', controller.update);
 router.patch('/:id', controller.update);
 router.delete('/:id', controller.destroy);
 
+router.post('/findByIds', controller.findByIds);
+
 module.exports = router;
