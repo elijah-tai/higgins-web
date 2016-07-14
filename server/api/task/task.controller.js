@@ -12,6 +12,7 @@
 var scheduler = require('../../components/scheduler/scheduler.js');
 
 import _ from 'lodash';
+import shortid from 'shortid';
 import logger from 'winston';
 import Task from './task.model';
 import Group from '../group/group.model';
@@ -89,7 +90,7 @@ export function show(req, res) {
 
 // Creates a new Task in the DB
 export function create(req, res) {
-  var newTask = new Task(req.body);
+  var newTask = new Task(_.extend(req.body, { ref: shortid.generate() }));
   return newTask.save(function(err, task) {
     scheduler.createSchedule(task)
   })
@@ -116,7 +117,7 @@ export function destroy(req, res) {
   return Task.findById(req.params.id, function(err, task) {
 
     Group.update(
-      {_id: task._groupId},
+      {_id: task.group},
       {$pullAll: {tasks: [new mongoose.Types.ObjectId(req.params.id)]}},
       null, function(err, result) {
         if (err) {

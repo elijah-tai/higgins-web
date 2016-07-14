@@ -1,0 +1,41 @@
+<div class="col-md-6" ng-cloak="groupCtrl.members">
+  <ul class="list-inline">
+    <li>
+      <h4>Members</h4>
+    </li>
+    <li class="add-member-button">
+      <button type="button" class="btn btn-sm btn-primary" ng-click="groupCtrl.openAddMemberModal()">New Member</button>
+    </li>
+  </ul>
+
+  <!--TODO: Extract this out as member card directive -->
+  <div class="member-card-container">
+    <div class="member-card"
+         ng-repeat="member in groupCtrl.members"
+         ng-mouseenter="member.showOptions = true"
+         ng-mouseleave="member.showOptions = false"
+         ng-click="groupCtrl.showMemberOptions(member)">
+      <div class="member-card__memberText"
+           ng-hide="member.showOptions">
+        <b>{{ member.name }}</b> <br>
+        {{ member.phone }}
+      </div>
+        <span class="member-card__options" ng-show="member.showOptions">
+          <div class="btn-group">
+            <label class="btn btn-sm btn-default"
+                   ng-model="checkModel.left"
+                   uib-btn-checkbox
+                   ng-click="groupCtrl.openEditMemberModal(member)">Edit</label>
+            <label class="btn btn-sm btn-danger"
+                   ng-model="checkModel.right"
+                   uib-btn-checkbox
+                   ng-click="groupCtrl.deleteMember(member)">Delete</label>
+          </div>
+        </span>
+    </div>
+  </div>
+
+  <div class="container" ng-if="groupCtrl.members.length < 1">
+    <h5 class="text-left">You don't seem to have any members, try adding one!</h5>
+  </div>
+</div>

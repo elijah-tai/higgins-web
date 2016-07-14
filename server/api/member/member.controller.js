@@ -103,7 +103,7 @@ export function destroy(req, res) {
   return Member.findById(req.params.id, function(err, member) {
 
     Group.update(
-      {_id: member._groupId},
+      {_id: member.group},
       {$pullAll: {members: [new mongoose.Types.ObjectId(req.params.id)]}},
       null, function(err, result) {
         if (err) {
@@ -116,4 +116,10 @@ export function destroy(req, res) {
     .then(handleEntityNotFound(res))
     .then(removeEntity(res))
     .catch(handleError(res));
+}
+
+export function findByIds(req, res) {
+  return Member.find( { _id: { $in : req.body.memberIds } } ).exec()
+    .then( respondWithResult(res) )
+    .catch( handleError(res) );
 }

@@ -26,8 +26,8 @@ for (var e in events) {
 
 function emitEvent(event) {
   return function(doc) {
-    logger.info('Emitting group model event: ' + event + ', doc._id:' + doc._id + ', doc._creator:' + doc._creator);
-    GroupEvents.emit(event + ':' + doc._id + ':' + doc._creator, doc);
+    logger.info('Emitting group model event: ' + event + ', doc._id:' + doc._id + ', doc.creator:' + doc.creator);
+    GroupEvents.emit(event + ':' + doc._id + ':' + doc.creator, doc);
     logger.info('Emitting group model event: ' + event);
     GroupEvents.emit(event, doc);
   }

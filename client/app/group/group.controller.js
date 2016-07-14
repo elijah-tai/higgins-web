@@ -26,7 +26,9 @@ class GroupController {
     this.groupId = null;
     this.groupName = '';
     this.members = [];
-    this.tasks = [];
+
+    this.currentTasks = [];
+    this.completedTasks = [];
 
     this.focusInput = {
       'groupName': false
@@ -52,30 +54,38 @@ class GroupController {
 
     this.groupService.getGroup({ groupId: this.$stateParams.groupId })
       .then(response => {
+
         this.groupId = response.data._id;
         this.groupName = response.data.name;
-        return this.groupId;
-      })
-      .then(groupId => {
-        this.groupService.populateMembers({ groupId: groupId })
-          .then(response => {
-            this.members = response.data.members;
-            this.socket.syncUpdates('member', this.members, this.currentUser._id);
-          });
 
-        this.groupService.populateTasks({ groupId: groupId })
-          .then(response => {
-            this.tasks = response.data.tasks;
-            this.socket.syncUpdates('task', this.tasks, this.currentUser._id);
-          });
+        return this.groupService.populateMembers({ groupId: this.groupId });
+      })
+      .then(response => {
+
+        this.members = response.data.members;
+        this.socket.syncUpdates('member', this.members, this.currentUser._id);
+
+        return this.groupService.populateTasks({ groupId: this.groupId });
+      })
+      .then(response => {
+
+        this.currentTasks = response.data.tasks.filter(function( task ) {
+          return task.active === true;
+        });
+
+        this.completedTasks = response.data.tasks.filter(function( task ) {
+          return task.active === false;
+        });
+
+        this.socket.syncUpdates('task', this.currentTasks, this.currentUser._id);
       });
   }
 
   addMember(member) {
     // create member and add to group
     this.memberService.createMember({
-      _groupId: this.groupId,
-      _creator: this.currentUser._id,
+      group: this.groupId,
+      creator: this.currentUser._id,
       name: member.name,
       phone: parseInt(member.phone)
     })
@@ -173,21 +183,43 @@ class GroupController {
   }
 
   addTask(task) {
-    this.taskService.createTask({
-      _groupId: this.groupId,
-      _creator: this.currentUser._id,
-      name: task.name,
-      assignees: this.getMemberIds(task.assignees),
-      datetime: task.datetime,
-      doesRecur: task.doesRecur,
-      recurType: task.recurType,
-      active: true
-    }).then(response => {
-      this.groupService.addTask({
-        groupId: this.groupId,
-        taskId: response.data._id
+
+    var memberIds = this.getMemberIds( task.assignees );
+
+    this.memberService.getMembersByIds({
+      memberIds: memberIds
+    })
+      .then( response => {
+
+        var membersArray = response.data;
+
+        var mappedMemberIds = _.map( membersArray, function( member ) {
+          return _.extend( member, _.findWhere( memberIds, member._id ) );
+        });
+
+        this.taskService.createTask({
+          group: this.groupId,
+          creator: this.currentUser._id,
+          name: task.name,
+          assignees: memberIds,
+          datetime: task.datetime,
+          doesRecur: task.doesRecur,
+          recurType: task.recurType,
+          reports: mappedMemberIds.map( function( assignee ) {
+            return {
+              assigneeId: assignee._id,
+              assigneeName: assignee.name,
+              status: 'pending'
+            };
+          }),
+          active: true
+        }).then(response => {
+          this.groupService.addTask({
+            groupId: this.groupId,
+            taskId: response.data._id
+          });
+        });
       });
-    });
   }
 
   editTask(task) {
@@ -210,8 +242,22 @@ class GroupController {
     this.taskService.deleteTask({taskId: task._id});
   }
 
+  markTaskComplete(task) {
+    var opts = {
+      taskId: task._id
+    };
+    var form = {
+      active: false
+    };
+    this.taskService.editTask(opts, form)
+      .then(function() {
+
+        this.completedTasks.push( task );
+
+      });
+  }
+
   openAddTaskModal() {
-    console.log('clicked');
     var self = this;
     this.$uibModal.open({
       animation: true,

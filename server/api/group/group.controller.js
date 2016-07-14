@@ -119,7 +119,7 @@ export function destroy(req, res) {
 // Get an array of all of user's groups.
 export function getGroups(req, res, next) {
   var userId = req.params.userId;
-  return Group.find({ _creator: userId }).exec()
+  return Group.find({ creator: userId }).exec()
     .then(handleEntityNotFound(res))
     .then(respondWithResult(res))
     .catch(handleError(res));
