@@ -2,12 +2,13 @@
 
 class GroupController {
 
-  constructor($state, $stateParams, $scope, $rootScope, $uibModal, $log, groupService,
-              memberService, taskService, alertService, socket) {
+  constructor($state, $stateParams, $scope, $rootScope, $uibModal, $log, $localStorage,
+              groupService, memberService, taskService, alertService, socket) {
     this.$state = $state;
     this.$stateParams = $stateParams;
     this.$scope = $scope;
     this.$rootScope = $rootScope;
+    this.$localStorage = $localStorage;
 
     // TODO: How can we access the deleteGroup() function from parent?
     this.$rootScope.deleteGroup = this.deleteGroup;
@@ -409,6 +410,19 @@ class GroupController {
     } else {
       member.showOptions = true;
     }
+  }
+
+  setActiveTab( activeTab ) {
+    this.$localStorage.activeTab = activeTab;
+  }
+
+  getActiveTab() {
+    return this.$localStorage.activeTab;
+  }
+
+  isActiveTab( tabName ) {
+    var activeTab = this.getActiveTab();
+    return ( activeTab === tabName );
   }
 
 }

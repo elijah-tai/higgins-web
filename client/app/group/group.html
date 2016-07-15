@@ -35,9 +35,9 @@
 
     </span>
 
-    <uib-tabset active="active" class="group-options">
-      <uib-tab index="0" ui-sref=".tasks" heading="Tasks"></uib-tab>
-      <uib-tab index="1" ui-sref=".members" heading="Members"></uib-tab>
+    <uib-tabset class="group-options">
+      <uib-tab index="0" ui-sref=".tasks" heading="Tasks" select="groupCtrl.setActiveTab( 'tasks' )" active="groupCtrl.isActiveTab( 'tasks' )" active="groupCtrl.getActiveTab === 'tasks'"></uib-tab>
+      <uib-tab index="1" ui-sref=".members" heading="Members" select="groupCtrl.setActiveTab( 'members' );" active="groupCtrl.getActiveTab === 'members'"></uib-tab>
     </uib-tabset>
 
   </div> <!-- /div -->
