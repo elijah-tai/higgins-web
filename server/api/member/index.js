@@ -13,5 +13,6 @@ router.patch('/:id', controller.update);
 router.delete('/:id', controller.destroy);
 
 router.post('/findByIds', controller.findByIds);
+router.post('/findByPhone', controller.findByPhone);
 
 module.exports = router;

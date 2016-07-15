@@ -11,6 +11,10 @@ angular.module('higginsApp.memberService', [])
       return $http.post('/api/members/findByIds', form );
     };
 
+    var findMemberByPhone = function( form ) {
+      return $http.post('/api/members/findByPhone', form );
+    };
+
     var createMember = function( form ) {
       return $http.post('/api/members', form);
     };
@@ -27,6 +31,7 @@ angular.module('higginsApp.memberService', [])
     return {
       getMember: getMember,
       getMembersByIds: getMembersByIds,
+      findMemberByPhone: findMemberByPhone,
       createMember: createMember,
       deleteMember: deleteMember,
       editMember: editMember
