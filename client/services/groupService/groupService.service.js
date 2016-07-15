@@ -33,6 +33,12 @@ angular.module('higginsApp.groupService', [])
       return $http.put('/api/groups/' + groupId + '/add-member/' + memberId);
     };
 
+    var removeMember = function( opts ) {
+      var groupId = opts.groupId;
+      var memberId = opts.memberId;
+      return $http.put('/api/groups/' + groupId + '/remove-member/' + memberId);
+    };
+
     var addTask = function( opts ) {
       var groupId = opts.groupId;
       var taskId = opts.taskId;
@@ -58,6 +64,7 @@ angular.module('higginsApp.groupService', [])
       getGroupsByUserId: getGroupsByUserId,
       addTask: addTask,
       addMember: addMember,
+      removeMember: removeMember,
       populateMembers: populateMembers,
       populateTasks: populateTasks
     };

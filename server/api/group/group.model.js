@@ -29,7 +29,7 @@ var GroupSchema = new mongoose.Schema({
     ref: 'Task'
   }]
 }, {
-  timestamp: true
+  timestamps: true
 });
 
 export default mongoose.model('Group', GroupSchema);

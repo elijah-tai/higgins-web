@@ -25,7 +25,7 @@ var MemberSchema = new mongoose.Schema({
   },    // member phone number
   active: { type: Boolean, default: true }
 }, {
-  timestamp: true
+  timestamps: true
 });
 
 export default mongoose.model('Member', MemberSchema);

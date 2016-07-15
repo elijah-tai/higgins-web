@@ -119,7 +119,16 @@ export function destroy(req, res) {
 }
 
 export function findByIds(req, res) {
-  return Member.find( { _id: { $in : req.body.memberIds } } ).exec()
+  return Member.find( { _id: { $in : req.body } } )
+    .sort({ createdAt: 1 })
+    .exec()
     .then( respondWithResult(res) )
     .catch( handleError(res) );
+}
+
+export function findByPhone(req, res) {
+  return Member.findOne( { phone: req.body.phone } ).exec()
+    .then(handleEntityNotFound(res))
+    .then(respondWithResult(res))
+    .catch(handleError(res));
 }

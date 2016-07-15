@@ -108,7 +108,6 @@ export function destroy(req, res) {
   return Group.findById(req.params.id, function(err, group) {
     if (err) logger.error(err);
     Task.remove({_id: {$in: group.tasks}}).exec();
-    Member.remove({_id: {$in: group.members}}).exec();
   }).exec()
     .then(handleEntityNotFound(res))
     .then(removeEntity(res))
@@ -132,8 +131,8 @@ export function addMember(req, res) {
 
   // TODO: Change this to use chains
   return Group.findById(groupId, function(err, group) {
-    if (err) {
-      logger.info('groupController.addMember - group not found');
+    if (!!err) {
+      logger.info('groupController.addMember - error finding group: ' + err);
       return res.status(404).end();
     }
 
@@ -146,6 +145,33 @@ export function addMember(req, res) {
       res.status(200).json(group).end();
       return res;
     });
+  });
+}
+
+export function removeMember(req, res) {
+  var groupId = req.params.id,
+      memberId = req.params.memberId;
+
+  return Group.findById(groupId, function(err, group) {
+    if (!!err) {
+      logger.info('`groupController.removeMember`: error finding group ' + err);
+      return res.status(404).end();
+    }
+
+    var index = group.members.indexOf( mongoose.Types.ObjectId(memberId) );
+    if (index > -1) {
+      group.members.splice(index, 1);
+    }
+
+    group.save(function(err) {
+      if (!!err) {
+        logger.error('`groupController.removeMember`: error saving group ' + err);
+      }
+      logger.info('`groupController.removeMember`: group saved: ' + group);
+      res.status(200).json(group).end();
+      return res;
+    })
+
   });
 }
 

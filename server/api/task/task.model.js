@@ -56,7 +56,7 @@ var TaskSchema = new mongoose.Schema({
   recurType: String, // Daily/Weekly/Monthly/Yearly/Custom
   active: { type: Boolean, default: false } // taskIsActive
 }, {
-  timestamp: true
+  timestamps: true
 });
 
 export default mongoose.model('Task', TaskSchema);

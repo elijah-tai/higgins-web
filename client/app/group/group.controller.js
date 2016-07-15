@@ -82,21 +82,52 @@ class GroupController {
   }
 
   addMember(member) {
-    // create member and add to group
-    this.memberService.createMember({
-      group: this.groupId,
-      creator: this.currentUser._id,
-      name: member.name,
-      phone: parseInt(member.phone)
+
+    var self = this;
+    this.memberService.findMemberByPhone({
+      phone: member.phone
     })
-      .then(response => {
-        var memberId = response.data._id;
-        var opts = {
-          groupId: this.groupId,
-          memberId: memberId
-        };
-        this.groupService.addMember( opts );
+      .success(function( member ) {
+
+        self.groupService.addMember({
+            groupId: self.groupId,
+            memberId: member._id
+          })
+          .then(response => {
+            self.memberService.getMembersByIds(response.data.members)
+              .then(function (response) {
+                self.members = response.data;
+              });
+          });
+
+      })
+      .error(function() {
+
+        self.memberService.createMember({
+          group: self.groupId,
+          creator: self.currentUser._id,
+          name: member.name,
+          phone: parseInt(member.phone)
+        })
+          .then(response => {
+
+            var memberId = response.data._id;
+            var opts = {
+              groupId: self.groupId,
+              memberId: memberId
+            };
+
+            self.groupService.addMember(opts)
+              .then(response => {
+                self.memberService.getMembersByIds(response.data.members)
+                  .then(function (response) {
+                    self.members = response.data;
+                  });
+              });
+
+          });
       });
+
   }
 
   editMember(member) {
@@ -107,17 +138,42 @@ class GroupController {
       name: member.name,
       phone: member.phone
     };
-    this.memberService.editMember(opts, form);
+    var self = this;
+    this.memberService.editMember(opts, form)
+      .then(function( response ) {
+
+        var arrayIndex = null;
+
+        function findMemberWithId(member, index) {
+          arrayIndex = index;
+          return member._id === opts.memberId;
+        }
+
+        self.members.find(findMemberWithId);
+
+        self.members[arrayIndex] = response.data;
+
+      });
   }
 
-  deleteMember(member) {
-    var opts = {
-      memberId: member._id
-    };
-    this.memberService.deleteMember( opts );
+  removeMember(member) {
+
+    var self = this,
+        opts = {
+          memberId: member._id,
+          groupId:this.groupId
+        };
+
+    this.groupService.removeMember( opts )
+      .then(function( response ) {
+        self.memberService.getMembersByIds(response.data.members)
+          .then(function (response) {
+            self.members = response.data;
+          });
+      });
 
     // TODO: Also need to delete them from all tasks
-    // this.groupService.deleteMember( opts ); --> query tasks for members, then delete
+    // this.groupService.removeMember( opts ); --> query tasks for members, then delete
   }
 
   openEditMemberModal(member) {

@@ -38,6 +38,9 @@ class DashboardController {
             if (typeof this.groups !== 'undefined' && this.groups.length > 0) {
               this.hasGroups = true;
             }
+
+            this.socket.syncUpdates('group', this.groups, this.currentUser._id);
+
           });
       });
   }
@@ -48,33 +51,66 @@ class DashboardController {
   }
 
   createGroup() {
-    this.socket.syncUpdates('group', this.groups, this.currentUser._id);
+
+    var groupId,
+        member,
+        self = this;
+
     if (!!this.groupName && !!this.currentUser) {
       this.groupService.createGroup({
         creator: this.currentUser._id,
         name: this.groupName
       })
         .then(response => {
-          var groupId = response.data._id;
+          groupId = response.data._id;
           this.$rootScope.currentGroup = response.data;
-          this.$rootScope.nav.getCurrentUser(function(user) {
-            return user;
+          return this.userService.updateUserGroups({userId: this.currentUser._id}, {groupId: groupId});
+        })
+        .then(() => {
+
+          this.memberService.findMemberByPhone({
+            phone: this.currentUser.phone
           })
-            .then(user => {
-              this.userService.updateUserGroups({ userId: user._id }, { groupId: groupId })
-                .then(() => {
-                  this.memberService.createMember({
-                    group: groupId,
-                    creator: user._id,
-                    name: user.name,
-                    phone: user.phone
-                  })
-                    .then((response) => {
-                      var memberId = response.data._id;
-                      this.groupService.addMember({ groupId: groupId, memberId: memberId });
-                      this.checkHasGroups();
-                      this.groupName = '';
+            .success(function (member) {
+
+              self.groupService.addMember({
+                groupId: groupId,
+                memberId: member._id
+              })
+                .then(response => {
+                  self.memberService.getMembersByIds(response.data.members)
+                    .then(function() {
+                      self.checkHasGroups();
+                      self.groupName = '';
                     });
+                });
+
+            })
+            .error(function () {
+
+              self.memberService.createMember({
+                group: groupId,
+                creator: self.currentUser._id,
+                name: self.currentUser.name,
+                phone: parseInt(self.currentUser.phone)
+              })
+                .then(response => {
+
+                  var memberId = response.data._id;
+                  var opts = {
+                    groupId: groupId,
+                    memberId: memberId
+                  };
+
+                  self.groupService.addMember(opts)
+                    .then(response => {
+                      self.memberService.getMembersByIds(response.data.members)
+                        .then(function() {
+                          self.checkHasGroups();
+                          self.groupName = '';
+                        });
+                    });
+
                 });
             });
         });
@@ -90,10 +126,10 @@ class DashboardController {
   }
 
   checkHasGroups() {
-    if (typeof this.groups !== 'undefined' && this.groups.length > 0) {
-      this.hasGroups = true;
-    } else {
+    if (this.groups === [] || this.groups.length === 0 || typeof this.groups === 'undefined') {
       this.hasGroups = false;
+    } else {
+      this.hasGroups = true;
     }
   }
 
