@@ -53,7 +53,6 @@ class DashboardController {
   createGroup() {
 
     var groupId,
-        member,
         self = this;
 
     if (!!this.groupName && !!this.currentUser) {

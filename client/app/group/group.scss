@@ -108,9 +108,9 @@
 
 .member-card {
   border: 1px solid #CAD0D2;
-  width: 125px;
-  height: 125px;
-  border-radius: 1000px;
+  width: 115px;
+  height: 115px;
+  border-radius: 15px;
   margin: 0.5em;
 }
 
@@ -123,13 +123,15 @@
 
 .member-card__memberText {
   color: #57727C;
-  font-size: 14px;
+  font-size: 12px;
   display: flex;
   flex-flow: column;
   align-items: center;
   justify-content: center;
   height: 100%;
   text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .member-card__details {
@@ -164,6 +166,12 @@
 
   .tasks-column {
     margin-bottom: 25px;
+  }
+
+  .group-options {
+    margin-top: 5px;
+    margin-left: auto;
+    float: none !important;
   }
 
 }

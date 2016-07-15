@@ -119,7 +119,7 @@ export function destroy(req, res) {
 }
 
 export function findByIds(req, res) {
-  return Member.find( { _id: { $in : req.body } } )
+  return Member.find( { _id: { $in : req.body.memberIds } } )
     .sort({ createdAt: 1 })
     .exec()
     .then( respondWithResult(res) )

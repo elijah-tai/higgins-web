@@ -18,7 +18,8 @@
       <div class="member-card__memberText"
            ng-hide="member.showOptions">
         <b>{{ member.name }}</b> <br>
-        {{ member.phone }}
+        ({{ member.phone.toString().slice(0, 3) }}) {{ member.phone.toString().slice(3, 6) }}-{{
+        member.phone.toString().slice(6, 10) }}
       </div>
         <span class="member-card__options" ng-show="member.showOptions">
           <div class="btn-group">
