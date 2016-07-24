@@ -2,17 +2,19 @@
   <h5 class="modal-title">Add Member</h5>
 </div>
 <div class="modal-body" on-enter="memberModalCtrl.add()" tabindex="0">
-  <div class="form-group">
-    <label>Name</label>
-    <input type="text" class="form-control"
-           placeholder="Bruce Wayne"
-           ng-model="memberModalCtrl.name"
-           focus-input="memberModalCtrl.focusInput">
+  Hello
+  <div ng-if="memberModalCtrl.FBFriends.length > 0">
+    Facebook Friends on Higgins:
+    <div ng-repeat="friend in memberModalCtrl.FBFriends">
+      {{ friend }}
+    </div>
   </div>
+  <div ng-if="memberModalCtrl.FBFriends === []">
+    Looks like you don't have any Facebook Friends on Higgins, want to send them a message to join?
 
-  <div class="form-group">
-    <label>Phone Number</label>
-    <input phone-input type="text" class="form-control" placeholder="(123) 456-7890" ng-model="memberModalCtrl.phone">
+    <div>
+
+    </div>
   </div>
 </div>
 

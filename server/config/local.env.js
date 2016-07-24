@@ -9,8 +9,8 @@ module.exports = {
   DOMAIN: 'http://localhost:9000',
   SESSION_SECRET: 'higgins-secret',
 
-  FACEBOOK_ID: '534494246736908',
-  FACEBOOK_SECRET: '0a1acce9ac14bdc55cac03770a3ec0ce',
+  FACEBOOK_ID: '273403129702598',
+  FACEBOOK_SECRET: 'c64c4d98fbfb537664e44702b1c16f8c',
 
   TWITTER_ID: 'nUrje4gvNyo8UGgeqS8yYQ35W',
   TWITTER_SECRET: '0qnEosCIJiwYmasEyCSYkQNUxMCgvHmxgntFKoH3x2WsyEf93c',

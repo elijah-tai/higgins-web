@@ -13,6 +13,8 @@ angular.module('higginsApp')
       this.isLoggingIn = true;
     } else if ($location.path() === '/signup') {
       this.isSigningUp = true;
+    } else if ($location.path() === '/') {
+      this.isOnLandingPage = true;
     }
 
   });
