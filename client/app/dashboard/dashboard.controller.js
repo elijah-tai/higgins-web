@@ -64,54 +64,6 @@ class DashboardController {
           groupId = response.data._id;
           this.$rootScope.currentGroup = response.data;
           return this.userService.updateUserGroups({userId: this.currentUser._id}, {groupId: groupId});
-        })
-        .then(() => {
-
-          this.memberService.findMemberByPhone({
-            phone: this.currentUser.phone
-          })
-            .success(function (member) {
-
-              self.groupService.addMember({
-                groupId: groupId,
-                memberId: member._id
-              })
-                .then(response => {
-                  self.memberService.getMembersByIds(response.data.members)
-                    .then(function() {
-                      self.checkHasGroups();
-                      self.groupName = '';
-                    });
-                });
-
-            })
-            .error(function () {
-
-              self.memberService.createMember({
-                group: groupId,
-                creator: self.currentUser._id,
-                name: self.currentUser.name,
-                phone: parseInt(self.currentUser.phone)
-              })
-                .then(response => {
-
-                  var memberId = response.data._id;
-                  var opts = {
-                    groupId: groupId,
-                    memberId: memberId
-                  };
-
-                  self.groupService.addMember(opts)
-                    .then(response => {
-                      self.memberService.getMembersByIds(response.data.members)
-                        .then(function() {
-                          self.checkHasGroups();
-                          self.groupName = '';
-                        });
-                    });
-
-                });
-            });
         });
     }
   }

@@ -23,6 +23,11 @@ class MemberModalController {
         phone: angular.copy(this.phone)
       };
     }
+
+    if ( !!this.$scope.$resolve.FBFriends ) {
+      this.FBFriends = this.$scope.$resolve.FBFriends;
+    }
+
   }
 
   add() {

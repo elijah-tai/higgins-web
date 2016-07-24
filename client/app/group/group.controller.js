@@ -3,7 +3,7 @@
 class GroupController {
 
   constructor($state, $stateParams, $scope, $rootScope, $uibModal, $log, $localStorage,
-              groupService, memberService, taskService, alertService, socket) {
+              groupService, memberService, taskService, userService, alertService, socket) {
     this.$state = $state;
     this.$stateParams = $stateParams;
     this.$scope = $scope;
@@ -23,7 +23,9 @@ class GroupController {
     this.memberService = memberService;
     this.taskService = taskService;
     this.alertService = alertService;
+    this.userService = userService;
 
+    this.userFBFriends = null;
     this.groupId = null;
     this.groupName = '';
     this.members = [];
@@ -204,6 +206,17 @@ class GroupController {
 
   openAddMemberModal() {
     var self = this;
+
+    this.userService.getFBLoginStatus()
+      .then(function( response ) {
+        self.userService.getFBFriends({
+          accessToken: response.authResponse.accessToken
+        })
+          .then(function( response ) {
+            self.userFBFriends = response.data;
+          });
+      });
+
     this.$uibModal
       .open({
         animation: true,
@@ -212,7 +225,12 @@ class GroupController {
         controller: 'MemberModalController',
         controllerAs: 'memberModalCtrl',
         keyboard: true,
-        size: 'sm'
+        size: 'sm',
+        resolve: {
+          FBFriends: function() {
+            return self.userFBFriends;
+          }
+        }
       })
       .result
       .then(function(addedMember) {
